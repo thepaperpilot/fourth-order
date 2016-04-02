@@ -17,6 +17,8 @@ public class PuzzleSystem extends EntitySystem {
     public Entity selected;
     float[] cooldown;
     public DestroyComponent.Target turn = DestroyComponent.Target.NULL;
+    public boolean stable;
+    public float stableTimer;
 
     public PuzzleSystem(int size) {
         super(5);
@@ -29,9 +31,11 @@ public class PuzzleSystem extends EntitySystem {
         for (int i = 0; i < size; i++) {
             cooldown[i] += deltaTime;
         }
+        stable = true;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (runes[i][j] == null) {
+                    stable = false;
                     if (j == 0) {
                         if (cooldown[i] > 2 * getRuneSize() / Constants.TILE_SPEED) {
                             createRune(i);
@@ -40,12 +44,34 @@ public class PuzzleSystem extends EntitySystem {
                     } else if (runes[i][j - 1] != null){
                         updateRune(runes[i][j - 1]);
                     }
+                } else if (Mappers.ui.get(runes[i][j]).actor.hasActions()) {
+                    stable = false;
                 }
             }
         }
+        if (stable) {
+            stableTimer += deltaTime;
+            if (stableTimer > 1) {
+                if (checkForPossibleMoves()) {
+                    if (turn == DestroyComponent.Target.PLAYER) {
+                        turn = DestroyComponent.Target.ENEMY;
+                        makeRandomMove();
+                        return;
+                    }
+                } else {
+                    for (int i = 0; i < size; i++) {
+                        for (int j = 0; j < size; j++) {
+                            if (runes[i][j] != null) {
+                                runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                            }
+                        }
+                    }
+                }
+            }
+        } else stableTimer = 0;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (checkForHorizontalMatches(i, j, true)) {
+                if (checkForHorizontalTriples(i, j, true)) {
                     runes[i][j].add(new DestroyComponent(turn));
                     runes[i + 1][j].add(new DestroyComponent(turn));
                     runes[i + 2][j].add(new DestroyComponent(turn));
@@ -64,7 +90,7 @@ public class PuzzleSystem extends EntitySystem {
                         } else break;
                     }
                 }
-                if (checkForVerticalMatches(i, j, true)) {
+                if (checkForVerticalTriples(i, j, true)) {
                     runes[i][j].add(new DestroyComponent(turn));
                     runes[i][j + 1].add(new DestroyComponent(turn));
                     runes[i][j + 2].add(new DestroyComponent(turn));
@@ -158,7 +184,7 @@ public class PuzzleSystem extends EntitySystem {
         PuzzleComponent pc = Mappers.puzzle.get(entity);
         UIComponent uc = Mappers.ui.get(entity);
 
-        Vector2 dest = new Vector2(Constants.UI_WIDTH + (pc.x + .125f) * getRuneSize(), Constants.WORLD_HEIGHT - (pc.y + 1) * getRuneSize());
+        Vector2 dest = new Vector2(Constants.UI_WIDTH + (pc.x + .125f) * getRuneSize(), Constants.WORLD_HEIGHT - (pc.y + 1 - .125f) * getRuneSize());
         float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
         return Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In);
     }
@@ -182,7 +208,8 @@ public class PuzzleSystem extends EntitySystem {
                 pc2.y = tempY;
                 runes[pc1.x][pc1.y] = entity;
                 runes[pc2.x][pc2.y] = selected;
-                if (checkForMatches()) {
+                if (checkForTriples()) {
+                    turn = DestroyComponent.Target.PLAYER;
                     updateRune(entity);
                     updateRune(selected);
                 } else {
@@ -217,32 +244,118 @@ public class PuzzleSystem extends EntitySystem {
         }
     }
 
-    public boolean checkForMatches() {
+    public boolean checkForTriples() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (checkForHorizontalMatches(i, j, false) || checkForVerticalMatches(i, j, false)) return true;
+                if (checkForHorizontalTriples(i, j, false) || checkForVerticalTriples(i, j, false)) return true;
             }
         }
         return false;
     }
 
-    private boolean checkForHorizontalMatches(int x, int y, boolean visual) {
+    private boolean checkForHorizontalTriples(int x, int y, boolean visual) {
         if (x >= size - 2) return false;
         if (runes[x][y] == null || runes[x + 1][y] == null || runes[x + 2][y] == null) return false;
 
         RuneComponent rc = Mappers.rune.get(runes[x][y]);
+        RuneComponent rc1 = Mappers.rune.get(runes[x + 1][y]);
+        RuneComponent rc2 = Mappers.rune.get(runes[x + 2][y]);
+        UIComponent ui = Mappers.ui.get(runes[x][y]);
+        UIComponent ui1 = Mappers.ui.get(runes[x + 1][y]);
+        UIComponent ui2 = Mappers.ui.get(runes[x + 2][y]);
 
-        return !(visual && (Mappers.ui.get(runes[x][y]).actor.hasActions() || Mappers.ui.get(runes[x + 1][y]).actor.hasActions() || Mappers.ui.get(runes[x + 2][y]).actor.hasActions())) && rc.matches(Mappers.rune.get(runes[x + 1][y])) && rc.matches(Mappers.rune.get(runes[x + 2][y]));
+        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.matches(rc1) && rc.matches(rc2);
 
     }
 
-    private boolean checkForVerticalMatches(int x, int y, boolean visual) {
+    private boolean checkForVerticalTriples(int x, int y, boolean visual) {
         if (y >= size - 2) return false;
         if (runes[x][y] == null || runes[x][y + 1] == null || runes[x][y + 2] == null) return false;
 
         RuneComponent rc = Mappers.rune.get(runes[x][y]);
+        RuneComponent rc1 = Mappers.rune.get(runes[x][y + 1]);
+        RuneComponent rc2 = Mappers.rune.get(runes[x][y + 2]);
+        UIComponent ui = Mappers.ui.get(runes[x][y]);
+        UIComponent ui1 = Mappers.ui.get(runes[x][y + 1]);
+        UIComponent ui2 = Mappers.ui.get(runes[x][y + 2]);
 
-        return !(visual && (Mappers.ui.get(runes[x][y]).actor.hasActions() || Mappers.ui.get(runes[x][y + 2]).actor.hasActions() || Mappers.ui.get(runes[x][y + 2]).actor.hasActions())) && rc.matches(Mappers.rune.get(runes[x][y + 1])) && rc.matches(Mappers.rune.get(runes[x][y + 2]));
+        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.matches(rc1) && rc.matches(rc2);
 
+    }
+
+    // TODO optimize the shit out of this
+    private boolean checkForPossibleMoves() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (i != size - 1) {
+                    if (checkSwitch(i, j, i + 1, j)) return true;
+                }
+                if (j != size - 1) {
+                    if (checkSwitch(i, j, i, j + 1)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // check out this hard core AI. It's 100% guaranteed to be smarter than the player
+    private void makeRandomMove() {
+        int startX = MathUtils.random(size - 1);
+        int startY = MathUtils.random(size - 1);
+        for (int i = startX; i < size - 1; i++) {
+            for (int j = startY; j < size - 1; j++) {
+                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                else continue;
+                return;
+            }
+            for (int j = 0; j < startY; j++) {
+                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                else continue;
+                return;
+            }
+        }
+        for (int i = 0; i < startX; i++) {
+            for (int j = startY; j < size - 1; j++) {
+                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                else continue;
+                return;
+            }
+            for (int j = 0; j < startY; j++) {
+                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                else continue;
+                return;
+            }
+        }
+    }
+
+    private void makeSwitch(int x1, int y1, int x2, int y2) {
+        PuzzleComponent pc1 = Mappers.puzzle.get(runes[x1][y1]);
+        PuzzleComponent pc2 = Mappers.puzzle.get(runes[x2][y2]);
+
+        Entity temp = runes[x2][y2];
+        runes[x2][y2] = runes[x1][y1];
+        runes[x1][y1] = temp;
+        pc1.x = x2;
+        pc1.y = y2;
+        pc2.x = x1;
+        pc2.y = y1;
+        updateRune(runes[x1][y1]);
+        updateRune(runes[x2][y2]);
+    }
+
+    private boolean checkSwitch(int x1, int y1, int x2, int y2) {
+        boolean check = false;
+        Entity temp = runes[x2][y2];
+        runes[x2][y2] = runes[x1][y1];
+        runes[x1][y1] = temp;
+        if (checkForTriples()) check = true;
+        temp = runes[x2][y2];
+        runes[x2][y2] = runes[x1][y1];
+        runes[x1][y1] = temp;
+        return check;
     }
 }
