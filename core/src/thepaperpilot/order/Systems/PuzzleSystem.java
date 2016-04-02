@@ -82,10 +82,10 @@ public class PuzzleSystem extends EntitySystem {
                             matched++;
                             runes[k][j].add(new DestroyComponent(turn));
                             if (matched == 4) {
-                                // match 4
+                                // TODO implement match 4
                             }
                             if (matched == 5) {
-                                // match 5
+                                // TODO implement match 5
                             }
                         } else break;
                     }

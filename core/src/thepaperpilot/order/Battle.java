@@ -34,6 +34,7 @@ public class Battle implements Screen {
         /* Add Systems to Engine */
         engine.addSystem(new DestroySystem()); //priority 25
         engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new FighterSystem()); //priority 5
         engine.addSystem(new PuzzleSystem(9)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
@@ -45,6 +46,7 @@ public class Battle implements Screen {
         player.add(new FighterComponent());
         player.add(new UIComponent());
         player.add(new PlayerControlledComponent());
+        player.getComponent(FighterComponent.class).add(SpellComponent.strike);
         engine.addEntity(player);
         // Enemy Side
         Entity enemy = new Entity();
