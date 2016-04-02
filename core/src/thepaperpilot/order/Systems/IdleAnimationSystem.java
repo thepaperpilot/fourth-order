@@ -11,7 +11,7 @@ import thepaperpilot.order.Util.Mappers;
 
 public class IdleAnimationSystem extends IteratingSystem {
     public IdleAnimationSystem() {
-        super(Family.all(IdleAnimationComponent.class, UIComponent.class).get());
+        super(Family.all(IdleAnimationComponent.class, UIComponent.class).get(), 5);
     }
 
     @Override
