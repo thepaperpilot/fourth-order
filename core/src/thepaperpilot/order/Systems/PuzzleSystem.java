@@ -56,7 +56,7 @@ public class PuzzleSystem extends EntitySystem {
         UIComponent uc = new UIComponent();
         pc.x = column;
         pc.y = 0;
-        switch (MathUtils.random(4)) {
+        switch (MathUtils.random(6)) {
             case 0:
                 rc.poison = 1;
                 ic.file = "PurpleGem";
@@ -76,6 +76,16 @@ public class PuzzleSystem extends EntitySystem {
             case 4:
                 rc.mason = 1;
                 ic.file = "GreenGem";
+                break;
+            case 5:
+                rc.exp = 1;
+                ic.file = "XPGem";
+                ic.chance = 1;
+                break;
+            case 6:
+                rc.damage = 1;
+                ic.file = "DamageRune";
+                ic.chance = 1;
                 break;
         }
         rune.add(pc);

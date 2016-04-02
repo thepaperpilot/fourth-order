@@ -8,4 +8,5 @@ public class IdleAnimationComponent implements Component {
     public Animation animation;
     public boolean animating;
     public float time;
+    public float chance = .0002f;
 }
