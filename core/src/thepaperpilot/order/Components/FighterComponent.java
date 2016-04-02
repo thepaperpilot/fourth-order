@@ -4,6 +4,8 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import thepaperpilot.order.Util.TextProgressBar;
 
+import java.util.ArrayList;
+
 public class FighterComponent implements Component {
     public float exp = 0;
     public float health = 10;
@@ -18,7 +20,7 @@ public class FighterComponent implements Component {
     public float maxMortal = 20;
     public float maxSteam = 20;
     public float maxMason = 20;
-    public Entity[] spells = new Entity[]{};
+    public ArrayList<Entity> spells = new ArrayList<Entity>();
 
     public TextProgressBar healthBar;
     public TextProgressBar poisonBar;
@@ -52,5 +54,11 @@ public class FighterComponent implements Component {
         healthBar.setValue(health);
 
         // TODO implement dying
+    }
+
+    public void add(Entity spell) {
+        spells.add(spell);
+
+        // TODO add to existing spell sheet?
     }
 }

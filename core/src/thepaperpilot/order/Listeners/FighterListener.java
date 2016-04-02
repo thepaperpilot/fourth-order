@@ -3,10 +3,14 @@ package thepaperpilot.order.Listeners;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.SpellComponent;
 import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Constants;
@@ -65,12 +69,34 @@ public class FighterListener implements EntityListener {
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
         for (Entity spell : fc.spells) {
+            SpellComponent sc = Mappers.spell.get(spell);
+
             Table button = new Table(Main.skin);
             button.setBackground(Main.skin.getDrawable("default-round"));
-            table.add(button).expandX().fill().height(40).colspan(2).pad(2).row();
+            button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
+            if (sc.poison != 0) button.add(createDisplay(sc.poison, sc.poisonDisplay, Color.PURPLE));
+            if (sc.surprise != 0) button.add(createDisplay(sc.surprise, sc.surpriseDisplay, Color.YELLOW));
+            if (sc.mortal != 0) button.add(createDisplay(sc.mortal, sc.mortalDisplay, Color.RED));
+            if (sc.steam != 0) button.add(createDisplay(sc.steam, sc.steamDisplay, Color.TEAL));
+            if (sc.mason != 0) button.add(createDisplay(sc.mason, sc.masonDisplay, Color.GREEN));
+            button.addListener(new ClickListener() {
+
+            });
+            table.add(button).expandX().fill().height(60).colspan(2).pad(2).row();
         }
         ui.add(table).expandY().fill().width(Constants.UI_WIDTH);
         uc.actor = ui;
+    }
+
+    private Actor createDisplay(int element, Image display, Color color) {
+        Table table = new Table(Main.skin);
+        //display.setDrawable(Main.getTexture());
+        display.setColor(color);
+        table.add(display).row();
+        Label label = new Label("" + element, Main.skin);
+        label.setColor(color);
+        table.add(label);
+        return table;
     }
 
     @Override
