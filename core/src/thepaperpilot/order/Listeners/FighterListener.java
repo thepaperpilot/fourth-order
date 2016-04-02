@@ -3,24 +3,17 @@ package thepaperpilot.order.Listeners;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import thepaperpilot.order.Battle;
 import thepaperpilot.order.Components.FighterComponent;
 import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 import thepaperpilot.order.Util.ProgressBar.ProgressBarStyle;
 import thepaperpilot.order.Util.TextProgressBar;
 
 public class FighterListener implements EntityListener {
-    private Battle battle;
-
-    public FighterListener(Battle battle) {
-        this.battle = battle;
-    }
 
     @Override
     public void entityAdded(Entity entity) {
@@ -69,20 +62,17 @@ public class FighterListener implements EntityListener {
         right.add(fc.masonBar).minSize(1).pad(2);
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
-        for (Entity entity1 : fc.spells) {
+        for (Entity spell : fc.spells) {
             Table button = new Table(Main.skin);
             button.setBackground(Main.skin.getDrawable("default-round"));
             table.add(button).expandX().fill().height(40).colspan(2).pad(2).row();
         }
-        ui.add(table).expandY().fill().width(280);
+        ui.add(table).expandY().fill().width(Constants.UI_WIDTH);
         uc.actor = ui;
-        battle.ui.addActor(ui);
     }
 
     @Override
     public void entityRemoved(Entity entity) {
-        UIComponent uc = Mappers.ui.get(entity);
 
-        uc.actor.remove();
     }
 }

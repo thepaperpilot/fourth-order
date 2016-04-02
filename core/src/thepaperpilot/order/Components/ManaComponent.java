@@ -3,9 +3,9 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 
 public class ManaComponent implements Component {
-    float poison = 0;
-    float surprise = 0;
-    float mortal = 0;
-    float steam = 0;
-    float mason = 0;
+    public float poison = 0;
+    public float surprise = 0;
+    public float mortal = 0;
+    public float steam = 0;
+    public float mason = 0;
 }
