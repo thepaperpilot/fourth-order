@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import thepaperpilot.order.Components.DestroyComponent;
 import thepaperpilot.order.Components.IdleAnimationComponent;
 import thepaperpilot.order.Components.PuzzleComponent;
 import thepaperpilot.order.Components.UIComponent;
@@ -39,6 +40,8 @@ public class RuneListener implements EntityListener {
 
         uc.actor.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
+                //TODO check if the enemy is done with their turn
+                pc.puzzle.turn = DestroyComponent.Target.PLAYER;
                 pc.puzzle.select(entity);
             }
         });

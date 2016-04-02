@@ -16,6 +16,7 @@ public class PuzzleSystem extends EntitySystem {
     public Entity[][] runes;
     public Entity selected;
     float[] cooldown;
+    public DestroyComponent.Target turn = DestroyComponent.Target.NULL;
 
     public PuzzleSystem(int size) {
         super(5);
@@ -38,6 +39,48 @@ public class PuzzleSystem extends EntitySystem {
                         }
                     } else if (runes[i][j - 1] != null){
                         updateRune(runes[i][j - 1]);
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (checkForHorizontalMatches(i, j, true)) {
+                    runes[i][j].add(new DestroyComponent(turn));
+                    runes[i + 1][j].add(new DestroyComponent(turn));
+                    runes[i + 2][j].add(new DestroyComponent(turn));
+                    RuneComponent rc = Mappers.rune.get(runes[i][j]);
+                    int matched = 3;
+                    for (int k = i + 3; k < size; k++) {
+                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j]))) {
+                            matched++;
+                            runes[k][j].add(new DestroyComponent(turn));
+                            if (matched == 4) {
+                                // match 4
+                            }
+                            if (matched == 5) {
+                                // match 5
+                            }
+                        } else break;
+                    }
+                }
+                if (checkForVerticalMatches(i, j, true)) {
+                    runes[i][j].add(new DestroyComponent(turn));
+                    runes[i][j + 1].add(new DestroyComponent(turn));
+                    runes[i][j + 2].add(new DestroyComponent(turn));
+                    RuneComponent rc = Mappers.rune.get(runes[i][j]);
+                    int matched = 3;
+                    for (int k = j + 3; k < size; k++) {
+                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[i][k]))) {
+                            matched++;
+                            runes[i][k].add(new DestroyComponent(turn));
+                            if (matched == 4) {
+                                // match 4
+                            }
+                            if (matched == 5) {
+                                // match 5
+                            }
+                        } else break;
                     }
                 }
             }
@@ -175,17 +218,31 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     public boolean checkForMatches() {
-        for (int i = 0; i < size - 2; i++) {
-            for (int j = 0; j < size - 2; j++) {
-                if (checkForMatches(i, j)) return true;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (checkForHorizontalMatches(i, j, false) || checkForVerticalMatches(i, j, false)) return true;
             }
         }
         return false;
     }
 
-    private boolean checkForMatches(int x, int y) {
+    private boolean checkForHorizontalMatches(int x, int y, boolean visual) {
+        if (x >= size - 2) return false;
+        if (runes[x][y] == null || runes[x + 1][y] == null || runes[x + 2][y] == null) return false;
+
         RuneComponent rc = Mappers.rune.get(runes[x][y]);
-        if (rc.matches(Mappers.rune.get(runes[x + 1][y])) && rc.matches(Mappers.rune.get(runes[x + 2][y]))) return true;
-        return rc.matches(Mappers.rune.get(runes[x][y + 1])) && rc.matches(Mappers.rune.get(runes[x][y + 2]));
+
+        return !(visual && (Mappers.ui.get(runes[x][y]).actor.hasActions() || Mappers.ui.get(runes[x + 1][y]).actor.hasActions() || Mappers.ui.get(runes[x + 2][y]).actor.hasActions())) && rc.matches(Mappers.rune.get(runes[x + 1][y])) && rc.matches(Mappers.rune.get(runes[x + 2][y]));
+
+    }
+
+    private boolean checkForVerticalMatches(int x, int y, boolean visual) {
+        if (y >= size - 2) return false;
+        if (runes[x][y] == null || runes[x][y + 1] == null || runes[x][y + 2] == null) return false;
+
+        RuneComponent rc = Mappers.rune.get(runes[x][y]);
+
+        return !(visual && (Mappers.ui.get(runes[x][y]).actor.hasActions() || Mappers.ui.get(runes[x][y + 2]).actor.hasActions() || Mappers.ui.get(runes[x][y + 2]).actor.hasActions())) && rc.matches(Mappers.rune.get(runes[x][y + 1])) && rc.matches(Mappers.rune.get(runes[x][y + 2]));
+
     }
 }

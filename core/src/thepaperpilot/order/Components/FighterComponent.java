@@ -27,4 +27,30 @@ public class FighterComponent implements Component {
     public TextProgressBar steamBar;
     public TextProgressBar masonBar;
     public TextProgressBar experience;
+
+    public void add(RuneComponent rc) {
+        poison = Math.min(maxPoision, poison + rc.poison);
+        surprise = Math.min(maxSurprise, surprise + rc.surprise);
+        mortal = Math.min(maxMortal, mortal + rc.mortal);
+        steam = Math.min(maxSteam, steam + rc.steam);
+        mason = Math.min(maxMason, mason + rc.mason);
+        exp += rc.exp;
+
+        poisonBar.setValue(poison);
+        surpriseBar.setValue(surprise);
+        mortalBar.setValue(mortal);
+        steamBar.setValue(steam);
+        masonBar.setValue(mason);
+        experience.setValue(exp);
+
+        // TODO implement leveling up
+    }
+
+    public void hit(float damage) {
+        health = Math.max(0, health - damage);
+
+        healthBar.setValue(health);
+
+        // TODO implement dying
+    }
 }

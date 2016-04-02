@@ -7,7 +7,7 @@ public class Constants {
     public static final int UI_WIDTH = 280;
 
     /* Speeds */
-    public static final float TILE_SPEED = 720;
+    public static final float TILE_SPEED = 480;
 
     /* Debug */
     public static final boolean PROFILING = false;

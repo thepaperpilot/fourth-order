@@ -18,6 +18,7 @@ public class UIListener implements EntityListener {
         UIComponent uc = Mappers.ui.get(entity);
 
         ui.addActor(uc.actor);
+        uc.actor.toBack();
     }
 
     @Override

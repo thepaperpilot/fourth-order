@@ -14,10 +14,7 @@ import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
-import thepaperpilot.order.Systems.IdleAnimationSystem;
-import thepaperpilot.order.Systems.PuzzleSystem;
-import thepaperpilot.order.Systems.RenderStageSystem;
-import thepaperpilot.order.Systems.SelectedSystem;
+import thepaperpilot.order.Systems.*;
 import thepaperpilot.order.Util.Constants;
 
 public class Battle implements Screen {
@@ -35,6 +32,8 @@ public class Battle implements Screen {
         engine.addEntityListener(Family.all(UIComponent.class).get(), 11, new UIListener(ui));
 
         /* Add Systems to Engine */
+        engine.addSystem(new DestroySystem()); //priority 25
+        engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
         engine.addSystem(new PuzzleSystem(9)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
