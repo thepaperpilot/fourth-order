@@ -53,7 +53,7 @@ public class PuzzleSystem extends EntitySystem {
             stableTimer += deltaTime;
             if (stableTimer > 1) {
                 if (checkForPossibleMoves()) {
-                    if (turn == DestroyComponent.Target.PLAYER) {
+                    if (turn == DestroyComponent.Target.PLAYER || Constants.PLAYERLESS) {
                         turn = DestroyComponent.Target.ENEMY;
                         makeRandomMove();
                         return;
