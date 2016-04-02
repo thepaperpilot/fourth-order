@@ -113,6 +113,10 @@ public class PuzzleSystem extends EntitySystem {
         }
     }
 
+    public boolean isStable() {
+        return stable && stableTimer > 1;
+    }
+
     public int getRuneSize() {
         return (Constants.WORLD_WIDTH - 2 * Constants.UI_WIDTH) / size;
     }
