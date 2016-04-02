@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -50,35 +51,35 @@ public class PuzzleSystem extends EntitySystem {
     private void createRune(int column) {
         Entity rune = new Entity();
         PuzzleComponent pc = new PuzzleComponent(this);
-        ManaComponent mc = new ManaComponent();
+        RuneComponent rc = new RuneComponent();
         IdleAnimationComponent ic = new IdleAnimationComponent();
         UIComponent uc = new UIComponent();
         pc.x = column;
         pc.y = 0;
         switch (MathUtils.random(4)) {
             case 0:
-                mc.poison = 1;
+                rc.poison = 1;
                 ic.file = "PurpleGem";
                 break;
             case 1:
-                mc.surprise = 1;
+                rc.surprise = 1;
                 ic.file = "YellowGem";
                 break;
             case 2:
-                mc.mortal = 1;
+                rc.mortal = 1;
                 ic.file = "RedGem";
                 break;
             case 3:
-                mc.steam = 1;
+                rc.steam = 1;
                 ic.file = "BlueGem";
                 break;
             case 4:
-                mc.mason = 1;
+                rc.mason = 1;
                 ic.file = "GreenGem";
                 break;
         }
         rune.add(pc);
-        rune.add(mc);
+        rune.add(rc);
         rune.add(ic);
         rune.add(uc);
         getEngine().addEntity(rune);
@@ -94,15 +95,22 @@ public class PuzzleSystem extends EntitySystem {
                 targetY = i;
             } else break;
         }
-        runes[pc.x][pc.y] = null;
+        runes[pc.x][pc.y] = runes[pc.x][targetY];
         runes[pc.x][targetY] = rune;
         pc.y = targetY;
-        Vector2 dest = new Vector2(Constants.UI_WIDTH + (pc.x + .125f) * getRuneSize(), Constants.WORLD_HEIGHT - (pc.y + 1) * getRuneSize());
-        float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
-        uc.actor.addAction(Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In));
+        uc.actor.addAction(moveRuneAction(rune));
     }
 
-    public void select(Entity entity) {
+    private MoveToAction moveRuneAction(Entity entity) {
+        PuzzleComponent pc = Mappers.puzzle.get(entity);
+        UIComponent uc = Mappers.ui.get(entity);
+
+        Vector2 dest = new Vector2(Constants.UI_WIDTH + (pc.x + .125f) * getRuneSize(), Constants.WORLD_HEIGHT - (pc.y + 1) * getRuneSize());
+        float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
+        return Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In);
+    }
+
+    public void select(final Entity entity) {
         if (selected == null) {
             selected = entity;
             entity.add(new SelectedComponent());
@@ -110,18 +118,42 @@ public class PuzzleSystem extends EntitySystem {
             selected = null;
             entity.remove(SelectedComponent.class);
         } else {
-            PuzzleComponent pc1 = Mappers.puzzle.get(entity);
-            PuzzleComponent pc2 = Mappers.puzzle.get(selected);
+            final PuzzleComponent pc1 = Mappers.puzzle.get(entity);
+            final PuzzleComponent pc2 = Mappers.puzzle.get(selected);
             if (Math.abs(pc1.x - pc2.x) == 1 && Math.abs(pc1.y - pc2.y) == 0 || Math.abs(pc1.x - pc2.x) == 0 && Math.abs(pc1.y - pc2.y) == 1) {
-                // TODO check if move makes a match, reverse move if not
                 int tempX = pc1.x;
                 int tempY = pc1.y;
                 pc1.x = pc2.x;
                 pc1.y = pc2.y;
                 pc2.x = tempX;
                 pc2.y = tempY;
-                updateRune(entity);
-                updateRune(selected);
+                runes[pc1.x][pc1.y] = entity;
+                runes[pc2.x][pc2.y] = selected;
+                if (checkForMatches()) {
+                    updateRune(entity);
+                    updateRune(selected);
+                } else {
+                    final Entity selected = this.selected;
+                    final UIComponent uc1 = Mappers.ui.get(entity);
+                    final UIComponent uc2 = Mappers.ui.get(selected);
+                    uc1.actor.addAction(Actions.sequence(moveRuneAction(entity), Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            // play error sound
+                            uc1.actor.addAction(moveRuneAction(entity));
+                            uc2.actor.addAction(moveRuneAction(selected));
+                        }
+                    })));
+                    uc2.actor.addAction(moveRuneAction(selected));
+                    tempX = pc1.x;
+                    tempY = pc1.y;
+                    pc1.x = pc2.x;
+                    pc1.y = pc2.y;
+                    pc2.x = tempX;
+                    pc2.y = tempY;
+                    runes[pc1.x][pc1.x] = entity;
+                    runes[pc2.x][pc2.y] = selected;
+                }
                 selected.remove(SelectedComponent.class);
                 selected = null;
             } else {
@@ -130,5 +162,20 @@ public class PuzzleSystem extends EntitySystem {
                 selected.add(new SelectedComponent());
             }
         }
+    }
+
+    public boolean checkForMatches() {
+        for (int i = 0; i < size - 2; i++) {
+            for (int j = 0; j < size - 2; j++) {
+                if (checkForMatches(i, j)) return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkForMatches(int x, int y) {
+        RuneComponent rc = Mappers.rune.get(runes[x][y]);
+        if (rc.matches(Mappers.rune.get(runes[x + 1][y])) && rc.matches(Mappers.rune.get(runes[x + 2][y]))) return true;
+        return rc.matches(Mappers.rune.get(runes[x][y + 1])) && rc.matches(Mappers.rune.get(runes[x][y + 2]));
     }
 }

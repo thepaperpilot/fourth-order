@@ -45,14 +45,12 @@ public class Battle implements Screen {
         Entity player = new Entity();
         player.add(new FighterComponent());
         player.add(new UIComponent());
-        player.add(new ManaComponent());
         player.add(new PlayerControlledComponent());
         engine.addEntity(player);
         // Enemy Side
         Entity enemy = new Entity();
         enemy.add(new FighterComponent());
         enemy.add(new UIComponent());
-        enemy.add(new ManaComponent());
         engine.addEntity(enemy);
 
         /* Input Processing */
