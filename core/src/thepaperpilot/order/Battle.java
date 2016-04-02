@@ -12,10 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Listeners.FighterListener;
-import thepaperpilot.order.Listeners.IdleAnimationListener;
+import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Systems.IdleAnimationSystem;
 import thepaperpilot.order.Systems.PuzzleSystem;
+import thepaperpilot.order.Systems.RenderStageSystem;
+import thepaperpilot.order.Systems.SelectedSystem;
 import thepaperpilot.order.Util.Constants;
 
 public class Battle implements Screen {
@@ -29,12 +31,14 @@ public class Battle implements Screen {
 
         /* Add Listeners to Engine */
         engine.addEntityListener(Family.all(UIComponent.class, FighterComponent.class).get(), 10, new FighterListener());
-        engine.addEntityListener(Family.all(UIComponent.class, IdleAnimationComponent.class).get(), 10, new IdleAnimationListener());
+        engine.addEntityListener(Family.all(UIComponent.class, IdleAnimationComponent.class, PuzzleComponent.class).get(), 10, new RuneListener());
         engine.addEntityListener(Family.all(UIComponent.class).get(), 11, new UIListener(ui));
 
         /* Add Systems to Engine */
-        engine.addSystem(new PuzzleSystem(9));
-        engine.addSystem(new IdleAnimationSystem());
+        engine.addSystem(new PuzzleSystem(9)); //priority 5
+        engine.addSystem(new IdleAnimationSystem()); //priority 5
+        engine.addSystem(new RenderStageSystem(ui)); //priority 10
+        engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
 
         /* Add Initial Entities to Engine */
         // Player Side
@@ -70,8 +74,6 @@ public class Battle implements Screen {
     @Override
     public void render(float delta) {
         engine.update(delta);
-        ui.act();
-        ui.draw();
     }
 
     @Override

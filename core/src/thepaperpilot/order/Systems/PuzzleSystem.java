@@ -6,19 +6,18 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import thepaperpilot.order.Components.IdleAnimationComponent;
-import thepaperpilot.order.Components.ManaComponent;
-import thepaperpilot.order.Components.PuzzleComponent;
-import thepaperpilot.order.Components.UIComponent;
+import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
 public class PuzzleSystem extends EntitySystem {
     public final int size;
     public Entity[][] runes;
+    public Entity selected;
     float[] cooldown;
 
     public PuzzleSystem(int size) {
+        super(5);
         this.size = size;
         runes = new Entity[size][size];
         cooldown = new float[size];
@@ -37,7 +36,7 @@ public class PuzzleSystem extends EntitySystem {
                             cooldown[i] = 0;
                         }
                     } else if (runes[i][j - 1] != null){
-                        lowerRune(runes[i][j - 1]);
+                        updateRune(runes[i][j - 1]);
                     }
                 }
             }
@@ -85,7 +84,7 @@ public class PuzzleSystem extends EntitySystem {
         getEngine().addEntity(rune);
     }
 
-    public void lowerRune(Entity rune) {
+    public void updateRune(Entity rune) {
         PuzzleComponent pc = Mappers.puzzle.get(rune);
         UIComponent uc = Mappers.ui.get(rune);
 
@@ -101,5 +100,35 @@ public class PuzzleSystem extends EntitySystem {
         Vector2 dest = new Vector2(Constants.UI_WIDTH + (pc.x + .125f) * getRuneSize(), Constants.WORLD_HEIGHT - (pc.y + 1) * getRuneSize());
         float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
         uc.actor.addAction(Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In));
+    }
+
+    public void select(Entity entity) {
+        if (selected == null) {
+            selected = entity;
+            entity.add(new SelectedComponent());
+        } else if (selected == entity) {
+            selected = null;
+            entity.remove(SelectedComponent.class);
+        } else {
+            PuzzleComponent pc1 = Mappers.puzzle.get(entity);
+            PuzzleComponent pc2 = Mappers.puzzle.get(selected);
+            if (Math.abs(pc1.x - pc2.x) == 1 && Math.abs(pc1.y - pc2.y) == 0 || Math.abs(pc1.x - pc2.x) == 0 && Math.abs(pc1.y - pc2.y) == 1) {
+                // TODO check if move makes a match, reverse move if not
+                int tempX = pc1.x;
+                int tempY = pc1.y;
+                pc1.x = pc2.x;
+                pc1.y = pc2.y;
+                pc2.x = tempX;
+                pc2.y = tempY;
+                updateRune(entity);
+                updateRune(selected);
+                selected.remove(SelectedComponent.class);
+                selected = null;
+            } else {
+                selected.remove(SelectedComponent.class);
+                selected = entity;
+                selected.add(new SelectedComponent());
+            }
+        }
     }
 }
