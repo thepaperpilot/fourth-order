@@ -3,6 +3,7 @@ package thepaperpilot.order.Listeners;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import thepaperpilot.order.Components.FighterComponent;
@@ -28,9 +29,10 @@ public class FighterListener implements EntityListener {
         Table table = new Table(Main.skin);
         table.top().pad(20);
         Table left = new Table(Main.skin);
-        Table portrait = new Table(Main.skin); // temp placeholder
+        Table portrait = new Table(Main.skin);
+        portrait.add(new Image(Main.getTexture("PortraitPlayer"))).expand().fill().pad(2);
         portrait.setBackground(Main.skin.getDrawable("default-round"));
-        left.add(portrait).size(90, 120).padBottom(4).row();
+        left.add(portrait).size(150, 200).padBottom(2).row();
         fc.experience = new TextProgressBar("Exp", 0, fc.maxMason, 1, false, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
         fc.experience.setColor(Color.GREEN);
         fc.experience.setAnimateDuration(1f);
@@ -54,12 +56,12 @@ public class FighterListener implements EntityListener {
         fc.masonBar = new TextProgressBar("mason", 0, fc.maxMason, 1, true, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
         fc.masonBar.setColor(Color.GREEN);
         fc.masonBar.setAnimateDuration(1f);
-        right.add(fc.healthBar).minWidth(1).height(40).colspan(5).row();
-        right.add(fc.poisonBar).minSize(1).pad(2);
-        right.add(fc.surpriseBar).minSize(1).pad(2);
-        right.add(fc.mortalBar).minSize(1).pad(2);
-        right.add(fc.steamBar).minSize(1).pad(2);
-        right.add(fc.masonBar).minSize(1).pad(2);
+        right.add(fc.healthBar).minWidth(1).height(40).colspan(5).padBottom(2).row();
+        right.add(fc.poisonBar).minWidth(1).height(180).pad(2);
+        right.add(fc.surpriseBar).minWidth(1).height(180).pad(2);
+        right.add(fc.mortalBar).minWidth(1).height(180).pad(2);
+        right.add(fc.steamBar).minWidth(1).height(180).pad(2);
+        right.add(fc.masonBar).minWidth(1).height(180).pad(2);
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
         for (Entity spell : fc.spells) {
