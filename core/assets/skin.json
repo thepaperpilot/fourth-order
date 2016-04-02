@@ -38,6 +38,10 @@
   default: { checkboxOn: check-on, checkboxOff: check-off, font: font, fontColor: white }
 },
   com.badlogic.gdx.scenes.scene2d.ui.ProgressBar$ProgressBarStyle: {
-  default-horizontal: { background: progress-bar, knobBefore: default-slider }
+  default-horizontal: { background: progress-bar, knobBefore: default-slider },
+  default-vertical: { background: progress-bar, knobBefore: default-slider }
+},
+  thepaperpilot.order.Util.ProgressBar$ProgressBarStyle: {
+  default: { background: progress-bar, progress: default-slider }
 }
 }

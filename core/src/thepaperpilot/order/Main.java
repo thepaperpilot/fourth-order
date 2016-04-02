@@ -80,9 +80,9 @@ public class Main extends Game implements Screen {
         if (manager.update()) {
             if (skin == null) {
                 skin = manager.get("skin.json", Skin.class);
-                skin.getFont("large").getData().setScale(.5f);
+                //skin.getFont("large").getData().setScale(.5f);
                 skin.getFont("large").getData().markupEnabled = true;
-                skin.getFont("font").getData().setScale(.25f);
+                skin.getFont("font").getData().setScale(.5f);
                 skin.getFont("font").getData().markupEnabled = true;
 
                 // temp battle
