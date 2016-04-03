@@ -101,7 +101,7 @@ public class Main extends Game implements Screen {
         final DialogueScreen ds = new DialogueScreen(dc);
         dc.lines = new Dialogue.Line[1];
         dc.lines[0] = new Dialogue.Line("There are 5 guardians in the Fourth Order, one for each element. Who should I go beat up?", "Player", 0);
-        dc.lines[0].options = new Dialogue.Option[5];
+        dc.lines[0].options = new Dialogue.Option[6];
         dc.lines[0].options[0] = new Dialogue.Option("Poison");
         dc.lines[0].options[0].events = new Runnable() {
             @Override
@@ -246,9 +246,44 @@ public class Main extends Game implements Screen {
                 ds.engine.addEntity(dialogue);
             }
         };
-        // ranger goes here
-        dc.lines[0].options[4] = new Dialogue.Option("YOURSELF (bonus level)");
+        dc.lines[0].options[4] = new Dialogue.Option("Mortal");
         dc.lines[0].options[4].events = new Runnable() {
+            @Override
+            public void run() {
+                DialogueComponent dc = new DialogueComponent();
+                dc.enemies = new String[]{"PortraitRanger"};
+                dc.lines = new Dialogue.Line[1];
+                dc.lines[0] = new Dialogue.Line("Beware of my traps!", "Guardian of Mortal", 1);
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitRanger";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getAntidoteSpell());
+                DialogueComponent victory = new DialogueComponent();
+                victory.enemies = new String[]{"PortraitRanger"};
+                victory.lines = new Dialogue.Line[1];
+                victory.lines[0] = new Dialogue.Line("I got caught in one of your traps instead :(", "Guardian of Mortal", 1);
+                victory.lines[0].events = reset;
+                DialogueComponent loss = new DialogueComponent();
+                loss.enemies = new String[]{"PortraitRanger"};
+                loss.lines = new Dialogue.Line[1];
+                loss.lines[0] = new Dialogue.Line("Another successful hunt!", "Guardian of Mortal", 1);
+                loss.lines[0].events = reset;
+                enemy.victory = victory;
+                enemy.loss = loss;
+                dc.lines[0].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.changeScreen(new Battle(enemy));
+                    }
+                };
+                Entity dialogue = new Entity();
+                dialogue.add(dc);
+                ds.engine.addEntity(dialogue);
+            }
+        };
+        // ranger goes here
+        dc.lines[0].options[5] = new Dialogue.Option("YOURSELF (bonus level)");
+        dc.lines[0].options[5].events = new Runnable() {
             @Override
             public void run() {
                 final FighterComponent enemy = new FighterComponent();
