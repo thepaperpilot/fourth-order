@@ -39,7 +39,7 @@ public class PuzzleSystem extends EntitySystem {
     public void addedToEngine (Engine engine) {
         // Player Side
         Entity playerEntity = new Entity();
-        turn = player = new FighterComponent();
+        player = new FighterComponent();
         playerEntity.add(this.player);
         playerEntity.add(new UIComponent());
         playerEntity.add(new PlayerControlledComponent());
@@ -58,6 +58,16 @@ public class PuzzleSystem extends EntitySystem {
         enemy.add(SpellComponent.getStrikeSpell());
         enemy.add(SpellComponent.getAntidoteSpell());
         engine.addEntity(enemyEntity);
+
+        Entity message = new Entity();
+        if (MathUtils.randomBoolean()) {
+            turn = player;
+            message.add(new MessageComponent("Player Goes First\nUse it Wisely"));
+        } else {
+            turn = enemy;
+            message.add(new MessageComponent("Enemy Goes First\nGood Luck..."));
+        }
+        engine.addEntity(message);
     }
 
     public void update (float deltaTime) {
@@ -132,10 +142,21 @@ public class PuzzleSystem extends EntitySystem {
                         for (int k = i + matched; k < size; k++) {
                             runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
                         }
+                        Entity message = new Entity();
+                        MessageComponent mc = new MessageComponent("Matched 4\nRow Destroyed");
+                        mc.x = Constants.UI_WIDTH + getRuneSize() * i;
+                        mc.y = getRuneSize() * (j + matched) / 2;
+                        message.add(mc);
+                        getEngine().addEntity(message);
                     }
                     if (matched >= 5) {
-                        // take another turn
                         turn = collector;
+                        Entity message = new Entity();
+                        MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
+                        mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
+                        mc.y = getRuneSize() * j;
+                        message.add(mc);
+                        getEngine().addEntity(message);
                     }
                 }
                 if (checkForVerticalTriples(i, j, true)) {
@@ -159,10 +180,21 @@ public class PuzzleSystem extends EntitySystem {
                         for (int k = j + matched; k < size; k++) {
                             runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
+                        Entity message = new Entity();
+                        MessageComponent mc = new MessageComponent("Matched 4\nColumn Destroyed");
+                        mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
+                        mc.y = getRuneSize() * j;
+                        message.add(mc);
+                        getEngine().addEntity(message);
                     }
                     if (matched == 5) {
-                        // take another turn
                         turn = collector;
+                        Entity message = new Entity();
+                        MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
+                        mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
+                        mc.y = getRuneSize() * j;
+                        message.add(mc);
+                        getEngine().addEntity(message);
                     }
                 }
             }
