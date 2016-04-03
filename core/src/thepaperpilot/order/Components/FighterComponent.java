@@ -3,6 +3,7 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import thepaperpilot.order.Battle;
+import thepaperpilot.order.Dialogue;
 import thepaperpilot.order.DialogueScreen;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.PuzzleSystem;
@@ -20,6 +23,7 @@ import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class FighterComponent implements Component {
     Drawable empty = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
@@ -33,7 +37,7 @@ public class FighterComponent implements Component {
     public float mortal = 0;
     public float steam = 0;
     public float mason = 0;
-    public float maxExp = 20;
+    public float maxExp = 2;
     public float maxHealth = 10;
     public float maxPoision = 20;
     public float maxSurprise = 20;
@@ -61,7 +65,7 @@ public class FighterComponent implements Component {
     public DialogueComponent victory;
     public DialogueComponent loss;
 
-    public void add(RuneComponent rc) {
+    public void add(RuneComponent rc, PuzzleSystem puzzle) {
         poison = Math.min(maxPoision, poison + rc.poison);
         surprise = Math.min(maxSurprise, surprise + rc.surprise);
         mortal = Math.min(maxMortal, mortal + rc.mortal);
@@ -71,7 +75,9 @@ public class FighterComponent implements Component {
 
         updateProgressBars();
 
-        // TODO implement leveling up
+        if (exp == maxExp) {
+            levelUp(puzzle);
+        }
     }
 
     private void updateProgressBars() {
@@ -90,13 +96,13 @@ public class FighterComponent implements Component {
 
         Entity message = new Entity();
         MessageComponent mc = new MessageComponent("-" + (int) damage);
+        mc.color = Color.RED;
+        mc.large = false;
         Vector2 coords = experience.localToStageCoordinates(new Vector2(experience.getX(), experience.getY()));
         coords.y += 100;
-        mc.large = false;
         coords.add(MathUtils.random(-100, 100), MathUtils.random(-100, 100));
         mc.x = coords.x;
         mc.y = coords.y;
-        mc.color = Color.RED;
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
@@ -169,5 +175,82 @@ public class FighterComponent implements Component {
         puzzle.getEngine().addEntity(spell);
         puzzle.takeTurn(this);
         sub(Mappers.spell.get(entity));
+    }
+
+    public void levelUp(final PuzzleSystem puzzle) {
+        exp -= maxExp;
+        experience.setValue(exp);
+
+        // this is all arbitrary atm
+        health += 2;
+        maxHealth += 2;
+        healthBar.setValue(health);
+
+        Entity message = new Entity();
+        MessageComponent mc = new MessageComponent("Level up!");
+        mc.color = Color.GREEN;
+        mc.large = false;
+        Vector2 coords = experience.localToStageCoordinates(new Vector2(experience.getX(), experience.getY()));
+        mc.x = coords.x;
+        mc.y = coords.y;
+        message.add(mc);
+        puzzle.getEngine().addEntity(message);
+
+        if (puzzle.player == this) {
+            final ArrayList<Entity> spells = new ArrayList<Entity>();
+            String classSpell = Mappers.spell.get(this.spells.get(1)).name;
+            spells.add(SpellComponent.getRefreshSpell());
+            if (classSpell.equals("Truth")) { //alchemist
+
+            } else if (classSpell.equals("Condense")) { //rogue
+
+            } else if (classSpell.equals("Antidote")) { //ranger
+
+            } else if (classSpell.equals("Immortality")) { //paladin
+
+            } else if (classSpell.equals("Premonition")) { //wizard
+
+            } else System.out.println(classSpell);
+
+            for (Iterator<Entity> iterator = spells.iterator(); iterator.hasNext(); ) {
+                Entity spell = iterator.next();
+                String name = Mappers.spell.get(spell).name;
+
+                for (Entity knownSpell : this.spells) {
+                    if (Mappers.spell.get(knownSpell).name.equals(name))
+                        iterator.remove();
+                }
+            }
+
+            if (spells.isEmpty()) return;
+
+            final FighterComponent temp = puzzle.turn;
+            puzzle.turn = PuzzleSystem.NULL_FIGHTER;
+            final Screen screen = Main.instance.getScreen();
+            DialogueComponent dc = new DialogueComponent();
+            DialogueScreen ds = new DialogueScreen(dc);
+            dc.lines = new Dialogue.Line[1];
+            dc.lines[0] = new Dialogue.Line("I can learn a new spell, sweet! But which one?");
+            dc.lines[0].options = new Dialogue.Option[spells.size()];
+            for (int i = 0; i < spells.size(); i++) {
+                final Entity spell = spells.get(i);
+                SpellComponent sc = Mappers.spell.get(spell);
+                dc.lines[0].options[i] = new Dialogue.Option(sc.name);
+                dc.lines[0].options[i].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        FighterComponent.this.spells.add(spell);
+                    }
+                };
+            }
+            dc.lines[0].events = new Runnable() {
+                @Override
+                public void run() {
+                    Main.changeScreen(screen);
+                    puzzle.turn = temp;
+                }
+            };
+            puzzle.transition(ds);
+        }
     }
 }

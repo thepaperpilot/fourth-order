@@ -83,10 +83,8 @@ public class Main extends Game implements Screen {
             }
 
             if (Player.hasPlayer()) {
-                System.out.println("opponent");
                 changeScreen(getOpponentSelector());
             } else {
-                System.out.println("class");
                 changeScreen(getClassSelector());
             }
         }

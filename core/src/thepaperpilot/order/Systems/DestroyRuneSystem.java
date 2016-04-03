@@ -56,7 +56,7 @@ public class DestroyRuneSystem extends IteratingSystem {
             if (dc.collector == pc.puzzle.player) {
                 if (rc.damage == 0) {
                     uc.actor.addAction(left);
-                    pc.puzzle.player.add(rc);
+                    pc.puzzle.player.add(rc, pc.puzzle);
                 } else {
                     pc.puzzle.enemy.hit(rc.damage, pc.puzzle);
                     uc.actor.addAction(Actions.parallel(right, zoom));
@@ -65,7 +65,7 @@ public class DestroyRuneSystem extends IteratingSystem {
             } else if (dc.collector == pc.puzzle.enemy){
                 if (rc.damage == 0) {
                     uc.actor.addAction(right);
-                    pc.puzzle.enemy.add(rc);
+                    pc.puzzle.enemy.add(rc, pc.puzzle);
                 } else {
                     pc.puzzle.player.hit(rc.damage, pc.puzzle);
                     uc.actor.addAction(Actions.parallel(left, zoom));

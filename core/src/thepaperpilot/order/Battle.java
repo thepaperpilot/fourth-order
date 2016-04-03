@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Listeners.FighterListener;
@@ -80,6 +81,8 @@ public class Battle implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(ui);
+        ui.addAction(Actions.fadeIn(1));
+        engine.getSystem(PuzzleSystem.class).stableTimer = -1;
     }
 
     @Override

@@ -36,7 +36,6 @@ public class Player {
     }
 
     public static boolean hasPlayer() {
-        System.out.println(player + "(" + (player != null) + ")");
         return player != null;
     }
 }
