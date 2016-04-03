@@ -49,14 +49,25 @@ public class PuzzleSystem extends EntitySystem {
         // Player Side
         playerEntity = new Entity();
         player = Player.getPlayer();
+        player.poison = 0;
+        player.surprise = 0;
+        player.mortal = 0;
+        player.steam = 0;
+        player.mason = 0;
+        player.health = player.maxHealth;
         playerEntity.add(this.player);
         playerEntity.add(new UIComponent());
         playerEntity.add(new PlayerControlledComponent());
-        // TODO class selection system
         engine.addEntity(playerEntity);
 
         // Enemy Side
         enemyEntity = new Entity();
+        enemy.poison = 0;
+        enemy.surprise = 0;
+        enemy.mortal = 0;
+        enemy.steam = 0;
+        enemy.mason = 0;
+        enemy.health = enemy.maxHealth;
         enemyEntity.add(enemy);
         enemyEntity.add(new UIComponent());
         engine.addEntity(enemyEntity);
@@ -103,7 +114,7 @@ public class PuzzleSystem extends EntitySystem {
                         boolean cast = false;
                         Collections.reverse(enemy.spells);
                         for (Entity entity : enemy.spells) {
-                            if (enemy.canCast(entity, this)) {
+                            if (enemy.canCast(entity, this) && MathUtils.randomBoolean(.3f)) {
                                 enemy.cast(entity, this);
                                 cast = true;
                             }
@@ -502,5 +513,60 @@ public class PuzzleSystem extends EntitySystem {
         getEngine().removeEntity(enemyEntity);
         getEngine().addEntity(playerEntity);
         getEngine().addEntity(enemyEntity);
+    }
+
+    public int countBlueRunes() {
+        int rune = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (runes[i][j] == null) continue;
+                rune += Mappers.rune.get(runes[i][j]).steam;
+            }
+        }
+        return rune;
+    }
+
+    public int countGreenRunes() {
+        int rune = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (runes[i][j] == null) continue;
+                rune += Mappers.rune.get(runes[i][j]).mason;
+            }
+        }
+        return rune;
+    }
+
+    public int countPurpleRunes() {
+        int rune = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (runes[i][j] == null) continue;
+                rune += Mappers.rune.get(runes[i][j]).poison;
+            }
+        }
+        return rune;
+    }
+
+    public int countRedRunes() {
+        int rune = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (runes[i][j] == null) continue;
+                rune += Mappers.rune.get(runes[i][j]).mortal;
+            }
+        }
+        return rune;
+    }
+
+    public int countYellowRunes() {
+        int rune = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (runes[i][j] == null) continue;
+                rune += Mappers.rune.get(runes[i][j]).surprise;
+            }
+        }
+        return rune;
     }
 }

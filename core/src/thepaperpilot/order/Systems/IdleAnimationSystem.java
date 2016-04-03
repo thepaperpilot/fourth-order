@@ -25,8 +25,6 @@ public class IdleAnimationSystem extends IteratingSystem {
                 ic.animating = false;
                 ic.time = 0;
             }
-            if (!(uc.actor instanceof Image))
-                System.out.println("!");
             ((Image) uc.actor).setDrawable(new Image(ic.animation.getKeyFrame(ic.time)).getDrawable());
         } else if (MathUtils.randomBoolean(ic.chance)) {
             ic.animating = true;

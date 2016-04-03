@@ -258,6 +258,7 @@ public class Main extends Game implements Screen {
                 enemy.portrait = "PortraitRanger";
                 enemy.add(SpellComponent.getStrikeSpell());
                 enemy.add(SpellComponent.getAntidoteSpell());
+                enemy.add(SpellComponent.getCommandSpell());
                 DialogueComponent victory = new DialogueComponent();
                 victory.enemies = new String[]{"PortraitRanger"};
                 victory.lines = new Dialogue.Line[1];

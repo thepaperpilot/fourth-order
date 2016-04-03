@@ -24,6 +24,7 @@ public class Constants {
     /* Debug */
     public static final boolean PROFILING = false;
     public static /* final */ boolean PLAYERLESS = false;
+    public static /* final */ boolean UNDYING = true;
 
     /* Other */
     public static final int MATCH_4_RUMBLE = 100;

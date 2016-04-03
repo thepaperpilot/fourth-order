@@ -8,8 +8,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.Spells.CommandComponent;
+import thepaperpilot.order.Systems.Spells.SpellSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
+
+import java.util.Arrays;
 
 public class DestroyRuneSystem extends IteratingSystem {
     public DestroyRuneSystem() {
@@ -39,6 +43,16 @@ public class DestroyRuneSystem extends IteratingSystem {
                                     Actions.moveBy(MathUtils.random(-200, 200), 0, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
                             Actions.run(remove)));
         } else {
+            if (Mappers.command.has(entity)) {
+                CommandComponent cc = Mappers.command.get(entity);
+
+                if (!cc.damaged) {
+                    cc.damaged = true;
+                    SpellSystem.zoom(uc.actor);
+                    entity.remove(DestroyComponent.class);
+                    return;
+                }
+            }
             Action left = Actions.sequence(
                     Actions.parallel(
                             Actions.moveTo(0, Constants.WORLD_HEIGHT, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),

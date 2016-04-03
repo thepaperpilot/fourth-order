@@ -92,6 +92,7 @@ public class FighterListener implements EntityListener {
         fc.masonBar.setAnimateDuration(1f);
         fc.masonLabel = new Label("0", Main.skin);
         fc.masonLabel.setColor(Color.LIME);
+        fc.updateProgressBars();
         right.add(fc.poisonBar).minWidth(1).height(180).pad(2);
         right.add(fc.surpriseBar).minWidth(1).height(180).pad(2);
         right.add(fc.mortalBar).minWidth(1).height(180).pad(2);

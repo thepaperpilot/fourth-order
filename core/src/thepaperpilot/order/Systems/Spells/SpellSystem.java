@@ -56,7 +56,7 @@ public class SpellSystem extends IteratingSystem {
 
     }
 
-    public void zoom(Actor actor) {
+    public static void zoom(Actor actor) {
         actor.addAction(Actions.sequence(Actions.scaleBy(Constants.RUNE_ZOOM, Constants.RUNE_ZOOM, .5f, Interpolation.pow2), Actions.scaleBy(-Constants.RUNE_ZOOM, -Constants.RUNE_ZOOM, .5f, Interpolation.pow2)));
     }
 }

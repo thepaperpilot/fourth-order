@@ -3,13 +3,16 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import thepaperpilot.order.Components.Spells.CommandComponent;
 import thepaperpilot.order.Components.Spells.DestroyColorComponent;
 import thepaperpilot.order.Components.Spells.RefreshComponent;
 import thepaperpilot.order.Components.Spells.StrikeComponent;
+import thepaperpilot.order.Systems.PuzzleSystem;
 
 public class SpellComponent implements Component {
 
     // TODO do this in a better way
+    // poison, surprise, mortal, steam, mason
     public static Entity getStrikeSpell() {
         Entity spell = new Entity();
         spell.add(new SpellComponent("Strike", 0, 0, 6, 0, 0));
@@ -56,6 +59,13 @@ public class SpellComponent implements Component {
         Entity spell = new Entity();
         spell.add(new SpellComponent("Refresh", 3, 3, 3, 3, 3));
         spell.add(new RefreshComponent());
+        return spell;
+    }
+
+    public static Entity getCommandSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Command", 10, 0, 20, 0, 0));
+        spell.add(new CommandComponent());
         return spell;
     }
 

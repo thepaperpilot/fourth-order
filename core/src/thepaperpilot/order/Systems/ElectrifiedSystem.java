@@ -10,13 +10,26 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import thepaperpilot.order.Components.ElectrifiedComponent;
+import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.PuzzleComponent;
+import thepaperpilot.order.Components.Spells.StrikeComponent;
 import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Mappers;
 
 public class ElectrifiedSystem extends IteratingSystem {
 
-    private Animation electric = new Animation(.1f, new Array<TextureRegion>(new TextureRegion(Main.getTexture("OverlayLightningRed")).split(16, 16)[0]), Animation.PlayMode.LOOP);
+    private Animation skull = getAnimation("Skull");
+    private Animation blue = getAnimation("Blue");
+    private Animation green = getAnimation("Green");
+    private Animation purple = getAnimation("Purple");
+    private Animation red = getAnimation("Red");
+    private Animation yellow = getAnimation("Yellow");
+
+    private Animation getAnimation(String color) {
+        return new Animation(.1f, new Array<TextureRegion>(new TextureRegion(Main.getTexture("OverlayLightning" + color)).split(16, 16)[0]), Animation.PlayMode.LOOP);
+    }
+
     private Batch batch;
 
     public ElectrifiedSystem(Batch batch) {
@@ -37,7 +50,15 @@ public class ElectrifiedSystem extends IteratingSystem {
         ElectrifiedComponent ec = Mappers.electrified.get(entity);
 
         ec.time += deltaTime;
-        Image image = new Image(electric.getKeyFrame(ec.time));
+
+        Animation animation = skull;
+        if (ec.color.equals("Blue")) animation = blue;
+        else if (ec.color.equals("Green")) animation = green;
+        else if (ec.color.equals("Purple")) animation = purple;
+        else if (ec.color.equals("Red")) animation = red;
+        else if (ec.color.equals("Yellow")) animation = yellow;
+
+        Image image = new Image(animation.getKeyFrame(ec.time));
         image.setOrigin(Align.center);
         image.setPosition(uc.actor.getX(), uc.actor.getY());
         image.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());

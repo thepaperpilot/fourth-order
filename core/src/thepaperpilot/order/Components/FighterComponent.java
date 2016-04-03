@@ -1,24 +1,21 @@
 package thepaperpilot.order.Components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import thepaperpilot.order.Battle;
+import thepaperpilot.order.Components.Spells.CommandComponent;
 import thepaperpilot.order.Dialogue;
 import thepaperpilot.order.DialogueScreen;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.PuzzleSystem;
-import thepaperpilot.order.Systems.RenderStageSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
@@ -80,7 +77,7 @@ public class FighterComponent implements Component {
         }
     }
 
-    private void updateProgressBars() {
+    public void updateProgressBars() {
         poisonBar.setValue(poison);
         surpriseBar.setValue(surprise);
         mortalBar.setValue(mortal);
@@ -90,6 +87,14 @@ public class FighterComponent implements Component {
     }
 
     public void hit(float damage, PuzzleSystem puzzle) {
+        for (Entity entity : puzzle.getEngine().getEntitiesFor(Family.all(RuneComponent.class, CommandComponent.class).get())) {
+            CommandComponent cc = Mappers.command.get(entity);
+
+            if (cc.caster != this) {
+                damage *= cc.mulDamage;
+            }
+        }
+
         health = Math.max(0, health - damage);
 
         healthBar.setValue(health);
@@ -106,7 +111,7 @@ public class FighterComponent implements Component {
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
-        if (health == 0) {
+        if (health == 0 && !Constants.UNDYING) {
             message = new Entity();
             if (puzzle.enemy == this) {
                 message.add(new MessageComponent("[GOLD]You Are Victorious"));
@@ -160,7 +165,8 @@ public class FighterComponent implements Component {
         if (mason < sc.mason) return false;
 
         if (!puzzle.isStable()) return false;
-        if (puzzle.turn != this || Constants.PLAYERLESS) return false;
+        if (puzzle.turn != this && !Constants.PLAYERLESS) return false;
+        // TODO find someway to check the spells themselves if they are castable
 
         return true;
     }
@@ -208,7 +214,7 @@ public class FighterComponent implements Component {
             } else if (classSpell.equals("Condense")) { //rogue
 
             } else if (classSpell.equals("Antidote")) { //ranger
-
+                spells.add(SpellComponent.getCommandSpell());
             } else if (classSpell.equals("Immortality")) { //paladin
 
             } else if (classSpell.equals("Premonition")) { //wizard

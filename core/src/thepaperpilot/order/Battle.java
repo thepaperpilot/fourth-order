@@ -11,11 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Systems.*;
+import thepaperpilot.order.Systems.Spells.CommandSystem;
 import thepaperpilot.order.Systems.Spells.DestroyColorSystem;
 import thepaperpilot.order.Systems.Spells.RefreshSystem;
 import thepaperpilot.order.Systems.Spells.StrikeSystem;
@@ -49,6 +51,7 @@ public class Battle implements Screen {
         engine.addSystem(new ScreenShakeSystem(ui)); //priority 9
         engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
 
+        engine.addSystem(new CommandSystem(ui.getBatch())); //priority 20
         engine.addSystem(new DestroyColorSystem(ui.getBatch())); //priority 20
         engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
@@ -62,9 +65,11 @@ public class Battle implements Screen {
                         break;
                     case Input.Keys.P:
                         Constants.PLAYERLESS = !Constants.PLAYERLESS;
+                        Constants.UNDYING = Constants.PLAYERLESS;
                         break;
                     case Input.Keys.LEFT:
                         Constants.DELTA_MOD -= .1f;
+                        if (Constants.DELTA_MOD < 0) Constants.DELTA_MOD = 0;
                         break;
                     case Input.Keys.RIGHT:
                         Constants.DELTA_MOD += .1f;

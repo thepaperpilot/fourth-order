@@ -53,7 +53,7 @@ public class StrikeSystem extends SpellSystem {
         Entity random = pc.puzzle.randomRune();
         if (random != null) {
             UIComponent uc = Mappers.ui.get(random);
-            super.zoom(uc.actor);
+            zoom(uc.actor);
             sc.caster = fc;
             random.add(sc);
         }
