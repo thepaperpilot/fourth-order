@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import thepaperpilot.order.Components.FighterComponent;
@@ -15,8 +16,6 @@ import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
-import thepaperpilot.order.Util.ProgressBar.ProgressBarStyle;
-import thepaperpilot.order.Util.TextProgressBar;
 
 public class FighterListener implements EntityListener {
 
@@ -37,35 +36,67 @@ public class FighterListener implements EntityListener {
         portrait.add(new Image(Main.getTexture("PortraitPlayer"))).expand().fill().pad(2);
         portrait.setBackground(Main.skin.getDrawable("default-round"));
         left.add(portrait).size(150, 200).padBottom(2).row();
-        fc.experience = new TextProgressBar("Exp", 0, fc.maxMason, 1, false, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
+
+        fc.experience = new ProgressBar(0, fc.maxExp, 1, false, Main.skin);
         fc.experience.setColor(Color.GREEN);
         fc.experience.setAnimateDuration(1f);
-        left.add(fc.experience).minWidth(1).height(40).expandX().fill();
+        Label exp = new Label("Exp:", Main.skin);
+        exp.setColor(0, 1, 0, .75f);
+        left.add(exp).left().padBottom(2).row();
+        left.add(fc.experience).minWidth(1).expandX().fill().row();
+        fc.experienceLabel = new Label((int) fc.exp + "/" + (int) fc.maxExp, Main.skin);
+        fc.experienceLabel.setColor(0, 1, 0, 1);
+        left.add(fc.experienceLabel).padTop(2).right();
+
         Table right = new Table(Main.skin);
-        fc.healthBar = new TextProgressBar("hp", 0, fc.maxHealth, 1, false, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
+        fc.healthBar = new ProgressBar(0, fc.maxHealth, 1, false, Main.skin);
         fc.healthBar.setValue(fc.health);
+        fc.healthBar.setColor(Color.RED);
         fc.healthBar.setAnimateDuration(1f);
-        fc.poisonBar = new TextProgressBar("poison", 0, fc.maxPoision, 1, true, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
+        Label hp = new Label("hp:", Main.skin);
+        hp.setColor(1, 0, 0, .75f);
+        right.add(hp).left().padBottom(2).colspan(5).row();
+        right.add(fc.healthBar).minWidth(1).colspan(5).padBottom(2).expandX().fill().row();
+        fc.healthLabel = new Label((int) fc.health + "/" + (int) fc.maxHealth, Main.skin);
+        fc.healthLabel.setColor(1, 0, 0, 1);
+        right.add(fc.healthLabel).padBottom(2).colspan(5).right().row();
+
+        fc.poisonBar = new ProgressBar(0, fc.maxPoision, 1, true, Main.skin);
         fc.poisonBar.setColor(Color.PURPLE);
         fc.poisonBar.setAnimateDuration(1f);
-        fc.surpriseBar = new TextProgressBar("surprise", 0, fc.maxSurprise, 1, true, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
+        fc.poisonLabel = new Label("0", Main.skin);
+        fc.poisonLabel.setColor(Color.PURPLE);
+        fc.surpriseBar = new ProgressBar(0, fc.maxSurprise, 1, true, Main.skin);
         fc.surpriseBar.setColor(Color.YELLOW);
         fc.surpriseBar.setAnimateDuration(1f);
-        fc.mortalBar = new TextProgressBar("mortal", 0, fc.maxMortal, 1, true, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
-        fc.mortalBar.setColor(Color.RED);
+        fc.surpriseLabel = new Label("0", Main.skin);
+        fc.surpriseLabel.setColor(Color.YELLOW);
+        fc.mortalBar = new ProgressBar(0, fc.maxMortal, 1, true, Main.skin);
+        fc.mortalBar.setColor(Color.FIREBRICK);
         fc.mortalBar.setAnimateDuration(1f);
-        fc.steamBar = new TextProgressBar("steam", 0, fc.maxSteam, 1, true, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
+        fc.mortalLabel = new Label("0", Main.skin);
+        fc.mortalLabel.setColor(Color.FIREBRICK);
+        fc.steamBar = new ProgressBar(0, fc.maxSteam, 1, true, Main.skin);
         fc.steamBar.setColor(Color.TEAL);
         fc.steamBar.setAnimateDuration(1f);
-        fc.masonBar = new TextProgressBar("mason", 0, fc.maxMason, 1, true, Main.skin.get(ProgressBarStyle.class), Main.skin.get(LabelStyle.class));
-        fc.masonBar.setColor(Color.GREEN);
+        fc.steamLabel = new Label("0", Main.skin);
+        fc.steamLabel.setColor(Color.TEAL);
+        fc.masonBar = new ProgressBar(0, fc.maxMason, 1, true, Main.skin);
+        fc.masonBar.setColor(Color.LIME);
         fc.masonBar.setAnimateDuration(1f);
-        right.add(fc.healthBar).minWidth(1).height(40).colspan(5).padBottom(2).row();
+        fc.masonLabel = new Label("0", Main.skin);
+        fc.masonLabel.setColor(Color.LIME);
         right.add(fc.poisonBar).minWidth(1).height(180).pad(2);
         right.add(fc.surpriseBar).minWidth(1).height(180).pad(2);
         right.add(fc.mortalBar).minWidth(1).height(180).pad(2);
         right.add(fc.steamBar).minWidth(1).height(180).pad(2);
-        right.add(fc.masonBar).minWidth(1).height(180).pad(2);
+        right.add(fc.masonBar).minWidth(1).height(180).pad(2).row();
+        right.add(fc.poisonLabel);
+        right.add(fc.surpriseLabel);
+        right.add(fc.mortalLabel);
+        right.add(fc.steamLabel);
+        right.add(fc.masonLabel);
+
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
         for (Entity spell : fc.spells) {

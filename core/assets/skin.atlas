@@ -26,6 +26,38 @@ default-slider-knob
   orig: 7, 7
   offset: 0, 0
   index: -1
+new-horizontal-progress-bar
+  rotate: false
+  xy: 29, 1
+  size: 11, 15
+  split: 3, 3, 6, 6
+  orig: 11, 15
+  offset: 0, 0
+  index: -1
+new-horizontal-slider
+  rotate: false
+  xy: 44, 1
+  size: 9, 11
+  split: 4, 4, 4, 4
+  orig: 9, 11
+  offset: 0, 0
+  index: -1
+new-vertical-progress-bar
+  rotate: false
+  xy: 12, 25
+  size: 15, 11
+  split: 6, 6, 3, 3
+  orig: 15, 11
+  offset: 0, 0
+  index: -1
+new-vertical-slider
+  rotate: false
+  xy: 28, 25
+  size: 11, 9
+  split: 4, 4, 4, 4
+  orig: 11, 9
+  offset: 0, 0
+  index: -1
 default-round
   rotate: false
   xy: 20, 0

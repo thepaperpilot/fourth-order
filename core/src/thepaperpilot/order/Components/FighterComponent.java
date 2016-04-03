@@ -2,7 +2,9 @@ package thepaperpilot.order.Components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
-import thepaperpilot.order.Util.TextProgressBar;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import thepaperpilot.order.Main;
 
 import java.util.ArrayList;
 
@@ -14,6 +16,7 @@ public class FighterComponent implements Component {
     public float mortal = 0;
     public float steam = 0;
     public float mason = 0;
+    public float maxExp = 20;
     public float maxHealth = 10;
     public float maxPoision = 20;
     public float maxSurprise = 20;
@@ -22,13 +25,21 @@ public class FighterComponent implements Component {
     public float maxMason = 20;
     public ArrayList<Entity> spells = new ArrayList<Entity>();
 
-    public TextProgressBar healthBar;
-    public TextProgressBar poisonBar;
-    public TextProgressBar surpriseBar;
-    public TextProgressBar mortalBar;
-    public TextProgressBar steamBar;
-    public TextProgressBar masonBar;
-    public TextProgressBar experience;
+    public ProgressBar experience;
+    public ProgressBar healthBar;
+    public ProgressBar poisonBar;
+    public ProgressBar surpriseBar;
+    public ProgressBar mortalBar;
+    public ProgressBar steamBar;
+    public ProgressBar masonBar;
+
+    public Label experienceLabel;
+    public Label healthLabel;
+    public Label poisonLabel;
+    public Label surpriseLabel;
+    public Label mortalLabel;
+    public Label steamLabel;
+    public Label masonLabel;
 
     public void add(RuneComponent rc) {
         poison = Math.min(maxPoision, poison + rc.poison);
@@ -36,7 +47,7 @@ public class FighterComponent implements Component {
         mortal = Math.min(maxMortal, mortal + rc.mortal);
         steam = Math.min(maxSteam, steam + rc.steam);
         mason = Math.min(maxMason, mason + rc.mason);
-        exp += rc.exp;
+        exp = Math.min(maxExp, exp + rc.exp);
 
         poisonBar.setValue(poison);
         surpriseBar.setValue(surprise);
