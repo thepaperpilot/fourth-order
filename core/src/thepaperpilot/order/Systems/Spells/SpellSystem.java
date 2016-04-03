@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import thepaperpilot.order.Components.DestroyComponent;
 import thepaperpilot.order.Components.SpellComponent;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -30,7 +31,7 @@ public class SpellSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         if (Mappers.rune.has(entity) && Mappers.ui.has(entity)) {
-            if (Mappers.destroy.has(entity)) {
+            if (Mappers.destroy.has(entity) && Mappers.destroy.get(entity).target != DestroyComponent.Target.NULL) {
                 destroyRune(entity);
             }
             renderRuneEffect(entity);

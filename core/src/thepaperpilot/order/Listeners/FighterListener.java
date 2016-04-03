@@ -119,8 +119,9 @@ public class FighterListener implements EntityListener {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    // TODO move this important logic that has little to do with fighters somewhere else
                     PuzzleSystem puzzle = engine.getSystem(PuzzleSystem.class);
-                    if (!(fc.poison >= sc.poison && fc.surprise >= sc.surprise && fc.mortal >= sc.mortal && fc.steam >= sc.steam && fc.mason >= sc.mason && puzzle.isStable() && puzzle.turn != DestroyComponent.Target.PLAYER)) return;
+                    if (!(fc.poison >= sc.poison && fc.surprise >= sc.surprise && fc.mortal >= sc.mortal && fc.steam >= sc.steam && fc.mason >= sc.mason && puzzle.isStable() && (puzzle.turn != DestroyComponent.Target.PLAYER && !puzzle.extraTurn || puzzle.turn == DestroyComponent.Target.PLAYER && puzzle.extraTurn))) return;
 
                     Entity spellEntity = new Entity();
                     for (Component component : spell.getComponents()) {
@@ -129,6 +130,7 @@ public class FighterListener implements EntityListener {
                     spellEntity.add(new PuzzleComponent(puzzle));
                     spellEntity.add(new CasterComponent(DestroyComponent.Target.PLAYER));
                     engine.addEntity(spellEntity);
+                    puzzle.extraTurn = false;
                     puzzle.turn = DestroyComponent.Target.PLAYER;
                     puzzle.stableTimer = 0;
                     fc.sub(sc);

@@ -15,7 +15,7 @@ public class StrikeSystem extends SpellSystem {
     private Image strike = new Image(Main.getTexture("GlyphStrike"));
 
     public StrikeSystem(Batch batch) {
-        super(batch, Family.all(StrikeComponent.class).get());
+        super(batch, Family.all(StrikeComponent.class, CasterComponent.class).get());
         strike.setOrigin(Align.center);
     }
 
@@ -48,6 +48,7 @@ public class StrikeSystem extends SpellSystem {
 
     protected void castSpell(Entity entity) {
         StrikeComponent sc = Mappers.strike.get(entity);
+        CasterComponent cc = Mappers.caster.get(entity);
         PuzzleComponent pc = Mappers.puzzle.get(entity);
 
         Entity random = pc.puzzle.randomRune();
@@ -55,6 +56,7 @@ public class StrikeSystem extends SpellSystem {
             UIComponent uc = Mappers.ui.get(random);
             super.zoom(uc.actor);
             random.add(sc);
+            random.add(cc);
         }
     }
 }

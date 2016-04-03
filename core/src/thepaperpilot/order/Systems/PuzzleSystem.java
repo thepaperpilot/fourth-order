@@ -16,9 +16,11 @@ public class PuzzleSystem extends EntitySystem {
     public Entity[][] runes;
     public Entity selected;
     float[] cooldown;
+    // TODO tell the player who's turn it is
     public DestroyComponent.Target turn = DestroyComponent.Target.NULL;
     public boolean stable;
     public float stableTimer;
+    public boolean extraTurn = false;
 
     // TODO make this class cleaner/smaller
     // too much hard coding of the 5 types
@@ -56,8 +58,9 @@ public class PuzzleSystem extends EntitySystem {
             if (stableTimer > 1) {
                 if (checkForPossibleMoves()) {
                     //noinspection PointlessBooleanExpression
-                    if (turn == DestroyComponent.Target.PLAYER || Constants.PLAYERLESS) {
+                    if (turn == DestroyComponent.Target.PLAYER && !extraTurn || turn == DestroyComponent.Target.ENEMY && extraTurn || Constants.PLAYERLESS) {
                         turn = DestroyComponent.Target.ENEMY;
+                        extraTurn = false;
                         makeRandomMove();
                         return;
                     }
@@ -84,13 +87,20 @@ public class PuzzleSystem extends EntitySystem {
                         if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j]))) {
                             matched++;
                             runes[k][j].add(new DestroyComponent(turn));
-                            if (matched == 4) {
-                                // TODO implement match 4
-                            }
-                            if (matched == 5) {
-                                // TODO implement match 5
-                            }
                         } else break;
+                    }
+                    if (matched >= 4) {
+                        /// destroy row
+                        for (int k = 0; k < i; k++) {
+                            runes[k][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        }
+                        for (int k = i + matched; k < size; k++) {
+                            runes[k][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        }
+                    }
+                    if (matched >= 5) {
+                        // take another turn
+                        extraTurn = true;
                     }
                 }
                 if (checkForVerticalTriples(i, j, true)) {
@@ -100,16 +110,24 @@ public class PuzzleSystem extends EntitySystem {
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = j + 3; k < size; k++) {
-                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[i][k]))) {
+                        if (runes[i][k] != null && rc.matches(Mappers.rune.get(runes[i][k]))) {
                             matched++;
                             runes[i][k].add(new DestroyComponent(turn));
-                            if (matched == 4) {
-                                // match 4
-                            }
-                            if (matched == 5) {
-                                // match 5
-                            }
+
                         } else break;
+                    }
+                    if (matched == 4) {
+                        // destroy column
+                        for (int k = 0; k < j; k++) {
+                            runes[i][k].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        }
+                        for (int k = j + matched; k < size; k++) {
+                            runes[i][k].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        }
+                    }
+                    if (matched == 5) {
+                        // take another turn
+                        extraTurn = true;
                     }
                 }
             }
