@@ -1,9 +1,13 @@
 package thepaperpilot.order;
 
 import com.badlogic.gdx.Preferences;
+import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.SpellComponent;
 
 public class Player {
+    // TODO?
     private static Preferences save;
+    private static FighterComponent player;
 
     public static void setPreferences(Preferences preferences) {
         save = preferences;
@@ -21,5 +25,14 @@ public class Player {
     public static void reset() {
 
         load();
+    }
+
+    public static FighterComponent getPlayer() {
+        if (player == null) {
+            player = new FighterComponent();
+            player.add(SpellComponent.getStrikeSpell());
+            player.add(SpellComponent.getRefreshSpell());
+        }
+        return player;
     }
 }

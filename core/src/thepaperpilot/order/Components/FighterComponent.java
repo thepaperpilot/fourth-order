@@ -4,14 +4,18 @@ import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import thepaperpilot.order.DialogueScreen;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.PuzzleSystem;
+import thepaperpilot.order.Systems.RenderStageSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
@@ -54,6 +58,9 @@ public class FighterComponent implements Component {
     public Label steamLabel;
     public Label masonLabel;
 
+    public DialogueComponent victory;
+    public DialogueComponent loss;
+
     public void add(RuneComponent rc) {
         poison = Math.min(maxPoision, poison + rc.poison);
         surprise = Math.min(maxSurprise, surprise + rc.surprise);
@@ -93,7 +100,19 @@ public class FighterComponent implements Component {
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
-        // TODO implement dying
+        if (health == 0) {
+            message = new Entity();
+            if (puzzle.enemy == this) {
+                message.add(new MessageComponent("[GOLD]You Are Victorious"));
+                if (victory != null) puzzle.transition(new DialogueScreen(victory));
+                else puzzle.transition(Main.instance);
+            } else if (puzzle.player == this) {
+                message.add(new MessageComponent("[FIREBRICK]You Have Been Defeated"));
+                if (puzzle.enemy.loss != null) puzzle.transition(new DialogueScreen(puzzle.enemy.loss));
+                else puzzle.transition(Main.instance);
+            }
+            puzzle.getEngine().addEntity(message);
+        }
     }
 
     public void add(Entity spell) {

@@ -4,12 +4,16 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import thepaperpilot.order.Components.*;
+import thepaperpilot.order.DialogueScreen;
+import thepaperpilot.order.Main;
+import thepaperpilot.order.Player;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
@@ -42,13 +46,11 @@ public class PuzzleSystem extends EntitySystem {
     public void addedToEngine (Engine engine) {
         // Player Side
         Entity playerEntity = new Entity();
-        player = new FighterComponent();
+        player = Player.getPlayer();
         playerEntity.add(this.player);
         playerEntity.add(new UIComponent());
         playerEntity.add(new PlayerControlledComponent());
         // TODO class selection system
-        player.add(SpellComponent.getStrikeSpell());
-        player.add(SpellComponent.getRefreshSpell());
         engine.addEntity(playerEntity);
 
         // Enemy Side
@@ -210,6 +212,16 @@ public class PuzzleSystem extends EntitySystem {
                 }
             }
         }
+    }
+
+    public void transition(final Screen screen) {
+        turn = NULL_FIGHTER;
+        getEngine().getSystem(RenderStageSystem.class).stage.addAction(Actions.sequence(Actions.delay(2), Actions.fadeOut(2, Interpolation.pow2), Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                Main.changeScreen(screen);
+            }
+        })));
     }
 
     public boolean isStable() {
