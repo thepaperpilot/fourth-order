@@ -29,11 +29,12 @@ public class PuzzleSystem extends EntitySystem {
 
     // TODO make this class cleaner/smaller
     // too much hard coding of the 5 types
-    public PuzzleSystem(int size) {
+    public PuzzleSystem(int size, FighterComponent enemy) {
         super(5);
         this.size = size;
         runes = new Entity[size][size];
         cooldown = new float[size];
+        this.enemy = enemy;
     }
 
     public void addedToEngine (Engine engine) {
@@ -51,12 +52,8 @@ public class PuzzleSystem extends EntitySystem {
 
         // Enemy Side
         Entity enemyEntity = new Entity();
-        enemy = new FighterComponent();
         enemyEntity.add(enemy);
         enemyEntity.add(new UIComponent());
-        enemy.portrait = "PortraitAlchemist";
-        enemy.add(SpellComponent.getStrikeSpell());
-        enemy.add(SpellComponent.getAntidoteSpell());
         engine.addEntity(enemyEntity);
 
         Entity message = new Entity();

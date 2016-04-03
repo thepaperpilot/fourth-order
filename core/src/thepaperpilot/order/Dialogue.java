@@ -168,7 +168,7 @@ public class Dialogue extends Table {
         }
         messageLabel.setMessage((nextLine.name != null ? "[GOLD]" + nextLine.name + "[]\n" : "") + nextLine.message);
         message.clearChildren();
-        message.add(messageLabel).expandX().fillX().left().padBottom(5).row();
+        message.add(messageLabel).expandX().fillX().left().padBottom(20).row();
         if (nextLine.options.length == 0) {
             if (maxTimer == 0)
                 message.add(new Label("Click to continue...", Main.skin)).expand().center().bottom();
