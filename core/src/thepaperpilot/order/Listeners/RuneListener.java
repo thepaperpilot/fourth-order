@@ -7,10 +7,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import thepaperpilot.order.Components.DestroyComponent;
-import thepaperpilot.order.Components.IdleAnimationComponent;
-import thepaperpilot.order.Components.PuzzleComponent;
-import thepaperpilot.order.Components.UIComponent;
+import com.badlogic.gdx.utils.Align;
+import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -22,6 +20,7 @@ public class RuneListener implements EntityListener {
         IdleAnimationComponent ic = Mappers.idleAnimation.get(entity);
         UIComponent uc = Mappers.ui.get(entity);
         final PuzzleComponent pc = Mappers.puzzle.get(entity);
+        RuneComponent rc = Mappers.rune.get(entity);
 
         TextureRegion texture = new TextureRegion(Main.getTexture(ic.file));
         int size = texture.getRegionHeight();
@@ -33,9 +32,10 @@ public class RuneListener implements EntityListener {
         uc.actor = new Image(frames[0]);
         uc.actor.setPosition(x, y);
 
-        uc.actor.setPosition(Constants.UI_WIDTH + (pc.x + .125f) * pc.puzzle.getRuneSize(), Constants.WORLD_HEIGHT);
+        uc.actor.setPosition(Constants.UI_WIDTH + rc.x * pc.puzzle.getRuneSize(), Constants.WORLD_HEIGHT);
         uc.actor.setScale(pc.puzzle.getRuneSize() / uc.actor.getHeight() * .75f);
-        pc.puzzle.runes[pc.x][pc.y] = entity;
+        uc.actor.setOrigin(Align.center);
+        pc.puzzle.runes[rc.x][rc.y] = entity;
         pc.puzzle.updateRune(entity);
 
         uc.actor.addListener(new ClickListener() {

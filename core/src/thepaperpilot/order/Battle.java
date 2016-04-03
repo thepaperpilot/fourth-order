@@ -15,6 +15,7 @@ import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Systems.*;
+import thepaperpilot.order.Systems.Spells.StrikeSystem;
 import thepaperpilot.order.Util.Constants;
 
 public class Battle implements Screen {
@@ -27,18 +28,21 @@ public class Battle implements Screen {
         engine = new Engine();
 
         /* Add Listeners to Engine */
-        engine.addEntityListener(Family.all(UIComponent.class, FighterComponent.class).get(), 10, new FighterListener());
+        engine.addEntityListener(Family.all(UIComponent.class, FighterComponent.class).get(), 10, new FighterListener(engine));
         engine.addEntityListener(Family.all(UIComponent.class, IdleAnimationComponent.class, PuzzleComponent.class).get(), 10, new RuneListener());
         engine.addEntityListener(Family.all(UIComponent.class).get(), 11, new UIListener(ui));
 
         /* Add Systems to Engine */
-        engine.addSystem(new DestroySystem()); //priority 25
+        engine.addSystem(new DestroyRuneSystem()); //priority 25
+        engine.addSystem(new DestroySpellSystem()); //priority 25
         engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
         engine.addSystem(new FighterSystem()); //priority 5
         engine.addSystem(new PuzzleSystem(9)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
         engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
+
+        engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
 
         /* Add Initial Entities to Engine */
         // Player Side

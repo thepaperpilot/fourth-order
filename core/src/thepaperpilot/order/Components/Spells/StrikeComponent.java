@@ -1,4 +1,4 @@
-package thepaperpilot.order.Components;
+package thepaperpilot.order.Components.Spells;
 
 import com.badlogic.ashley.core.Component;
 

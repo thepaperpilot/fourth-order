@@ -13,6 +13,6 @@ public class DestroyComponent implements Component {
     public enum Target {
         NULL,
         PLAYER,
-        ENEMY;
+        ENEMY
     }
 }

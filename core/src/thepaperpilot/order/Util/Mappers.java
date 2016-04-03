@@ -2,8 +2,10 @@ package thepaperpilot.order.Util;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.Spells.StrikeComponent;
 
 public class Mappers {
+    public static final ComponentMapper<CasterComponent> caster = ComponentMapper.getFor(CasterComponent.class);
     public static final ComponentMapper<DestroyComponent> destroy = ComponentMapper.getFor(DestroyComponent.class);
     public static final ComponentMapper<ElectrifiedComponent> electrified = ComponentMapper.getFor(ElectrifiedComponent.class);
     public static final ComponentMapper<FighterComponent> fighter = ComponentMapper.getFor(FighterComponent.class);
@@ -13,4 +15,7 @@ public class Mappers {
     public static final ComponentMapper<PuzzleComponent> puzzle = ComponentMapper.getFor(PuzzleComponent.class);
     public static final ComponentMapper<SpellComponent> spell = ComponentMapper.getFor(SpellComponent.class);
     public static final ComponentMapper<UIComponent> ui = ComponentMapper.getFor(UIComponent.class);
+
+    /* Spells */
+    public static final ComponentMapper<StrikeComponent> strike = ComponentMapper.getFor(StrikeComponent.class);
 }

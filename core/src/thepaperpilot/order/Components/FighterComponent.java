@@ -49,14 +49,18 @@ public class FighterComponent implements Component {
         mason = Math.min(maxMason, mason + rc.mason);
         exp = Math.min(maxExp, exp + rc.exp);
 
+        updateProgressBars();
+
+        // TODO implement leveling up
+    }
+
+    private void updateProgressBars() {
         poisonBar.setValue(poison);
         surpriseBar.setValue(surprise);
         mortalBar.setValue(mortal);
         steamBar.setValue(steam);
         masonBar.setValue(mason);
         experience.setValue(exp);
-
-        // TODO implement leveling up
     }
 
     public void hit(float damage) {
@@ -70,6 +74,16 @@ public class FighterComponent implements Component {
     public void add(Entity spell) {
         spells.add(spell);
 
-        // TODO add to existing spell sheet?
+        // TODO sub to existing spell sheet?
+    }
+
+    public void sub(SpellComponent sc) {
+        poison = Math.max(0, poison - sc.poison);
+        surprise = Math.max(0, surprise - sc.surprise);
+        mortal = Math.max(0, mortal - sc.mortal);
+        steam = Math.max(0, steam - sc.steam);
+        mason = Math.max(0, mason - sc.mason);
+
+        updateProgressBars();
     }
 }

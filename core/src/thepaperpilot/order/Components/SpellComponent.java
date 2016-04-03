@@ -3,6 +3,7 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import thepaperpilot.order.Components.Spells.StrikeComponent;
 
 public class SpellComponent implements Component {
 

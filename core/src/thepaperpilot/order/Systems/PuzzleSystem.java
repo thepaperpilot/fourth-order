@@ -53,6 +53,7 @@ public class PuzzleSystem extends EntitySystem {
             stableTimer += deltaTime;
             if (stableTimer > 1) {
                 if (checkForPossibleMoves()) {
+                    //noinspection PointlessBooleanExpression
                     if (turn == DestroyComponent.Target.PLAYER || Constants.PLAYERLESS) {
                         turn = DestroyComponent.Target.ENEMY;
                         makeRandomMove();
@@ -127,8 +128,8 @@ public class PuzzleSystem extends EntitySystem {
         RuneComponent rc = new RuneComponent();
         IdleAnimationComponent ic = new IdleAnimationComponent();
         UIComponent uc = new UIComponent();
-        pc.x = column;
-        pc.y = 0;
+        rc.x = column;
+        rc.y = 0;
         switch (MathUtils.random(6)) {
             case 0:
                 rc.poison = 1;
@@ -169,26 +170,26 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     public void updateRune(Entity rune) {
-        PuzzleComponent pc = Mappers.puzzle.get(rune);
+        RuneComponent rc = Mappers.rune.get(rune);
         UIComponent uc = Mappers.ui.get(rune);
 
-        int targetY = pc.y;
-        for (int i = pc.y + 1; i < size; i++) {
-            if (runes[pc.x][i] == null) {
+        int targetY = rc.y;
+        for (int i = rc.y + 1; i < size; i++) {
+            if (runes[rc.x][i] == null) {
                 targetY = i;
             } else break;
         }
-        runes[pc.x][pc.y] = runes[pc.x][targetY];
-        runes[pc.x][targetY] = rune;
-        pc.y = targetY;
+        runes[rc.x][rc.y] = runes[rc.x][targetY];
+        runes[rc.x][targetY] = rune;
+        rc.y = targetY;
         uc.actor.addAction(moveRuneAction(rune));
     }
 
     private MoveToAction moveRuneAction(Entity entity) {
-        PuzzleComponent pc = Mappers.puzzle.get(entity);
+        RuneComponent rc = Mappers.rune.get(entity);
         UIComponent uc = Mappers.ui.get(entity);
 
-        Vector2 dest = new Vector2(Constants.UI_WIDTH + (pc.x + .125f) * getRuneSize(), Constants.WORLD_HEIGHT - (pc.y + 1 - .125f) * getRuneSize());
+        Vector2 dest = new Vector2(Constants.UI_WIDTH + (rc.x + .375f) * getRuneSize(), Constants.WORLD_HEIGHT - (rc.y + .625f) * getRuneSize());
         float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
         return Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In);
     }
@@ -201,17 +202,17 @@ public class PuzzleSystem extends EntitySystem {
             selected = null;
             entity.remove(SelectedComponent.class);
         } else {
-            final PuzzleComponent pc1 = Mappers.puzzle.get(entity);
-            final PuzzleComponent pc2 = Mappers.puzzle.get(selected);
-            if (Math.abs(pc1.x - pc2.x) == 1 && Math.abs(pc1.y - pc2.y) == 0 || Math.abs(pc1.x - pc2.x) == 0 && Math.abs(pc1.y - pc2.y) == 1) {
-                int tempX = pc1.x;
-                int tempY = pc1.y;
-                pc1.x = pc2.x;
-                pc1.y = pc2.y;
-                pc2.x = tempX;
-                pc2.y = tempY;
-                runes[pc1.x][pc1.y] = entity;
-                runes[pc2.x][pc2.y] = selected;
+            final RuneComponent rc1 = Mappers.rune.get(entity);
+            final RuneComponent rc2 = Mappers.rune.get(selected);
+            if (Math.abs(rc1.x - rc2.x) == 1 && Math.abs(rc1.y - rc2.y) == 0 || Math.abs(rc1.x - rc2.x) == 0 && Math.abs(rc1.y - rc2.y) == 1) {
+                int tempX = rc1.x;
+                int tempY = rc1.y;
+                rc1.x = rc2.x;
+                rc1.y = rc2.y;
+                rc2.x = tempX;
+                rc2.y = tempY;
+                runes[rc1.x][rc1.y] = entity;
+                runes[rc2.x][rc2.y] = selected;
                 if (checkForTriples()) {
                     turn = DestroyComponent.Target.PLAYER;
                     updateRune(entity);
@@ -229,14 +230,14 @@ public class PuzzleSystem extends EntitySystem {
                         }
                     })));
                     uc2.actor.addAction(moveRuneAction(selected));
-                    tempX = pc1.x;
-                    tempY = pc1.y;
-                    pc1.x = pc2.x;
-                    pc1.y = pc2.y;
-                    pc2.x = tempX;
-                    pc2.y = tempY;
-                    runes[pc1.x][pc1.x] = entity;
-                    runes[pc2.x][pc2.y] = selected;
+                    tempX = rc1.x;
+                    tempY = rc1.y;
+                    rc1.x = rc2.x;
+                    rc1.y = rc2.y;
+                    rc2.x = tempX;
+                    rc2.y = tempY;
+                    runes[rc1.x][rc1.x] = entity;
+                    runes[rc2.x][rc2.y] = selected;
                 }
                 selected.remove(SelectedComponent.class);
                 selected = null;
@@ -337,16 +338,16 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     private void makeSwitch(int x1, int y1, int x2, int y2) {
-        PuzzleComponent pc1 = Mappers.puzzle.get(runes[x1][y1]);
-        PuzzleComponent pc2 = Mappers.puzzle.get(runes[x2][y2]);
+        RuneComponent rc1 = Mappers.rune.get(runes[x1][y1]);
+        RuneComponent rc2 = Mappers.rune.get(runes[x2][y2]);
 
         Entity temp = runes[x2][y2];
         runes[x2][y2] = runes[x1][y1];
         runes[x1][y1] = temp;
-        pc1.x = x2;
-        pc1.y = y2;
-        pc2.x = x1;
-        pc2.y = y1;
+        rc1.x = x2;
+        rc1.y = y2;
+        rc2.x = x1;
+        rc2.y = y1;
         updateRune(runes[x1][y1]);
         updateRune(runes[x2][y2]);
     }
@@ -361,5 +362,10 @@ public class PuzzleSystem extends EntitySystem {
         runes[x2][y2] = runes[x1][y1];
         runes[x1][y1] = temp;
         return check;
+    }
+
+    public Entity randomRune() {
+
+        return runes[MathUtils.random(size - 1)][MathUtils.random(size - 1)];
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import thepaperpilot.order.Components.ElectrifiedComponent;
 import thepaperpilot.order.Components.UIComponent;
@@ -24,16 +25,22 @@ public class ElectrifiedSystem extends IteratingSystem {
     }
 
     @Override
+    public void update(float deltaTime) {
+        batch.begin();
+        super.update(deltaTime);
+        batch.end();
+    }
+
+    @Override
     protected void processEntity(Entity entity, float deltaTime) {
         UIComponent uc = Mappers.ui.get(entity);
         ElectrifiedComponent ec = Mappers.electrified.get(entity);
 
         ec.time += deltaTime;
         Image image = new Image(electric.getKeyFrame(ec.time));
+        image.setOrigin(Align.center);
         image.setPosition(uc.actor.getX(), uc.actor.getY());
         image.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
-        batch.begin();
         image.draw(batch, 1);
-        batch.end();
     }
 }

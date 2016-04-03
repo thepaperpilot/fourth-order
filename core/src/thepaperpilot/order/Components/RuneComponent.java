@@ -12,6 +12,9 @@ public class RuneComponent implements Component {
     public float exp = 0;
     public float damage = 0;
 
+    public int x = 0;
+    public int y = 0;
+
     public boolean matches(RuneComponent mc) {
         return poison == mc.poison &&
                 surprise == mc.surprise &&

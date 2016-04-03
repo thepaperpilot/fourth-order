@@ -1,27 +1,32 @@
 package thepaperpilot.order.Listeners;
 
+import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import thepaperpilot.order.Components.FighterComponent;
-import thepaperpilot.order.Components.SpellComponent;
-import thepaperpilot.order.Components.UIComponent;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
 public class FighterListener implements EntityListener {
+    private Engine engine;
+    private Drawable circle = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
+
+    public FighterListener(Engine engine) {
+        this.engine = engine;
+    }
 
     @Override
-    public void entityAdded(Entity entity) {
-        FighterComponent fc = Mappers.fighter.get(entity);
+    public void entityAdded(final Entity entity) {
+        final FighterComponent fc = Mappers.fighter.get(entity);
         UIComponent uc = Mappers.ui.get(entity);
 
         Table ui = new Table(Main.skin);
@@ -99,10 +104,10 @@ public class FighterListener implements EntityListener {
 
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
-        for (Entity spell : fc.spells) {
-            SpellComponent sc = Mappers.spell.get(spell);
+        for (final Entity spell : fc.spells) {
+            final SpellComponent sc = Mappers.spell.get(spell);
 
-            Table button = new Table(Main.skin);
+            Table button = new Button(Main.skin);
             button.setBackground(Main.skin.getDrawable("default-round"));
             button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
             if (sc.poison != 0) button.add(createDisplay(sc.poison, sc.poisonDisplay, Color.PURPLE));
@@ -111,7 +116,27 @@ public class FighterListener implements EntityListener {
             if (sc.steam != 0) button.add(createDisplay(sc.steam, sc.steamDisplay, Color.TEAL));
             if (sc.mason != 0) button.add(createDisplay(sc.mason, sc.masonDisplay, Color.GREEN));
             button.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    PuzzleSystem puzzle = engine.getSystem(PuzzleSystem.class);
+                    if (!(fc.poison >= sc.poison && fc.surprise >= sc.surprise && fc.mortal >= sc.mortal && fc.steam >= sc.steam && fc.mason >= sc.mason && puzzle.isStable() && puzzle.turn != DestroyComponent.Target.PLAYER)) return;
 
+                    Entity spellEntity = new Entity();
+                    for (Component component : spell.getComponents()) {
+                        spellEntity.add(component);
+                    }
+                    spellEntity.add(new PuzzleComponent(puzzle));
+                    spellEntity.add(new CasterComponent(DestroyComponent.Target.PLAYER));
+                    engine.addEntity(spellEntity);
+                    puzzle.turn = DestroyComponent.Target.PLAYER;
+                    puzzle.stableTimer = 0;
+                    fc.sub(sc);
+                    if (sc.poison != 0 && fc.poison < sc.poison) sc.poisonDisplay.setDrawable(circle);
+                    if (sc.surprise != 0 && fc.surprise < sc.surprise) sc.surpriseDisplay.setDrawable(circle);
+                    if (sc.mortal != 0 && fc.mortal < sc.mortal) sc.mortalDisplay.setDrawable(circle);
+                    if (sc.steam != 0 && fc.steam < sc.steam) sc.steamDisplay.setDrawable(circle);
+                    if (sc.mason != 0 && fc.mason < sc.mason) sc.masonDisplay.setDrawable(circle);
+                }
             });
             table.add(button).expandX().fill().height(60).colspan(2).pad(2).row();
         }
@@ -121,12 +146,12 @@ public class FighterListener implements EntityListener {
 
     private Actor createDisplay(int element, Image display, Color color) {
         Table table = new Table(Main.skin);
-        //display.setDrawable(Main.getTexture());
+        display.setDrawable(circle);
         display.setColor(color);
-        table.add(display).row();
+        table.add(display).padBottom(2).row();
         Label label = new Label("" + element, Main.skin);
         label.setColor(color);
-        table.add(label);
+        table.add(label).padBottom(2);
         return table;
     }
 
