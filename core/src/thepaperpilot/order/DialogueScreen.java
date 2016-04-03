@@ -32,7 +32,7 @@ public class DialogueScreen implements Screen { //possible for things other than
         DialogueComponent dc = new DialogueComponent();
         dc.lines = new Dialogue.Line[1];
         dc.lines[0] = new Dialogue.Line("who should I beat up?", "Player", 0);
-        dc.lines[0].options = new Dialogue.Option[3];
+        dc.lines[0].options = new Dialogue.Option[5];
         dc.lines[0].options[0] = new Dialogue.Option("The Alchemist");
         dc.lines[0].options[0].events = new Runnable() {
             @Override
@@ -104,6 +104,40 @@ public class DialogueScreen implements Screen { //possible for things other than
                 Entity dialogue = new Entity();
                 dialogue.add(dc);
                 engine.addEntity(dialogue);
+            }
+        };
+        dc.lines[0].options[3] = new Dialogue.Option("The Paladin");
+        dc.lines[0].options[3].events = new Runnable() {
+            @Override
+            public void run() {
+                DialogueComponent dc = new DialogueComponent();
+                dc.enemies = new String[]{"PortraitPaladin"};
+                dc.lines = new Dialogue.Line[1];
+                dc.lines[0] = new Dialogue.Line("I will stop you, in the name of \nThe Light!", "Paladin", 1);
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitPaladin";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getImmortalitySpell());
+                dc.lines[0].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.changeScreen(new Battle(enemy));
+                    }
+                };
+                Entity dialogue = new Entity();
+                dialogue.add(dc);
+                engine.addEntity(dialogue);
+            }
+        };
+        dc.lines[0].options[4] = new Dialogue.Option("YOURSELF (bonus level)");
+        dc.lines[0].options[4].events = new Runnable() {
+            @Override
+            public void run() {
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitPlayer";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getRefreshSpell());
+                Main.changeScreen(new Battle(17, enemy));
             }
         };
         Entity dialogue = new Entity();

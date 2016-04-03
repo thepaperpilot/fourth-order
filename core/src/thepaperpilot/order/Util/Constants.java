@@ -15,6 +15,7 @@ public class Constants {
     public static final float IDLE_CHANCE = .0002f;
     public static final float STABLE_TIME = 2;
     public static final float TEXT_SPEED = 24;
+    public static /* final */ float DELTA_MOD = 1;
 
     /* Balancing */
     public static final int DESTROY_LOW = 7;
@@ -22,7 +23,7 @@ public class Constants {
 
     /* Debug */
     public static final boolean PROFILING = false;
-    public static final boolean PLAYERLESS = false;
+    public static /* final */ boolean PLAYERLESS = false;
 
     /* Other */
     public static final int MATCH_4_RUMBLE = 100;

@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.PuzzleSystem;
+import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
 import java.util.ArrayList;
@@ -134,7 +135,7 @@ public class FighterComponent implements Component {
         if (mason < sc.mason) return false;
 
         if (!puzzle.isStable()) return false;
-        if (puzzle.turn != this) return false;
+        if (puzzle.turn != this || Constants.PLAYERLESS) return false;
 
         return true;
     }

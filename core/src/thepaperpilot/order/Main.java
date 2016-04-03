@@ -22,11 +22,6 @@ public class Main extends Game implements Screen {
 
     public static Skin skin;
     public static Main instance;
-    private static Sound bgm;
-    private static long bgmId;
-    private static Sound newBGM;
-    private static long newId;
-    private static float transition = 1;
     private static Stage loadingStage;
 
     public static void changeScreen(Screen screen) {
@@ -135,23 +130,7 @@ public class Main extends Game implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Transition bgms
-        if (transition != 1) {
-            if (transition > 1 || bgm == null) {
-                transition = 1;
-                if (bgm != null) bgm.stop(bgmId);
-                bgm = newBGM;
-                bgmId = newId;
-                bgm.setVolume(bgmId, .5f);
-                newBGM = null;
-            } else {
-                transition += Gdx.graphics.getDeltaTime();
-                bgm.setVolume(bgmId, (1 - transition) / 2);
-                newBGM.setVolume(newId, transition / 2);
-            }
-        }
-
-        getScreen().render(Gdx.graphics.getDeltaTime());
+        getScreen().render(Gdx.graphics.getDeltaTime() * Constants.DELTA_MOD);
 
         if (Constants.PROFILING) {
             System.out.println("calls: " + GLProfiler.calls);
@@ -169,21 +148,5 @@ public class Main extends Game implements Screen {
         manager.load(name, Texture.class);
         manager.finishLoadingAsset(name);
         return Main.manager.get(name, Texture.class);
-    }
-
-    public static void changeBGM(String bgm) {
-        bgm = "BGM/" + bgm;
-        manager.load(bgm, Sound.class);
-        manager.finishLoadingAsset(bgm);
-        if (newBGM != null && newBGM == manager.get(bgm, Sound.class)) return;
-        newBGM = manager.get(bgm, Sound.class);
-        if (Main.bgm != newBGM) {
-            transition = 0;
-            newId = newBGM.loop(.5f);
-        }
-    }
-
-    public static void click() {
-        // Main.manager.get("SFX/click1.ogg", Sound.class).play(1, MathUtils.random(.5f, 2), 0);
     }
 }

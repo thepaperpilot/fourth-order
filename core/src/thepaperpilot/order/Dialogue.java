@@ -183,8 +183,6 @@ public class Dialogue extends Table {
         if (maxTimer == 0) {
             setTouchable(nextLine.options.length == 0 ? Touchable.enabled : Touchable.childrenOnly);
         }
-
-        Main.click();
     }
 
     public void updateSelected() {
@@ -226,7 +224,6 @@ public class Dialogue extends Table {
         }
 
         public void select(Dialogue dialogue) {
-            Main.click();
             if (events != null) events.run();
             dialogue.selected = null;
             dialogue.next();
@@ -247,7 +244,6 @@ public class Dialogue extends Table {
             if (!message.equals("")) {
                 time += delta;
                 if (chars < Math.min(message.length(), (int) (time * Constants.TEXT_SPEED))) {
-                    Main.click();
                     chars += 3;
                 }
                 setText(message.substring(0, Math.min(message.length(), (int) (time * Constants.TEXT_SPEED))));
@@ -267,7 +263,6 @@ public class Dialogue extends Table {
         public void finish() {
             chars = message.length();
             time = message.length();
-            Main.click();
         }
     }
 

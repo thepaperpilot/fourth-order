@@ -13,6 +13,8 @@ import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
+import java.util.Collections;
+
 public class PuzzleSystem extends EntitySystem {
     public static final FighterComponent NULL_FIGHTER = new FighterComponent();
     public FighterComponent player;
@@ -46,7 +48,6 @@ public class PuzzleSystem extends EntitySystem {
         playerEntity.add(new PlayerControlledComponent());
         // TODO class selection system
         player.add(SpellComponent.getStrikeSpell());
-        player.add(SpellComponent.getImmortalitySpell());
         player.add(SpellComponent.getRefreshSpell());
         engine.addEntity(playerEntity);
 
@@ -96,17 +97,22 @@ public class PuzzleSystem extends EntitySystem {
                     //noinspection PointlessBooleanExpression
                     if (turn == enemy || Constants.PLAYERLESS) {
                         boolean cast = false;
+                        Collections.reverse(enemy.spells);
                         for (Entity entity : enemy.spells) {
                             if (enemy.canCast(entity, this)) {
                                 enemy.cast(entity, this);
                                 cast = true;
                             }
                         }
+                        Collections.reverse(enemy.spells);
                         if (!cast) makeRandomMove();
                         takeTurn(enemy);
                         return;
                     }
                 } else {
+                    Entity message = new Entity();
+                    message.add(new MessageComponent("No More Moves\nBoard Reset"));
+                    getEngine().addEntity(message);
                     for (int i = 0; i < size; i++) {
                         for (int j = 0; j < size; j++) {
                             if (runes[i][j] != null) {
@@ -126,7 +132,7 @@ public class PuzzleSystem extends EntitySystem {
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = i + 3; k < size; k++) {
-                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j])) && !Mappers.destroy.has(runes[i][k])) {
+                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j])) && !Mappers.destroy.has(runes[k][j])) {
                             matched++;
                             runes[k][j].add(new DestroyComponent(collector));
                         } else break;
@@ -176,10 +182,10 @@ public class PuzzleSystem extends EntitySystem {
                     if (matched >= 4) {
                         // destroy column
                         for (int k = 0; k < j; k++) {
-                            if (runes[k][j] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
+                            if (runes[i][k] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         for (int k = j + matched; k < size; k++) {
-                            if (runes[k][j] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
+                            if (runes[i][k] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         Entity message = new Entity();
                         if (matched == 4) {
@@ -207,7 +213,7 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     public boolean isStable() {
-        return stable && stableTimer > 1;
+        return stable && stableTimer > Constants.STABLE_TIME;
     }
 
     public int getRuneSize() {

@@ -24,7 +24,7 @@ public class Battle implements Screen {
     public final Stage ui;
     public final Engine engine;
 
-    public Battle(final FighterComponent enemy) {
+    public Battle(final int size, final FighterComponent enemy) {
         /* Create Stuff */
         ui = new Stage(new StretchViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT));
         engine = new Engine();
@@ -41,7 +41,7 @@ public class Battle implements Screen {
         engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
         engine.addSystem(new FighterSystem()); //priority 5
         engine.addSystem(new MessageSystem(ui)); //priority 15
-        engine.addSystem(new PuzzleSystem(9, enemy)); //priority 5
+        engine.addSystem(new PuzzleSystem(size, enemy)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
         engine.addSystem(new ScreenShakeSystem(ui)); //priority 9
@@ -51,15 +51,30 @@ public class Battle implements Screen {
         engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
 
-        /* Input Processing */
+        /* Input Processing (debug suff) */
         ui.addListener(new InputListener() {
             public boolean keyDown (InputEvent event, int keycode) {
-                if (keycode == Input.Keys.SPACE) {
-                    Main.changeScreen(new Battle(enemy));
+                switch (keycode) {
+                    case Input.Keys.SPACE:
+                        Main.changeScreen(new Battle(size, enemy));
+                        break;
+                    case Input.Keys.P:
+                        Constants.PLAYERLESS = !Constants.PLAYERLESS;
+                        break;
+                    case Input.Keys.LEFT:
+                        Constants.DELTA_MOD -= .1f;
+                        break;
+                    case Input.Keys.RIGHT:
+                        Constants.DELTA_MOD += .1f;
+                        break;
                 }
                 return false;
             }
         });
+    }
+
+    public Battle(FighterComponent enemy) {
+        this(9, enemy);
     }
 
     @Override
