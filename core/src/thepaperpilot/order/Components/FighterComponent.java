@@ -194,6 +194,7 @@ public class FighterComponent implements Component {
         maxHealth += 1;
         healthBar.setValue(health);
         healthBar.setRange(0, maxHealth);
+        // TODO give player choice to increase stats of some sort, doing things like increasing damage, mana collection, or mana storage
 
         Entity message = new Entity();
         MessageComponent mc = new MessageComponent("Level up!");
