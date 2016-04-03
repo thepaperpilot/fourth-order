@@ -3,6 +3,9 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -72,10 +75,22 @@ public class FighterComponent implements Component {
         experience.setValue(exp);
     }
 
-    public void hit(float damage) {
+    public void hit(float damage, PuzzleSystem puzzle) {
         health = Math.max(0, health - damage);
 
         healthBar.setValue(health);
+
+        Entity message = new Entity();
+        MessageComponent mc = new MessageComponent("-" + (int) damage);
+        Vector2 coords = experience.localToStageCoordinates(new Vector2(experience.getX(), experience.getY()));
+        coords.y += 100;
+        mc.large = false;
+        coords.add(MathUtils.random(-100, 100), MathUtils.random(-100, 100));
+        mc.x = coords.x;
+        mc.y = coords.y;
+        mc.color = Color.RED;
+        message.add(mc);
+        puzzle.getEngine().addEntity(message);
 
         // TODO implement dying
     }
