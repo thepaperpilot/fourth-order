@@ -1,0 +1,207 @@
+###Intro###
+King
+Noble champion, I have for you an important task.
+The guardians of the Pentagonal Table have united under the banner of "The Fourth Order" and are terrorizing my kingdom.
+
+Knight
+What is my quest?
+
+King
+You must go out and put a stop to this madness. Defeat the five guardians of the Fourth Order and restore this land's peace.
+This will be no easy task. In order to defeat these masters of the elements, you will need to learn them yourself.
+Will you become a deadly Ranger, mortally wounding your foes with pinpointed strikes?
+Or a sturdy Paladin, able to withstand injuries with the help of healing steam?
+Perhaps a mysterious Wizard, manipulating the physical world using masonic secrets?
+Or still yet a clever Alchemist, concocting alchemical poisons to weaken your foes?
+If not then maybe a stealthy Rogue, capitalizing on your enemy's surprise?
+
+Knight
+>
+My aim is true. Ranger it is!
+>
+No enemy can fell me as a righteous Paladin!
+>
+I will discover ancient secrets as a Wizard!
+>
+None will be impervious to my Alchemist concoctions!
+>
+Nobody will expect me if I go Rogue!
+>
+I'm not sure... can you repeat that? (go to line 11)
+
+King
+Excellent. I wish you luck... the fate of this kingdom lies in your hands!
+
+##Select Opponent
+Knight
+I'm prepared for a fight, Which guardian should I challenge?
+
+Knight
+>
+Mortal
+>
+Poison
+>
+Steam
+>
+Surprise
+>
+Mason
+
+##Confront Ranger
+Knight
+Halt! Your reign of terror ends here!
+
+Ranger
+Not so fast! You may have managed to hunt me down,
+but don't jump so quickly to conclude which one of us is the prey!
+I hope you've brought good armor, because I'm the guardian of the Mortal element.
+That means I know just how to inflict the worst injuries! Still eager to fight me?
+
+Knight
+>
+Bring it on!
+>
+Think you can scare me that easily?
+
+##Lose to Ranger
+Ranger
+Hah! Too easy. Lick your wounds and come challenge me again when you've got game.
+
+#Defeat Ranger
+Ranger
+Ouch, you're tougher than I though! Fine, I yield!
+I guess I have to go hunt for something better to do now...
+Feel free to come back here if you ever want to train your aim!
+
+##Confront Alchemist
+Knight
+You! Cease your vile brews at once!
+
+Alch
+Hmmm... I disagree. If you wish me to stop my craft then you'll need a better reason.
+
+Knight
+>
+I'll beat you up, nerd!
+>
+I'll show you how a true hero fights!
+
+Alch
+Hehe, how amusing. Here, I'll make a deal with you:
+If you can defeat me, I'll quit bothering you, blah blah.
+But if you lose, well then.....
+...Then I'll get to laugh at you! Hahaha!
+
+##Lose to Alchemist
+Alch
+Just what I expected, you're all fumes and no mettle.
+Come back when you've transmuted yourself into sterner stuff!
+
+#Defeat Alchemist
+Eureka! That was quite an impressive fight, but I appear to have lost.
+Well... don't worry, I will uphold my part of the deal.
+Don't hesitate to come back and help me with my research...
+...if you'd like to discover new ways to lose to me! Hahahaha!
+
+##Confront Paladin
+Knight
+You! Quit.... uhh... healing people?
+Whatever you're doing that's wrong, stop it!
+
+Paladin
+No! I joined the Fourth Order so that I could make sure there were
+always patients to test out my new healing machines on.
+I'm not going to let your little 'honor' get in the way of my breakthrough!
+
+Knight
+>
+Couldn't you just wait for people to get hurt?
+>
+Why not just use your healing magic?
+
+Paladin
+That would take too long! Speaking of which, stop wasting my time.
+Fight me or leave!
+
+##Lose to Paladin
+Paladin
+Hah! My machines could fight harder than that and they're for HEALING.
+Come challenge me again when you're strong enough not to make a fool of yourself!
+
+##Defeat Paladin
+Okay, fine- You beat me! I'll stop helping these Fourth Order guys.
+My prototype is almost finished anyway.
+If you'd ever like to help me test it out, just come back here
+and I can dispense you some more bandaids!
+
+#Confront Wizard
+Knight
+Hey, you!
+
+Wizard
+...
+
+Knight
+>
+I'm uh... here to stop you?
+>
+Don't talk much?
+
+Wizard
+...
+
+Knight
+...Right then. I suppose we must battle?
+
+Wizard
+...
+
+#Lose to Wizard
+Wizard
+...
+
+Knight
+Yeah yeah, I know. "Come back when you are stronger" and stuff.
+
+Wizard
+...
+
+##Defeat Wizard
+Wizard
+...
+
+Knight
+I know you aren't talking but look, just stop attacking people, okay?
+I'll be back here to check on you if you don't!
+
+Wizard
+...
+
+##Confront Rogue
+Rogue
+Hi-yah!
+
+Knight
+>
+Woah, where'd you come from!
+>
+Who are you!?!
+
+Rogue
+Hah! sneaking up on you was easy, for I am the guardian of the element of Surprise!
+You've practically walked into my trap, now prepare for battle!
+
+#Lose to Rogue
+Hah! You're as WEAK as you are UNOBSERVANT and CLUMSY!
+Come fight me again when you're skilled enough to not tarnish your honor!
+
+#Defeat Rogue
+Woah, you beat me! I'm surprised... What brings you here anyway?
+
+Knight
+I need for you to stop attacking people... like you just did.
+
+Rogue
+Aww man... that's no fun, but I guess I'll follow along.
+Hey you're a pretty good fighter, mind stopping by to spar sometime?
