@@ -94,7 +94,7 @@ public class PuzzleSystem extends EntitySystem {
         }
         if (stable) {
             stableTimer += deltaTime;
-            if (stableTimer > 1) {
+            if (stableTimer > Constants.STABLE_TIME) {
                 if (checkForPossibleMoves()) {
                     //noinspection PointlessBooleanExpression
                     if (turn == enemy || Constants.PLAYERLESS) {

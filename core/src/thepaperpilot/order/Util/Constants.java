@@ -11,6 +11,7 @@ public class Constants {
     public static final float TILE_SPEED = 600;
     public static final float RUNE_EXIT_SPEED = 1.5f;
     public static final float IDLE_CHANCE = .0002f;
+    public static final float STABLE_TIME = 2;
 
     /* Balancing */
     public static final int DESTROY_LOW = 7;
