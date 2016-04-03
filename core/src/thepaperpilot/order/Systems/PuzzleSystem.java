@@ -129,7 +129,7 @@ public class PuzzleSystem extends EntitySystem {
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = i + 3; k < size; k++) {
-                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j]))) {
+                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j])) && !Mappers.destroy.has(runes[i][k])) {
                             matched++;
                             runes[k][j].add(new DestroyComponent(collector));
                         } else break;
@@ -153,10 +153,12 @@ public class PuzzleSystem extends EntitySystem {
                     if (matched >= 5) {
                         turn = collector;
                         Entity message = new Entity();
-                        MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
-                        mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
-                        mc.y = getRuneSize() * j;
-                        message.add(mc);
+                        if (matched == 4) {
+                            MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
+                            mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
+                            mc.y = getRuneSize() * j;
+                            message.add(mc);
+                        }
                         message.add(new ScreenShakeComponent(Constants.MATCH_5_RUMBLE));
                         getEngine().addEntity(message);
                     }
@@ -168,7 +170,7 @@ public class PuzzleSystem extends EntitySystem {
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = j + 3; k < size; k++) {
-                        if (runes[i][k] != null && rc.matches(Mappers.rune.get(runes[i][k]))) {
+                        if (runes[i][k] != null && rc.matches(Mappers.rune.get(runes[i][k])) && !Mappers.destroy.has(runes[i][k])) {
                             matched++;
                             runes[i][k].add(new DestroyComponent(collector));
 
@@ -363,6 +365,10 @@ public class PuzzleSystem extends EntitySystem {
         UIComponent ui1 = Mappers.ui.get(runes[x + 1][y]);
         UIComponent ui2 = Mappers.ui.get(runes[x + 2][y]);
 
+        if (Mappers.destroy.has(runes[x][y])) return false;
+        if (Mappers.destroy.has(runes[x + 1][y])) return false;
+        if (Mappers.destroy.has(runes[x + 2][y])) return false;
+
         return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.matches(rc1) && rc.matches(rc2);
 
     }
@@ -377,6 +383,10 @@ public class PuzzleSystem extends EntitySystem {
         UIComponent ui = Mappers.ui.get(runes[x][y]);
         UIComponent ui1 = Mappers.ui.get(runes[x][y + 1]);
         UIComponent ui2 = Mappers.ui.get(runes[x][y + 2]);
+
+        if (Mappers.destroy.has(runes[x][y])) return false;
+        if (Mappers.destroy.has(runes[x][y + 1])) return false;
+        if (Mappers.destroy.has(runes[x][y + 2])) return false;
 
         return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.matches(rc1) && rc.matches(rc2);
 
