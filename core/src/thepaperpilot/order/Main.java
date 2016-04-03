@@ -82,177 +82,235 @@ public class Main extends Game implements Screen {
                 skin.getFont("font").getData().markupEnabled = true;
             }
 
-            // initial dialogue
-            // I'm not sure of a more appropriate place to put this
-            final Runnable reset = new Runnable() {
-                @Override
-                public void run() {
-                    Main.changeScreen(Main.instance);
-                }
-            };
-            DialogueComponent dc = new DialogueComponent();
-            final DialogueScreen ds = new DialogueScreen(dc);
-            dc.lines = new Dialogue.Line[1];
-            dc.lines[0] = new Dialogue.Line("who should I beat up?", "Player", 0);
-            dc.lines[0].options = new Dialogue.Option[5];
-            dc.lines[0].options[0] = new Dialogue.Option("The Alchemist");
-            dc.lines[0].options[0].events = new Runnable() {
-                @Override
-                public void run() {
-                    DialogueComponent dc = new DialogueComponent();
-                    dc.enemies = new String[]{"PortraitAlchemist"};
-                    dc.lines = new Dialogue.Line[3];
-                    dc.lines[0] = new Dialogue.Line("ra ra ra, I'm gonna beat you up", "Alchemist", 1);
-                    dc.lines[1] = new Dialogue.Line("pls no", "Player", 0);
-                    dc.lines[2] = new Dialogue.Line("haha like I give a... (NSFW)", "Alchemist", 1);
-                    final FighterComponent enemy = new FighterComponent();
-                    enemy.portrait = "PortraitAlchemist";
-                    enemy.add(SpellComponent.getStrikeSpell());
-                    enemy.add(SpellComponent.getTruthSpell());
-                    DialogueComponent victory = new DialogueComponent();
-                    victory.enemies = new String[]{"PortraitAlchemist"};
-                    victory.lines = new Dialogue.Line[1];
-                    victory.lines[0] = new Dialogue.Line("Maybe...\nI was the one beat up...", "Alchemist", 1);
-                    victory.lines[0].events = reset;
-                    DialogueComponent loss = new DialogueComponent();
-                    loss.enemies = new String[]{"PortraitAlchemist"};
-                    loss.lines = new Dialogue.Line[1];
-                    loss.lines[0] = new Dialogue.Line("Ha... And the strong continue to belittle the weak. Come back when you're older, nerd", "Alchemist", 1);
-                    loss.lines[0].events = reset;
-                    enemy.victory = victory;
-                    enemy.loss = loss;
-                    dc.lines[2].events = new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.changeScreen(new Battle(enemy));
-                        }
-                    };
-                    Entity dialogue = new Entity();
-                    dialogue.add(dc);
-                    ds.engine.addEntity(dialogue);
-                }
-            };
-            dc.lines[0].options[1] = new Dialogue.Option("The Rogue");
-            dc.lines[0].options[1].events = new Runnable() {
-                @Override
-                public void run() {
-                    DialogueComponent dc = new DialogueComponent();
-                    dc.enemies = new String[]{"PortraitRogue"};
-                    dc.lines = new Dialogue.Line[3];
-                    dc.lines[0] = new Dialogue.Line("zip zip, I'm coming for you", "Rogue", 1);
-                    dc.lines[1] = new Dialogue.Line("???\n\nwha...?", "Player", 0);
-                    dc.lines[2] = new Dialogue.Line("ur goin down m8", "Rogue", 1);
-                    final FighterComponent enemy = new FighterComponent();
-                    enemy.portrait = "PortraitRogue";
-                    enemy.add(SpellComponent.getStrikeSpell());
-                    enemy.add(SpellComponent.getCondenseSpell());
-                    DialogueComponent victory = new DialogueComponent();
-                    victory.enemies = new String[]{"PortraitRogue"};
-                    victory.lines = new Dialogue.Line[1];
-                    victory.lines[0] = new Dialogue.Line("I'll seek vengeance!", "Rogue", 1);
-                    victory.lines[0].events = reset;
-                    DialogueComponent loss = new DialogueComponent();
-                    loss.enemies = new String[]{"PortraitRogue"};
-                    loss.lines = new Dialogue.Line[1];
-                    loss.lines[0] = new Dialogue.Line("And may your pockets be lighter.", "Rogue", 1);
-                    loss.lines[0].events = reset;
-                    enemy.victory = victory;
-                    enemy.loss = loss;
-                    dc.lines[2].events = new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.changeScreen(new Battle(enemy));
-                        }
-                    };
-                    Entity dialogue = new Entity();
-                    dialogue.add(dc);
-                    ds.engine.addEntity(dialogue);
-                }
-            };
-            dc.lines[0].options[2] = new Dialogue.Option("The Wizard");
-            dc.lines[0].options[2].events = new Runnable() {
-                @Override
-                public void run() {
-                    DialogueComponent dc = new DialogueComponent();
-                    dc.enemies = new String[]{"PortraitWizard"};
-                    dc.lines = new Dialogue.Line[1];
-                    dc.lines[0] = new Dialogue.Line("...", "Wizard", 1);
-                    final FighterComponent enemy = new FighterComponent();
-                    enemy.portrait = "PortraitWizard";
-                    enemy.add(SpellComponent.getStrikeSpell());
-                    enemy.add(SpellComponent.getPremonitionSpell());
-                    DialogueComponent victory = new DialogueComponent();
-                    victory.enemies = new String[]{"PortraitWizard"};
-                    victory.lines = new Dialogue.Line[1];
-                    victory.lines[0] = new Dialogue.Line("...", "Wizard", 1);
-                    victory.lines[0].events = reset;
-                    DialogueComponent loss = new DialogueComponent();
-                    loss.enemies = new String[]{"PortraitWizard"};
-                    loss.lines = new Dialogue.Line[1];
-                    loss.lines[0] = new Dialogue.Line("...", "Wizard", 1);
-                    loss.lines[0].events = reset;
-                    enemy.victory = victory;
-                    enemy.loss = loss;
-                    dc.lines[0].events = new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.changeScreen(new Battle(enemy));
-                        }
-                    };
-                    Entity dialogue = new Entity();
-                    dialogue.add(dc);
-                    ds.engine.addEntity(dialogue);
-                }
-            };
-            dc.lines[0].options[3] = new Dialogue.Option("The Paladin");
-            dc.lines[0].options[3].events = new Runnable() {
-                @Override
-                public void run() {
-                    DialogueComponent dc = new DialogueComponent();
-                    dc.enemies = new String[]{"PortraitPaladin"};
-                    dc.lines = new Dialogue.Line[1];
-                    dc.lines[0] = new Dialogue.Line("I will stop you, in the name of \nThe Light!", "Paladin", 1);
-                    final FighterComponent enemy = new FighterComponent();
-                    enemy.portrait = "PortraitPaladin";
-                    enemy.add(SpellComponent.getStrikeSpell());
-                    enemy.add(SpellComponent.getImmortalitySpell());
-                    DialogueComponent victory = new DialogueComponent();
-                    victory.enemies = new String[]{"PortraitPaladin"};
-                    victory.lines = new Dialogue.Line[1];
-                    victory.lines[0] = new Dialogue.Line("The Light...\nIt has forsaken me...", "Paladin", 1);
-                    victory.lines[0].events = reset;
-                    DialogueComponent loss = new DialogueComponent();
-                    loss.enemies = new String[]{"PortraitPaladin"};
-                    loss.lines = new Dialogue.Line[1];
-                    loss.lines[0] = new Dialogue.Line("Another evil vanquished", "Paladin", 1);
-                    loss.lines[0].events = reset;
-                    enemy.victory = victory;
-                    enemy.loss = loss;
-                    dc.lines[0].events = new Runnable() {
-                        @Override
-                        public void run() {
-                            Main.changeScreen(new Battle(enemy));
-                        }
-                    };
-                    Entity dialogue = new Entity();
-                    dialogue.add(dc);
-                    ds.engine.addEntity(dialogue);
-                }
-            };
-            // ranger goes here
-            dc.lines[0].options[4] = new Dialogue.Option("YOURSELF (bonus level)");
-            dc.lines[0].options[4].events = new Runnable() {
-                @Override
-                public void run() {
-                    final FighterComponent enemy = new FighterComponent();
-                    enemy.portrait = "PortraitPlayer";
-                    enemy.add(SpellComponent.getStrikeSpell());
-                    enemy.add(SpellComponent.getRefreshSpell());
-                    Main.changeScreen(new Battle(17, enemy));
-                }
-            };
-            changeScreen(ds);
+            if (Player.hasPlayer()) {
+                System.out.println("opponent");
+                changeScreen(getOpponentSelector());
+            } else {
+                System.out.println("class");
+                changeScreen(getClassSelector());
+            }
         }
+    }
+
+    private DialogueScreen getOpponentSelector() {
+        final Runnable reset = new Runnable() {
+            @Override
+            public void run() {
+                Main.changeScreen(Main.instance);
+            }
+        };
+        DialogueComponent dc = new DialogueComponent();
+        final DialogueScreen ds = new DialogueScreen(dc);
+        dc.lines = new Dialogue.Line[1];
+        dc.lines[0] = new Dialogue.Line("There are 5 guardians in the Fourth Order, one for each element. Who should I go beat up?", "Player", 0);
+        dc.lines[0].options = new Dialogue.Option[5];
+        dc.lines[0].options[0] = new Dialogue.Option("Poison");
+        dc.lines[0].options[0].events = new Runnable() {
+            @Override
+            public void run() {
+                DialogueComponent dc = new DialogueComponent();
+                dc.enemies = new String[]{"PortraitAlchemist"};
+                dc.lines = new Dialogue.Line[3];
+                dc.lines[0] = new Dialogue.Line("ra ra ra, I'm gonna beat you up", "Guardian of Poison", 1);
+                dc.lines[1] = new Dialogue.Line("pls no", "Player", 0);
+                dc.lines[2] = new Dialogue.Line("haha like I give a... (NSFW)", "Guardian of Poison", 1);
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitAlchemist";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getTruthSpell());
+                DialogueComponent victory = new DialogueComponent();
+                victory.enemies = new String[]{"PortraitAlchemist"};
+                victory.lines = new Dialogue.Line[1];
+                victory.lines[0] = new Dialogue.Line("Maybe...\nI was the one beat up...", "Guardian of Poison", 1);
+                victory.lines[0].events = reset;
+                DialogueComponent loss = new DialogueComponent();
+                loss.enemies = new String[]{"PortraitAlchemist"};
+                loss.lines = new Dialogue.Line[1];
+                loss.lines[0] = new Dialogue.Line("Ha... And the strong continue to belittle the weak. Come back when you're older, nerd", "Alchemist", 1);
+                loss.lines[0].events = reset;
+                enemy.victory = victory;
+                enemy.loss = loss;
+                dc.lines[2].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.changeScreen(new Battle(enemy));
+                    }
+                };
+                Entity dialogue = new Entity();
+                dialogue.add(dc);
+                ds.engine.addEntity(dialogue);
+            }
+        };
+        dc.lines[0].options[1] = new Dialogue.Option("Surprise");
+        dc.lines[0].options[1].events = new Runnable() {
+            @Override
+            public void run() {
+                DialogueComponent dc = new DialogueComponent();
+                dc.enemies = new String[]{"PortraitRogue"};
+                dc.lines = new Dialogue.Line[3];
+                dc.lines[0] = new Dialogue.Line("zip zip, I'm coming for you", "Guardian of Surprise", 1);
+                dc.lines[1] = new Dialogue.Line("???\n\nwha...?", "Player", 0);
+                dc.lines[2] = new Dialogue.Line("ur goin down m8", "Rogue", 1);
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitRogue";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getCondenseSpell());
+                DialogueComponent victory = new DialogueComponent();
+                victory.enemies = new String[]{"PortraitRogue"};
+                victory.lines = new Dialogue.Line[1];
+                victory.lines[0] = new Dialogue.Line("I'll seek vengeance!", "Guardian of Surprise", 1);
+                victory.lines[0].events = reset;
+                DialogueComponent loss = new DialogueComponent();
+                loss.enemies = new String[]{"PortraitRogue"};
+                loss.lines = new Dialogue.Line[1];
+                loss.lines[0] = new Dialogue.Line("And may your pockets be lighter.", "Guardian of Surprise", 1);
+                loss.lines[0].events = reset;
+                enemy.victory = victory;
+                enemy.loss = loss;
+                dc.lines[2].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.changeScreen(new Battle(enemy));
+                    }
+                };
+                Entity dialogue = new Entity();
+                dialogue.add(dc);
+                ds.engine.addEntity(dialogue);
+            }
+        };
+        dc.lines[0].options[2] = new Dialogue.Option("Mason");
+        dc.lines[0].options[2].events = new Runnable() {
+            @Override
+            public void run() {
+                DialogueComponent dc = new DialogueComponent();
+                dc.enemies = new String[]{"PortraitWizard"};
+                dc.lines = new Dialogue.Line[1];
+                dc.lines[0] = new Dialogue.Line("...", "Guardian of Mason", 1);
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitWizard";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getPremonitionSpell());
+                DialogueComponent victory = new DialogueComponent();
+                victory.enemies = new String[]{"PortraitWizard"};
+                victory.lines = new Dialogue.Line[1];
+                victory.lines[0] = new Dialogue.Line("...", "Guardian of Mason", 1);
+                victory.lines[0].events = reset;
+                DialogueComponent loss = new DialogueComponent();
+                loss.enemies = new String[]{"PortraitWizard"};
+                loss.lines = new Dialogue.Line[1];
+                loss.lines[0] = new Dialogue.Line("...", "Guardian of Mason", 1);
+                loss.lines[0].events = reset;
+                enemy.victory = victory;
+                enemy.loss = loss;
+                dc.lines[0].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.changeScreen(new Battle(enemy));
+                    }
+                };
+                Entity dialogue = new Entity();
+                dialogue.add(dc);
+                ds.engine.addEntity(dialogue);
+            }
+        };
+        dc.lines[0].options[3] = new Dialogue.Option("Steam");
+        dc.lines[0].options[3].events = new Runnable() {
+            @Override
+            public void run() {
+                DialogueComponent dc = new DialogueComponent();
+                dc.enemies = new String[]{"PortraitPaladin"};
+                dc.lines = new Dialogue.Line[1];
+                dc.lines[0] = new Dialogue.Line("I will stop you, in the name of \nThe Light!", "Guardian of Steam", 1);
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitPaladin";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getImmortalitySpell());
+                DialogueComponent victory = new DialogueComponent();
+                victory.enemies = new String[]{"PortraitPaladin"};
+                victory.lines = new Dialogue.Line[1];
+                victory.lines[0] = new Dialogue.Line("The Light...\nIt has forsaken me...", "Guardian of Steam", 1);
+                victory.lines[0].events = reset;
+                DialogueComponent loss = new DialogueComponent();
+                loss.enemies = new String[]{"PortraitPaladin"};
+                loss.lines = new Dialogue.Line[1];
+                loss.lines[0] = new Dialogue.Line("Another evil vanquished", "Guardian of Steam", 1);
+                loss.lines[0].events = reset;
+                enemy.victory = victory;
+                enemy.loss = loss;
+                dc.lines[0].events = new Runnable() {
+                    @Override
+                    public void run() {
+                        Main.changeScreen(new Battle(enemy));
+                    }
+                };
+                Entity dialogue = new Entity();
+                dialogue.add(dc);
+                ds.engine.addEntity(dialogue);
+            }
+        };
+        // ranger goes here
+        dc.lines[0].options[4] = new Dialogue.Option("YOURSELF (bonus level)");
+        dc.lines[0].options[4].events = new Runnable() {
+            @Override
+            public void run() {
+                final FighterComponent enemy = new FighterComponent();
+                enemy.portrait = "PortraitPlayer";
+                enemy.add(SpellComponent.getStrikeSpell());
+                enemy.add(SpellComponent.getRefreshSpell());
+                Main.changeScreen(new Battle(17, enemy));
+            }
+        };
+        return ds;
+    }
+
+    private DialogueScreen getClassSelector() {
+        DialogueComponent dc = new DialogueComponent();
+        final DialogueScreen ds = new DialogueScreen(dc);
+        dc.lines = new Dialogue.Line[1];
+        dc.lines[0] = new Dialogue.Line("What is my class?", "Player", 0);
+        dc.lines[0].options = new Dialogue.Option[5];
+        dc.lines[0].options[0] = new Dialogue.Option("Alchemist");
+        dc.lines[0].options[0].events = new Runnable() {
+            @Override
+            public void run() {
+                Player.getPlayer().add(SpellComponent.getTruthSpell());
+            }
+        };
+        dc.lines[0].options[1] = new Dialogue.Option("Rogue");
+        dc.lines[0].options[1].events = new Runnable() {
+            @Override
+            public void run() {
+                Player.getPlayer().add(SpellComponent.getCondenseSpell());
+            }
+        };
+        dc.lines[0].options[2] = new Dialogue.Option("Ranger");
+        dc.lines[0].options[2].events = new Runnable() {
+            @Override
+            public void run() {
+                Player.getPlayer().add(SpellComponent.getAntidoteSpell());
+            }
+        };
+        dc.lines[0].options[3] = new Dialogue.Option("Paladin");
+        dc.lines[0].options[3].events = new Runnable() {
+            @Override
+            public void run() {
+                Player.getPlayer().add(SpellComponent.getImmortalitySpell());
+            }
+        };
+        dc.lines[0].options[4] = new Dialogue.Option("Wizard");
+        dc.lines[0].options[4].events = new Runnable() {
+            @Override
+            public void run() {
+                Player.getPlayer().add(SpellComponent.getPremonitionSpell());
+            }
+        };
+        dc.lines[0].events = new Runnable() {
+            @Override
+            public void run() {
+                changeScreen(instance);
+            }
+        };
+        return ds;
     }
 
     @Override

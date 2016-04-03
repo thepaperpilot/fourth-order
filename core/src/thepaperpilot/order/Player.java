@@ -31,8 +31,12 @@ public class Player {
         if (player == null) {
             player = new FighterComponent();
             player.add(SpellComponent.getStrikeSpell());
-            player.add(SpellComponent.getRefreshSpell());
         }
         return player;
+    }
+
+    public static boolean hasPlayer() {
+        System.out.println(player + "(" + (player != null) + ")");
+        return player != null;
     }
 }
