@@ -37,7 +37,7 @@ public class FighterComponent implements Component {
     public float mortal = 0;
     public float steam = 0;
     public float mason = 0;
-    public float maxExp = 2;
+    public float maxExp = 4;
     public float maxHealth = 10;
     public float maxPoision = 20;
     public float maxSurprise = 20;
@@ -179,12 +179,15 @@ public class FighterComponent implements Component {
 
     public void levelUp(final PuzzleSystem puzzle) {
         exp -= maxExp;
+        maxExp *= 2;
         experience.setValue(exp);
+        experience.setRange(0, maxExp);
 
         // this is all arbitrary atm
-        health += 2;
-        maxHealth += 2;
+        health += 1;
+        maxHealth += 1;
         healthBar.setValue(health);
+        healthBar.setRange(0, maxHealth);
 
         Entity message = new Entity();
         MessageComponent mc = new MessageComponent("Level up!");
@@ -248,6 +251,7 @@ public class FighterComponent implements Component {
                 public void run() {
                     Main.changeScreen(screen);
                     puzzle.turn = temp;
+                    puzzle.updateFighters();
                 }
             };
             puzzle.transition(ds);

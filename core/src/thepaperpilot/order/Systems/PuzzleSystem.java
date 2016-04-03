@@ -32,6 +32,8 @@ public class PuzzleSystem extends EntitySystem {
     public FighterComponent turn;
     public boolean stable;
     public float stableTimer;
+    private Entity playerEntity;
+    private Entity enemyEntity;
 
     // TODO make this class cleaner/smaller
     // too much hard coding of the 5 types
@@ -45,7 +47,7 @@ public class PuzzleSystem extends EntitySystem {
 
     public void addedToEngine (Engine engine) {
         // Player Side
-        Entity playerEntity = new Entity();
+        playerEntity = new Entity();
         player = Player.getPlayer();
         playerEntity.add(this.player);
         playerEntity.add(new UIComponent());
@@ -54,7 +56,7 @@ public class PuzzleSystem extends EntitySystem {
         engine.addEntity(playerEntity);
 
         // Enemy Side
-        Entity enemyEntity = new Entity();
+        enemyEntity = new Entity();
         enemyEntity.add(enemy);
         enemyEntity.add(new UIComponent());
         engine.addEntity(enemyEntity);
@@ -493,5 +495,12 @@ public class PuzzleSystem extends EntitySystem {
         if (fighterComponent == NULL_FIGHTER || fighterComponent == player) {
             turn = enemy;
         } else turn = player;
+    }
+
+    public void updateFighters() {
+        getEngine().removeEntity(playerEntity);
+        getEngine().removeEntity(enemyEntity);
+        getEngine().addEntity(playerEntity);
+        getEngine().addEntity(enemyEntity);
     }
 }
