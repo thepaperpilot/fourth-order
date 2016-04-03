@@ -28,9 +28,9 @@ public class StrikeSystem extends SpellSystem {
 
         PuzzleSystem puzzle = getEngine().getSystem(PuzzleSystem.class);
         if (fc == puzzle.player) {
-            puzzle.enemy.hit(sc.damage);
+            puzzle.enemy.hit(sc.damage, puzzle);
         } else if (fc == puzzle.enemy) {
-            puzzle.player.hit(sc.damage);
+            puzzle.player.hit(sc.damage, puzzle);
         }
 
         entity.remove(StrikeComponent.class);

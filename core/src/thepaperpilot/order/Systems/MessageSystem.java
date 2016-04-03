@@ -28,10 +28,11 @@ public class MessageSystem extends IteratingSystem {
         MessageComponent mc = Mappers.message.get(entity);
 
         final Label message = new Label(mc.message, Main.skin, "large");
-        message.setFontScale(2);
+        if (mc.large) message.setFontScale(2);
         message.setOrigin(Align.center);
         message.setAlignment(Align.center);
         message.setPosition(mc.x, mc.y);
+        message.setColor(mc.color);
         message.addAction(Actions.sequence(
                 Actions.parallel(
                         Actions.moveBy(0, 400, 2 * Constants.RUNE_EXIT_SPEED, Interpolation.pow2),
