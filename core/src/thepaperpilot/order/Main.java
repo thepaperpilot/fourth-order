@@ -82,8 +82,8 @@ public class Main extends Game implements Screen {
                 skin.getFont("font").getData().setScale(.5f);
                 skin.getFont("font").getData().markupEnabled = true;
 
-                // temp battle
-                changeScreen(new Battle());
+                // temp convo
+                changeScreen(new DialogueScreen());
             }
         }
     }
@@ -184,6 +184,6 @@ public class Main extends Game implements Screen {
     }
 
     public static void click() {
-        Main.manager.get("SFX/click1.ogg", Sound.class).play(1, MathUtils.random(.5f, 2), 0);
+        // Main.manager.get("SFX/click1.ogg", Sound.class).play(1, MathUtils.random(.5f, 2), 0);
     }
 }

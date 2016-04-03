@@ -137,10 +137,10 @@ public class PuzzleSystem extends EntitySystem {
                     if (matched >= 4) {
                         /// destroy row
                         for (int k = 0; k < i; k++) {
-                            runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
+                            if (runes[k][j] != null) runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         for (int k = i + matched; k < size; k++) {
-                            runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
+                            if (runes[k][j] != null) runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         Entity message = new Entity();
                         if (matched == 4) {
@@ -179,10 +179,10 @@ public class PuzzleSystem extends EntitySystem {
                     if (matched >= 4) {
                         // destroy column
                         for (int k = 0; k < j; k++) {
-                            runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
+                            if (runes[k][j] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         for (int k = j + matched; k < size; k++) {
-                            runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
+                            if (runes[k][j] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         Entity message = new Entity();
                         if (matched == 4) {

@@ -8,6 +8,7 @@ import thepaperpilot.order.Components.Spells.StrikeComponent;
 
 public class Mappers {
     public static final ComponentMapper<DestroyComponent> destroy = ComponentMapper.getFor(DestroyComponent.class);
+    public static final ComponentMapper<DialogueComponent> dialogue = ComponentMapper.getFor(DialogueComponent.class);
     public static final ComponentMapper<ElectrifiedComponent> electrified = ComponentMapper.getFor(ElectrifiedComponent.class);
     public static final ComponentMapper<FighterComponent> fighter = ComponentMapper.getFor(FighterComponent.class);
     public static final ComponentMapper<IdleAnimationComponent> idleAnimation = ComponentMapper.getFor(IdleAnimationComponent.class);
