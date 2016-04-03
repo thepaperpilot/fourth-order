@@ -7,6 +7,7 @@ import thepaperpilot.order.Components.DestroyComponent;
 import thepaperpilot.order.Components.PuzzleComponent;
 import thepaperpilot.order.Components.RuneComponent;
 import thepaperpilot.order.Components.Spells.DestroyColorComponent;
+import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Mappers;
 
 public class DestroyColorSystem extends SpellSystem {
@@ -24,19 +25,19 @@ public class DestroyColorSystem extends SpellSystem {
                 RuneComponent rc = Mappers.rune.get(pc.puzzle.runes[i][j]);
                 switch (dc.color) {
                     case 0:
-                        if (rc.poison != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        if (rc.poison != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
                         break;
                     case 1:
-                        if (rc.surprise != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        if (rc.surprise != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
                         break;
                     case 2:
-                        if (rc.mortal != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        if (rc.mortal != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
                         break;
                     case 3:
-                        if (rc.steam != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        if (rc.steam != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
                         break;
                     case 4:
-                        if (rc.mason != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                        if (rc.mason != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
                         break;
 
                 }

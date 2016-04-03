@@ -40,8 +40,7 @@ public class RuneListener implements EntityListener {
 
         uc.actor.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {
-                if (pc.puzzle.isStable() && pc.puzzle.turn != DestroyComponent.Target.PLAYER || pc.puzzle.turn == DestroyComponent.Target.PLAYER && pc.puzzle.extraTurn)
-                    pc.puzzle.select(entity);
+                pc.puzzle.select(entity);
             }
         });
     }

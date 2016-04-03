@@ -48,24 +48,6 @@ public class Battle implements Screen {
         engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
 
-        /* Add Initial Entities to Engine */
-        // Player Side
-        Entity player = new Entity();
-        player.add(new FighterComponent());
-        player.add(new UIComponent());
-        player.add(new PlayerControlledComponent());
-        // TODO class selection system
-        player.getComponent(FighterComponent.class).add(SpellComponent.strike);
-        player.getComponent(FighterComponent.class).add(SpellComponent.immortality);
-        player.getComponent(FighterComponent.class).add(SpellComponent.refresh);
-        engine.addEntity(player);
-        // Enemy Side
-        Entity enemy = new Entity();
-        enemy.add(new FighterComponent());
-        enemy.add(new UIComponent());
-        enemy.getComponent(FighterComponent.class).portrait = "PortraitAlchemist";
-        engine.addEntity(enemy);
-
         /* Input Processing */
         ui.addListener(new InputListener() {
             public boolean keyDown (InputEvent event, int keycode) {

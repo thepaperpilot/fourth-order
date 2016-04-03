@@ -116,31 +116,16 @@ public class FighterListener implements EntityListener {
             if (sc.mortal != 0) button.add(createDisplay(sc.mortal, sc.mortalDisplay, Color.RED)).expandX();
             if (sc.steam != 0) button.add(createDisplay(sc.steam, sc.steamDisplay, Color.TEAL)).expandX();
             if (sc.mason != 0) button.add(createDisplay(sc.mason, sc.masonDisplay, Color.GREEN)).expandX();
-            button.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    // TODO move this important logic that has little to do with fighters somewhere else
-                    PuzzleSystem puzzle = engine.getSystem(PuzzleSystem.class);
-                    if (!(fc.poison >= sc.poison && fc.surprise >= sc.surprise && fc.mortal >= sc.mortal && fc.steam >= sc.steam && fc.mason >= sc.mason && puzzle.isStable() && (puzzle.turn != DestroyComponent.Target.PLAYER && !puzzle.extraTurn || puzzle.turn == DestroyComponent.Target.PLAYER && puzzle.extraTurn))) return;
-
-                    Entity spellEntity = new Entity();
-                    for (Component component : spell.getComponents()) {
-                        spellEntity.add(component);
+            if (engine.getSystem(PuzzleSystem.class).player == fc) {
+                button.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if (fc.canCast(spell, engine.getSystem(PuzzleSystem.class))) {
+                            fc.cast(spell, engine.getSystem(PuzzleSystem.class));
+                        }
                     }
-                    spellEntity.add(new PuzzleComponent(puzzle));
-                    spellEntity.add(new CasterComponent(DestroyComponent.Target.PLAYER));
-                    engine.addEntity(spellEntity);
-                    puzzle.extraTurn = false;
-                    puzzle.turn = DestroyComponent.Target.PLAYER;
-                    puzzle.stableTimer = 0;
-                    fc.sub(sc);
-                    if (sc.poison != 0 && fc.poison < sc.poison) sc.poisonDisplay.setDrawable(circle);
-                    if (sc.surprise != 0 && fc.surprise < sc.surprise) sc.surpriseDisplay.setDrawable(circle);
-                    if (sc.mortal != 0 && fc.mortal < sc.mortal) sc.mortalDisplay.setDrawable(circle);
-                    if (sc.steam != 0 && fc.steam < sc.steam) sc.steamDisplay.setDrawable(circle);
-                    if (sc.mason != 0 && fc.mason < sc.mason) sc.masonDisplay.setDrawable(circle);
-                }
-            });
+                });
+            }
             table.add(button).expandX().fill().height(60).colspan(2).pad(2).row();
         }
         ui.add(table).expandY().fill().width(Constants.UI_WIDTH);

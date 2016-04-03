@@ -4,10 +4,10 @@ import com.badlogic.ashley.core.Component;
 
 public class DestroyComponent implements Component {
 
-    public Target target = Target.NULL;
+    public final FighterComponent collector;
 
-    public DestroyComponent(Target target) {
-        this.target = target;
+    public DestroyComponent(FighterComponent collector) {
+        this.collector = collector;
     }
 
     public enum Target {

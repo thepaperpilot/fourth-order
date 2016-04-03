@@ -23,7 +23,7 @@ public class RefreshSystem extends SpellSystem {
 
         for (int i = 0; i < rc.number; i++) {
             Entity random = pc.puzzle.randomRune();
-            random.add(new DestroyComponent(DestroyComponent.Target.PLAYER));
+            random.add(new DestroyComponent(pc.puzzle.player));
         }
     }
 }

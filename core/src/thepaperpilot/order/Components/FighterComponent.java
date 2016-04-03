@@ -1,14 +1,21 @@
 package thepaperpilot.order.Components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Systems.PuzzleSystem;
+import thepaperpilot.order.Util.Mappers;
 
 import java.util.ArrayList;
 
 public class FighterComponent implements Component {
+    Drawable empty = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
+
     public String portrait = "PortraitPlayer";
 
     public float exp = 0;
@@ -87,5 +94,45 @@ public class FighterComponent implements Component {
         mason = Math.max(0, mason - sc.mason);
 
         updateProgressBars();
+        updateSpellCosts();
+    }
+
+    private void updateSpellCosts() {
+        for (Entity spell : spells) {
+            SpellComponent sc = Mappers.spell.get(spell);
+
+            if (sc.poison != 0 && poison < sc.poison) sc.poisonDisplay.setDrawable(empty);
+            if (sc.surprise != 0 && surprise < sc.surprise) sc.surpriseDisplay.setDrawable(empty);
+            if (sc.mortal != 0 && mortal < sc.mortal) sc.mortalDisplay.setDrawable(empty);
+            if (sc.steam != 0 && steam < sc.steam) sc.steamDisplay.setDrawable(empty);
+            if (sc.mason != 0 && mason < sc.mason) sc.masonDisplay.setDrawable(empty);
+        }
+    }
+
+    public boolean canCast(Entity entity, PuzzleSystem puzzle) {
+        SpellComponent sc = Mappers.spell.get(entity);
+
+        if (poison < sc.poison) return false;
+        if (surprise < sc.surprise) return false;
+        if (mortal < sc.mortal) return false;
+        if (steam < sc.steam) return false;
+        if (mason < sc.mason) return false;
+
+        if (!puzzle.isStable()) return false;
+        if (puzzle.turn != this) return false;
+
+        return true;
+    }
+
+    public void cast(Entity entity, PuzzleSystem puzzle) {
+        Entity spell = new Entity();
+        for (Component component : entity.getComponents()) {
+            spell.add(component);
+        }
+        spell.add(new PuzzleComponent(puzzle));
+        spell.add(this); // caster
+        puzzle.getEngine().addEntity(spell);
+        puzzle.takeTurn(this);
+        sub(Mappers.spell.get(entity));
     }
 }

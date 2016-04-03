@@ -9,31 +9,54 @@ import thepaperpilot.order.Components.Spells.StrikeComponent;
 
 public class SpellComponent implements Component {
 
-    // TODO probably a better way to do this
-    public static Entity strike = new Entity();
-    public static Entity antidote = new Entity();
-    public static Entity premonition = new Entity();
-    public static Entity immortality = new Entity();
-    public static Entity condense = new Entity();
-    public static Entity truth = new Entity();
-    public static Entity refresh = new Entity();
+    // TODO do this in a better way
+    public static Entity getStrikeSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Strike", 0, 0, 6, 0, 0));
+        spell.add(new StrikeComponent());
+        return spell;
+    }
 
-    static {
-        // new SpellComponent(name, poison, surprise, mortal, steam, mason)
-        strike.add(new SpellComponent("Strike", 0, 0, 6, 0, 0));
-        strike.add(new StrikeComponent());
-        antidote.add(new SpellComponent("Antidote", 0, 4, 0, 4, 4));
-        antidote.add(new DestroyColorComponent(0));
-        premonition.add(new SpellComponent("Premonition", 4, 0, 4, 4, 0));
-        premonition.add(new DestroyColorComponent(1));
-        immortality.add(new SpellComponent("Immortality", 4, 4, 0, 0, 4));
-        immortality.add(new DestroyColorComponent(2));
-        condense.add(new SpellComponent("Condense", 4, 0, 4, 0, 4));
-        condense.add(new DestroyColorComponent(3));
-        truth.add(new SpellComponent("Truth", 0, 4, 4, 4, 0));
-        truth.add(new DestroyColorComponent(4));
-        refresh.add(new SpellComponent("Refresh", 3, 3, 3, 3, 3));
-        refresh.add(new RefreshComponent());
+    public static Entity getAntidoteSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Antidote", 0, 4, 0, 4, 4));
+        spell.add(new DestroyColorComponent(0));
+        return spell;
+    }
+
+    public static Entity getPremonitionSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Premonition", 4, 0, 4, 4, 0));
+        spell.add(new DestroyColorComponent(1));
+        return spell;
+    }
+
+    public static Entity getImmortalitySpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Immortality", 4, 4, 0, 0, 4));
+        spell.add(new DestroyColorComponent(2));
+        return spell;
+    }
+
+    public static Entity getCondenseSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Condense", 4, 0, 4, 0, 4));
+        spell.add(new DestroyColorComponent(3));
+        return spell;
+    }
+
+    public static Entity getTruthSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Truth", 0, 4, 4, 4, 0));
+        spell.add(new DestroyColorComponent(4));
+        return spell;
+    }
+
+    public static Entity getRefreshSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Refresh", 3, 3, 3, 3, 3));
+        spell.add(new RefreshComponent());
+        return spell;
     }
 
     public String name = "";

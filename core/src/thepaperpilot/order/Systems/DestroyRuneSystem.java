@@ -31,49 +31,46 @@ public class DestroyRuneSystem extends IteratingSystem {
         };
 
         uc.actor.toFront();
-        if (dc.target == DestroyComponent.Target.NULL) {
+        if (dc.collector == PuzzleSystem.NULL_FIGHTER) {
             uc.actor.addAction(
                     Actions.sequence(
                             Actions.parallel(
                                     Actions.moveBy(0, -1000, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
-                                    Actions.moveBy(MathUtils.random(-400, 400), 0, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                                    Actions.moveBy(MathUtils.random(-200, 200), 0, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
                             Actions.run(remove)));
         } else {
-            FighterComponent player = Mappers.fighter.get(getEngine().getEntitiesFor(Family.all(FighterComponent.class, PlayerControlledComponent.class).get()).first());
-            FighterComponent enemy = Mappers.fighter.get(getEngine().getEntitiesFor(Family.all(FighterComponent.class).exclude(PlayerControlledComponent.class).get()).first());
-
             Action left = Actions.sequence(
                     Actions.parallel(
-                            Actions.moveBy(0, 1000, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
-                            Actions.moveBy(MathUtils.random(-1200, -800), 0, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                            Actions.moveTo(0, Constants.WORLD_HEIGHT, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
+                            Actions.moveBy(MathUtils.random(-2000, 2000), -2000, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
                     Actions.run(remove));
             Action right = Actions.sequence(
                     Actions.parallel(
-                            Actions.moveBy(0, 1000, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
-                            Actions.moveBy(MathUtils.random(800, 1200), 0, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                            Actions.moveTo(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
+                            Actions.moveBy(MathUtils.random(-2000, 2000), -2000, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
                     Actions.run(remove));
+            Action zoom = Actions.sequence(
+                    Actions.scaleBy(3, 3, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2),
+                    Actions.scaleBy(-2, -2, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2));
 
-            switch (dc.target) {
-                case PLAYER:
-                    if (rc.damage == 0) {
-                        uc.actor.addAction(left);
-                        player.add(rc);
-                    } else {
-                        enemy.hit(rc.damage);
-                        uc.actor.addAction(right);
-                        entity.add(new ElectrifiedComponent());
-                    }
-                    break;
-                case ENEMY:
-                    if (rc.damage == 0) {
-                        uc.actor.addAction(right);
-                        enemy.add(rc);
-                    } else {
-                        player.hit(rc.damage);
-                        uc.actor.addAction(left);
-                        entity.add(new ElectrifiedComponent());
-                    }
-                    break;
+            if (dc.collector == pc.puzzle.player) {
+                if (rc.damage == 0) {
+                    uc.actor.addAction(left);
+                    pc.puzzle.player.add(rc);
+                } else {
+                    pc.puzzle.enemy.hit(rc.damage);
+                    uc.actor.addAction(Actions.parallel(right, zoom));
+                    entity.add(new ElectrifiedComponent());
+                }
+            } else if (dc.collector == pc.puzzle.enemy){
+                if (rc.damage == 0) {
+                    uc.actor.addAction(right);
+                    pc.puzzle.enemy.add(rc);
+                } else {
+                    pc.puzzle.player.hit(rc.damage);
+                    uc.actor.addAction(Actions.parallel(left, zoom));
+                    entity.add(new ElectrifiedComponent());
+                }
             }
         }
 

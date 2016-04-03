@@ -1,7 +1,9 @@
 package thepaperpilot.order.Systems;
 
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -12,15 +14,18 @@ import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
 public class PuzzleSystem extends EntitySystem {
+    public static final FighterComponent NULL_FIGHTER = new FighterComponent();
+    public FighterComponent player;
+    public FighterComponent enemy;
+
     public final int size;
     public Entity[][] runes;
     public Entity selected;
     float[] cooldown;
-    // TODO tell the player who's turn it is
-    public DestroyComponent.Target turn = DestroyComponent.Target.NULL;
+    public FighterComponent collector = NULL_FIGHTER;
+    public FighterComponent turn;
     public boolean stable;
     public float stableTimer;
-    public boolean extraTurn = false;
 
     // TODO make this class cleaner/smaller
     // too much hard coding of the 5 types
@@ -29,6 +34,30 @@ public class PuzzleSystem extends EntitySystem {
         this.size = size;
         runes = new Entity[size][size];
         cooldown = new float[size];
+    }
+
+    public void addedToEngine (Engine engine) {
+        // Player Side
+        Entity playerEntity = new Entity();
+        turn = player = new FighterComponent();
+        playerEntity.add(this.player);
+        playerEntity.add(new UIComponent());
+        playerEntity.add(new PlayerControlledComponent());
+        // TODO class selection system
+        player.add(SpellComponent.getStrikeSpell());
+        player.add(SpellComponent.getImmortalitySpell());
+        player.add(SpellComponent.getRefreshSpell());
+        engine.addEntity(playerEntity);
+
+        // Enemy Side
+        Entity enemyEntity = new Entity();
+        enemy = new FighterComponent();
+        enemyEntity.add(enemy);
+        enemyEntity.add(new UIComponent());
+        enemy.portrait = "PortraitAlchemist";
+        enemy.add(SpellComponent.getStrikeSpell());
+        enemy.add(SpellComponent.getAntidoteSpell());
+        engine.addEntity(enemyEntity);
     }
 
     public void update (float deltaTime) {
@@ -58,17 +87,23 @@ public class PuzzleSystem extends EntitySystem {
             if (stableTimer > 1) {
                 if (checkForPossibleMoves()) {
                     //noinspection PointlessBooleanExpression
-                    if (turn == DestroyComponent.Target.PLAYER && !extraTurn || turn == DestroyComponent.Target.ENEMY && extraTurn || Constants.PLAYERLESS) {
-                        turn = DestroyComponent.Target.ENEMY;
-                        extraTurn = false;
-                        makeRandomMove();
+                    if (turn == enemy || Constants.PLAYERLESS) {
+                        boolean cast = false;
+                        for (Entity entity : enemy.spells) {
+                            if (enemy.canCast(entity, this)) {
+                                enemy.cast(entity, this);
+                                cast = true;
+                            }
+                        }
+                        if (!cast) makeRandomMove();
+                        takeTurn(enemy);
                         return;
                     }
                 } else {
                     for (int i = 0; i < size; i++) {
                         for (int j = 0; j < size; j++) {
                             if (runes[i][j] != null) {
-                                runes[i][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                                runes[i][j].add(new DestroyComponent(NULL_FIGHTER));
                             }
                         }
                     }
@@ -78,56 +113,56 @@ public class PuzzleSystem extends EntitySystem {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (checkForHorizontalTriples(i, j, true)) {
-                    runes[i][j].add(new DestroyComponent(turn));
-                    runes[i + 1][j].add(new DestroyComponent(turn));
-                    runes[i + 2][j].add(new DestroyComponent(turn));
+                    runes[i][j].add(new DestroyComponent(collector));
+                    runes[i + 1][j].add(new DestroyComponent(collector));
+                    runes[i + 2][j].add(new DestroyComponent(collector));
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = i + 3; k < size; k++) {
                         if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j]))) {
                             matched++;
-                            runes[k][j].add(new DestroyComponent(turn));
+                            runes[k][j].add(new DestroyComponent(collector));
                         } else break;
                     }
                     if (matched >= 4) {
                         /// destroy row
                         for (int k = 0; k < i; k++) {
-                            runes[k][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                            runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         for (int k = i + matched; k < size; k++) {
-                            runes[k][j].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                            runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
                         }
                     }
                     if (matched >= 5) {
                         // take another turn
-                        extraTurn = true;
+                        turn = collector;
                     }
                 }
                 if (checkForVerticalTriples(i, j, true)) {
-                    runes[i][j].add(new DestroyComponent(turn));
-                    runes[i][j + 1].add(new DestroyComponent(turn));
-                    runes[i][j + 2].add(new DestroyComponent(turn));
+                    runes[i][j].add(new DestroyComponent(collector));
+                    runes[i][j + 1].add(new DestroyComponent(collector));
+                    runes[i][j + 2].add(new DestroyComponent(collector));
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = j + 3; k < size; k++) {
                         if (runes[i][k] != null && rc.matches(Mappers.rune.get(runes[i][k]))) {
                             matched++;
-                            runes[i][k].add(new DestroyComponent(turn));
+                            runes[i][k].add(new DestroyComponent(collector));
 
                         } else break;
                     }
                     if (matched == 4) {
                         // destroy column
                         for (int k = 0; k < j; k++) {
-                            runes[i][k].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                            runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         for (int k = j + matched; k < size; k++) {
-                            runes[i][k].add(new DestroyComponent(DestroyComponent.Target.NULL));
+                            runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                     }
                     if (matched == 5) {
                         // take another turn
-                        extraTurn = true;
+                        turn = collector;
                     }
                 }
             }
@@ -215,6 +250,7 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     public void select(final Entity entity) {
+        if (!isStable() || turn != player) return;
         if (selected == null) {
             selected = entity;
             entity.add(new SelectedComponent());
@@ -234,7 +270,7 @@ public class PuzzleSystem extends EntitySystem {
                 runes[rc1.x][rc1.y] = entity;
                 runes[rc2.x][rc2.y] = selected;
                 if (checkForTriples()) {
-                    turn = DestroyComponent.Target.PLAYER;
+                    takeTurn(player);
                     updateRune(entity);
                     updateRune(selected);
                 } else {
@@ -386,5 +422,13 @@ public class PuzzleSystem extends EntitySystem {
 
     public Entity randomRune() {
         return runes[MathUtils.random(size - 1)][MathUtils.random(size - 1)];
+    }
+
+    public void takeTurn(FighterComponent fighterComponent) {
+        collector = fighterComponent;
+        stableTimer = 0;
+        if (fighterComponent == NULL_FIGHTER || fighterComponent == player) {
+            turn = enemy;
+        } else turn = player;
     }
 }
