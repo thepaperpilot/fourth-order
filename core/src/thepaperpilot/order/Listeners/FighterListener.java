@@ -38,7 +38,7 @@ public class FighterListener implements EntityListener {
         table.top().pad(20);
         Table left = new Table(Main.skin);
         Table portrait = new Table(Main.skin);
-        portrait.add(new Image(Main.getTexture("PortraitPlayer"))).expand().fill().pad(2);
+        portrait.add(new Image(Main.getTexture(fc.portrait))).expand().fill().pad(2);
         portrait.setBackground(Main.skin.getDrawable("default-round"));
         left.add(portrait).size(150, 200).padBottom(2).row();
 

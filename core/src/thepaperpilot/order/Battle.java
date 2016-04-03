@@ -56,6 +56,7 @@ public class Battle implements Screen {
         Entity enemy = new Entity();
         enemy.add(new FighterComponent());
         enemy.add(new UIComponent());
+        enemy.getComponent(FighterComponent.class).portrait = "PortraitAlchemist";
         engine.addEntity(enemy);
 
         /* Input Processing */

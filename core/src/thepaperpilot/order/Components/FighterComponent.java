@@ -9,6 +9,8 @@ import thepaperpilot.order.Main;
 import java.util.ArrayList;
 
 public class FighterComponent implements Component {
+    public String portrait = "PortraitPlayer";
+
     public float exp = 0;
     public float health = 10;
     public float poison = 0;
