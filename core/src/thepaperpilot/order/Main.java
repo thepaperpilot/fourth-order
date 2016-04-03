@@ -45,9 +45,6 @@ public class Main extends Game implements Screen {
         if (Constants.PROFILING) GLProfiler.enable();
 
         // start loading all our assets
-        // TODO make a giant texture of all the textures with an atlas file and an tsx file
-        // and make it have 2 pixels between the tiles so there won't be black lines
-        // and ideally have it filled with original art, not Kenney's (but his is cc0, so we can use it for now/ever. no rush)
         manager.load("skin.json", Skin.class);
 
         changeScreen(this);

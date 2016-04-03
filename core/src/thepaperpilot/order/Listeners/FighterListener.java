@@ -24,6 +24,7 @@ public class FighterListener implements EntityListener {
         this.engine = engine;
     }
 
+    // TODO make this class cleaner/smaller
     @Override
     public void entityAdded(final Entity entity) {
         final FighterComponent fc = Mappers.fighter.get(entity);
@@ -110,11 +111,11 @@ public class FighterListener implements EntityListener {
             Table button = new Button(Main.skin);
             button.setBackground(Main.skin.getDrawable("default-round"));
             button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
-            if (sc.poison != 0) button.add(createDisplay(sc.poison, sc.poisonDisplay, Color.PURPLE));
-            if (sc.surprise != 0) button.add(createDisplay(sc.surprise, sc.surpriseDisplay, Color.YELLOW));
-            if (sc.mortal != 0) button.add(createDisplay(sc.mortal, sc.mortalDisplay, Color.RED));
-            if (sc.steam != 0) button.add(createDisplay(sc.steam, sc.steamDisplay, Color.TEAL));
-            if (sc.mason != 0) button.add(createDisplay(sc.mason, sc.masonDisplay, Color.GREEN));
+            if (sc.poison != 0) button.add(createDisplay(sc.poison, sc.poisonDisplay, Color.PURPLE)).expandX();
+            if (sc.surprise != 0) button.add(createDisplay(sc.surprise, sc.surpriseDisplay, Color.YELLOW)).expandX();
+            if (sc.mortal != 0) button.add(createDisplay(sc.mortal, sc.mortalDisplay, Color.RED)).expandX();
+            if (sc.steam != 0) button.add(createDisplay(sc.steam, sc.steamDisplay, Color.TEAL)).expandX();
+            if (sc.mason != 0) button.add(createDisplay(sc.mason, sc.masonDisplay, Color.GREEN)).expandX();
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

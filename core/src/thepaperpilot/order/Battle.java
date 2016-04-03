@@ -15,6 +15,8 @@ import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Systems.*;
+import thepaperpilot.order.Systems.Spells.DestroyColorSystem;
+import thepaperpilot.order.Systems.Spells.RefreshSystem;
 import thepaperpilot.order.Systems.Spells.StrikeSystem;
 import thepaperpilot.order.Util.Constants;
 
@@ -42,6 +44,8 @@ public class Battle implements Screen {
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
         engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
 
+        engine.addSystem(new DestroyColorSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
 
         /* Add Initial Entities to Engine */
@@ -50,7 +54,10 @@ public class Battle implements Screen {
         player.add(new FighterComponent());
         player.add(new UIComponent());
         player.add(new PlayerControlledComponent());
+        // TODO class selection system
         player.getComponent(FighterComponent.class).add(SpellComponent.strike);
+        player.getComponent(FighterComponent.class).add(SpellComponent.immortality);
+        player.getComponent(FighterComponent.class).add(SpellComponent.refresh);
         engine.addEntity(player);
         // Enemy Side
         Entity enemy = new Entity();

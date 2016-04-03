@@ -20,6 +20,8 @@ public class PuzzleSystem extends EntitySystem {
     public boolean stable;
     public float stableTimer;
 
+    // TODO make this class cleaner/smaller
+    // too much hard coding of the 5 types
     public PuzzleSystem(int size) {
         super(5);
         this.size = size;
@@ -365,7 +367,6 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     public Entity randomRune() {
-
         return runes[MathUtils.random(size - 1)][MathUtils.random(size - 1)];
     }
 }

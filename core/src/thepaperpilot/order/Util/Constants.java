@@ -12,6 +12,10 @@ public class Constants {
     public static final float RUNE_EXIT_SPEED = 1.5f;
     public static final float IDLE_CHANCE = .0002f;
 
+    /* Balancing */
+    public static final int DESTROY_LOW = 7;
+    public static final int DESTROY_HIGH = 9;
+
     /* Debug */
     public static final boolean PROFILING = false;
     public static final boolean PLAYERLESS = false;
