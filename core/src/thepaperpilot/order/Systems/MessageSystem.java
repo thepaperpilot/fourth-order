@@ -44,6 +44,6 @@ public class MessageSystem extends IteratingSystem {
                 })
         ));
         stage.addActor(message);
-        getEngine().removeEntity(entity);
+        entity.remove(MessageComponent.class);
     }
 }

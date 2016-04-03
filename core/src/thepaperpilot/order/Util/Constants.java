@@ -19,4 +19,8 @@ public class Constants {
     /* Debug */
     public static final boolean PROFILING = false;
     public static final boolean PLAYERLESS = false;
+
+    /* Other */
+    public static final int MATCH_4_RUMBLE = 100;
+    public static final int MATCH_5_RUMBLE = 200;
 }

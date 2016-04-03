@@ -43,6 +43,7 @@ public class Battle implements Screen {
         engine.addSystem(new PuzzleSystem(9)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
+        engine.addSystem(new ScreenShakeSystem(ui)); //priority 9
         engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
 
         engine.addSystem(new DestroyColorSystem(ui.getBatch())); //priority 20

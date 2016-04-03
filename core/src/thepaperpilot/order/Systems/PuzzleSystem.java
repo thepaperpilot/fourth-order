@@ -147,6 +147,7 @@ public class PuzzleSystem extends EntitySystem {
                         mc.x = Constants.UI_WIDTH + getRuneSize() * i;
                         mc.y = getRuneSize() * (j + matched) / 2;
                         message.add(mc);
+                        message.add(new ScreenShakeComponent(Constants.MATCH_4_RUMBLE));
                         getEngine().addEntity(message);
                     }
                     if (matched >= 5) {
@@ -156,6 +157,7 @@ public class PuzzleSystem extends EntitySystem {
                         mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
                         mc.y = getRuneSize() * j;
                         message.add(mc);
+                        message.add(new ScreenShakeComponent(Constants.MATCH_5_RUMBLE));
                         getEngine().addEntity(message);
                     }
                 }
@@ -172,7 +174,7 @@ public class PuzzleSystem extends EntitySystem {
 
                         } else break;
                     }
-                    if (matched == 4) {
+                    if (matched >= 4) {
                         // destroy column
                         for (int k = 0; k < j; k++) {
                             runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
@@ -181,19 +183,23 @@ public class PuzzleSystem extends EntitySystem {
                             runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
                         }
                         Entity message = new Entity();
-                        MessageComponent mc = new MessageComponent("Matched 4\nColumn Destroyed");
-                        mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
-                        mc.y = getRuneSize() * j;
-                        message.add(mc);
+                        if (matched == 4) {
+                            MessageComponent mc = new MessageComponent("Matched 4\nColumn Destroyed");
+                            mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
+                            mc.y = getRuneSize() * j;
+                            message.add(mc);
+                        }
+                        message.add(new ScreenShakeComponent(Constants.MATCH_4_RUMBLE));
                         getEngine().addEntity(message);
                     }
-                    if (matched == 5) {
+                    if (matched >= 5) {
                         turn = collector;
                         Entity message = new Entity();
                         MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
                         mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
                         mc.y = getRuneSize() * j;
                         message.add(mc);
+                        message.add(new ScreenShakeComponent(Constants.MATCH_5_RUMBLE));
                         getEngine().addEntity(message);
                     }
                 }
