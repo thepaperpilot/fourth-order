@@ -34,8 +34,8 @@ public class MessageSystem extends IteratingSystem {
         message.setColor(mc.color);
         message.addAction(Actions.sequence(
                 Actions.parallel(
-                        Actions.moveBy(0, 400, 2 * Constants.RUNE_EXIT_SPEED, Interpolation.pow2),
-                        Actions.fadeOut(2 * Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                        Actions.moveBy(0, 400, 2 * Constants.RUNE_EXIT_TIME, Interpolation.pow2),
+                        Actions.fadeOut(2 * Constants.RUNE_EXIT_TIME, Interpolation.pow2)),
                 Actions.run(new Runnable() {
                     @Override
                     public void run() {

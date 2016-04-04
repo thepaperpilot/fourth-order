@@ -123,16 +123,7 @@ public class PuzzleSystem extends EntitySystem {
                         return;
                     }
                 } else {
-                    Entity message = new Entity();
-                    message.add(new MessageComponent("No More Moves\nBoard Reset"));
-                    getEngine().addEntity(message);
-                    for (int i = 0; i < size; i++) {
-                        for (int j = 0; j < size; j++) {
-                            if (runes[i][j] != null) {
-                                runes[i][j].add(new DestroyComponent(NULL_FIGHTER));
-                            }
-                        }
-                    }
+                    resetBoard();
                 }
             }
         } else stableTimer = 0;
@@ -220,6 +211,19 @@ public class PuzzleSystem extends EntitySystem {
                         message.add(new ScreenShakeComponent(Constants.MATCH_5_RUMBLE));
                         getEngine().addEntity(message);
                     }
+                }
+            }
+        }
+    }
+
+    private void resetBoard() {
+        Entity message = new Entity();
+        message.add(new MessageComponent("No More Moves\nBoard Reset"));
+        getEngine().addEntity(message);
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (runes[i][j] != null) {
+                    runes[i][j].add(new DestroyComponent(NULL_FIGHTER));
                 }
             }
         }
@@ -427,36 +431,37 @@ public class PuzzleSystem extends EntitySystem {
 
     // check out this hard core AI. It's 100% guaranteed to be smarter than the player
     private void makeRandomMove() {
-        int startX = MathUtils.random(size - 1);
-        int startY = MathUtils.random(size - 1);
-        for (int i = startX; i < size - 1; i++) {
-            for (int j = startY; j < size - 1; j++) {
-                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
-                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+        int startX = MathUtils.random(size);
+        int startY = MathUtils.random(size);
+        for (int i = startX; i < size; i++) {
+            for (int j = startY; j < size; j++) {
+                if (i < size - 1  && checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (j < size - 1 && checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
                 else continue;
                 return;
             }
             for (int j = 0; j < startY; j++) {
-                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
-                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                if (i < size - 1 && checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (j < size - 1 && checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
                 else continue;
                 return;
             }
         }
         for (int i = 0; i < startX; i++) {
             for (int j = startY; j < size - 1; j++) {
-                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
-                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                if (i < size - 1 && checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (j < size - 1 && checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
                 else continue;
                 return;
             }
             for (int j = 0; j < startY; j++) {
-                if (checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
-                else if (checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
+                if (i < size - 1 && checkSwitch(i, j, i + 1, j)) makeSwitch(i, j, i + 1, j);
+                else if (j < size - 1 && checkSwitch(i, j, i, j + 1)) makeSwitch(i, j, i, j + 1);
                 else continue;
                 return;
             }
         }
+        resetBoard();
     }
 
     private void makeSwitch(int x1, int y1, int x2, int y2) {

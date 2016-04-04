@@ -87,6 +87,7 @@ public class FighterComponent implements Component {
     }
 
     public void hit(float damage, PuzzleSystem puzzle) {
+        if (Constants.UNDYING) return;
         for (Entity entity : puzzle.getEngine().getEntitiesFor(Family.all(StatusEffectComponent.class, DamageMultiplierComponent.class).get())) {
             StatusEffectComponent sc = Mappers.statusEffect.get(entity);
             DamageMultiplierComponent dc = Mappers.damageMultiplier.get(entity);
@@ -112,7 +113,7 @@ public class FighterComponent implements Component {
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
-        if (health == 0 && !Constants.UNDYING) {
+        if (health == 0) {
             message = new Entity();
             if (puzzle.enemy == this) {
                 message.add(new MessageComponent("[GOLD]You Are Victorious"));

@@ -37,8 +37,8 @@ public class DestroyRuneSystem extends IteratingSystem {
             uc.actor.addAction(
                     Actions.sequence(
                             Actions.parallel(
-                                    Actions.moveBy(0, -1000, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
-                                    Actions.moveBy(MathUtils.random(-200, 200), 0, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                                    Actions.moveBy(0, -1000, Constants.RUNE_EXIT_TIME, Interpolation.swingIn),
+                                    Actions.moveBy(MathUtils.random(-200, 200), 0, Constants.RUNE_EXIT_TIME, Interpolation.pow2)),
                             Actions.run(remove)));
         } else {
             if (Mappers.command.has(entity)) {
@@ -53,17 +53,17 @@ public class DestroyRuneSystem extends IteratingSystem {
             }
             Action left = Actions.sequence(
                     Actions.parallel(
-                            Actions.moveBy(-uc.actor.getX(), Constants.WORLD_HEIGHT - uc.actor.getY() + 200, Constants.RUNE_EXIT_SPEED, Interpolation.circleIn),
-                            Actions.moveBy(MathUtils.random(-200, 200), -200, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                            Actions.moveBy(-uc.actor.getX(), Constants.WORLD_HEIGHT - uc.actor.getY() + 200, Constants.RUNE_EXIT_TIME, Interpolation.circleIn),
+                            Actions.moveBy(MathUtils.random(-200, 200), -200, Constants.RUNE_EXIT_TIME, Interpolation.pow2)),
                     Actions.run(remove));
             Action right = Actions.sequence(
                     Actions.parallel(
-                            Actions.moveBy(Constants.WORLD_WIDTH - uc.actor.getX(), Constants.WORLD_HEIGHT - uc.actor.getY() + 200, Constants.RUNE_EXIT_SPEED, Interpolation.circleIn),
-                            Actions.moveBy(MathUtils.random(-200, 200), -200, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                            Actions.moveBy(Constants.WORLD_WIDTH - uc.actor.getX(), Constants.WORLD_HEIGHT - uc.actor.getY() + 200, Constants.RUNE_EXIT_TIME, Interpolation.circleIn),
+                            Actions.moveBy(MathUtils.random(-200, 200), -200, Constants.RUNE_EXIT_TIME, Interpolation.pow2)),
                     Actions.run(remove));
             Action zoom = Actions.sequence(
-                    Actions.scaleBy(2, 2, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2),
-                    Actions.scaleTo(0, 0, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2In));
+                    Actions.scaleBy(2, 2, Constants.RUNE_EXIT_TIME / 2f, Interpolation.pow2),
+                    Actions.scaleTo(0, 0, Constants.RUNE_EXIT_TIME / 2f, Interpolation.pow2In));
 
             if (dc.collector == pc.puzzle.player) {
                 if (rc.damage == 0) {

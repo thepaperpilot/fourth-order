@@ -12,6 +12,7 @@ public class ParticleEffectSystem extends EntitySystem {
     private ParticleEffect player;
     private ParticleEffect enemy;
     private Batch batch;
+    private float time;
 
     public ParticleEffectSystem(Batch batch) {
         super(9);
@@ -22,26 +23,26 @@ public class ParticleEffectSystem extends EntitySystem {
         player = new ParticleEffect();
         player.load(Gdx.files.internal("fighter.p"), Gdx.files.internal(""));
         player.setPosition(30, 0);
+        player.getEmitters().first().getTint().setColors(new float[]{.12f, .69f, .03f});
 
         enemy = new ParticleEffect();
         enemy.load(Gdx.files.internal("fighter.p"), Gdx.files.internal(""));
         enemy.setPosition(Constants.WORLD_WIDTH - 250, 0);
+        enemy.getEmitters().first().getTint().setColors(new float[]{.72f, .1f, .03f});
     }
 
     public void update (float deltaTime) {
         PuzzleSystem puzzle = getEngine().getSystem(PuzzleSystem.class);
-        if (puzzle.turn == puzzle.player) {
-            player.getEmitters().first().getTint().setColors(new float[]{.12f, .69f, .03f});
-            enemy.getEmitters().first().getTint().setColors(new float[]{.27f, .04f, .01f});
-        } else if (puzzle.turn == puzzle.enemy) {
-            player.getEmitters().first().getTint().setColors(new float[]{.047f, .27f, .01f});
-            enemy.getEmitters().first().getTint().setColors(new float[]{.72f, .1f, .03f});
-        } else {
-            player.getEmitters().first().getTint().setColors(new float[]{.047f, .27f, .01f});
-            enemy.getEmitters().first().getTint().setColors(new float[]{.27f, .04f, .01f});
+
+        time += deltaTime;
+        while (time > Constants.PARTICLE_FREQUENCY) {
+            if (puzzle.turn == puzzle.player) {
+                player.getEmitters().first().addParticle();
+            } else if (puzzle.turn == puzzle.enemy) {
+                enemy.getEmitters().first().addParticle();
+            }
+            time -= Constants.PARTICLE_FREQUENCY;
         }
-        player.getEmitters().first().getTransparency().setHigh(batch.getColor().a);
-        enemy.getEmitters().first().getTransparency().setHigh(batch.getColor().a);
 
         batch.begin();
         player.draw(batch, deltaTime);
