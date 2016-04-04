@@ -24,7 +24,7 @@ public class Constants {
     public static final boolean DEBUG = true;
     public static final boolean PROFILING = false;
     public static boolean PLAYERLESS = false;
-    public static boolean UNDYING = true;
+    public static boolean UNDYING = false;
     public static float DELTA_MOD = 1;
 
     /* Other */

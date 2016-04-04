@@ -45,8 +45,7 @@ public class Battle implements Screen {
         engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
         engine.addSystem(new FighterSystem()); //priority 5
         engine.addSystem(new MessageSystem(ui)); //priority 15
-        // too slow on web atm
-        // engine.addSystem(new ParticleEffectSystem(ui.getBatch())); //priority 9
+        engine.addSystem(new ParticleEffectSystem(ui.getBatch())); //priority 9
         engine.addSystem(new PuzzleSystem(size, enemy)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10

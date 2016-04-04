@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import thepaperpilot.order.Components.DialogueComponent;
 import thepaperpilot.order.Systems.DialogueSystem;
@@ -35,6 +36,7 @@ public class DialogueScreen implements Screen { //possible for things other than
     @Override
     public void show() {
         Gdx.input.setInputProcessor(ui);
+        ui.addAction(Actions.fadeIn(1));
     }
 
     @Override
