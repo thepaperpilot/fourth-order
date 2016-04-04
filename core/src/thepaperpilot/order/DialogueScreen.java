@@ -24,7 +24,7 @@ public class DialogueScreen implements Screen { //possible for things other than
         /* Add Listeners to Engine */
 
         /* Add Systems to Engine */
-        engine.addSystem(new DialogueSystem(ui)); //priority 15
+        engine.addSystem(new DialogueSystem(ui)); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
 
         /* Add the Dialogue */
@@ -36,7 +36,6 @@ public class DialogueScreen implements Screen { //possible for things other than
     @Override
     public void show() {
         Gdx.input.setInputProcessor(ui);
-        ui.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(1)));
     }
 
     @Override

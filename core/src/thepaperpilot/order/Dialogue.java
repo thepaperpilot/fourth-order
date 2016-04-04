@@ -2,7 +2,9 @@ package thepaperpilot.order;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -19,7 +21,6 @@ public class Dialogue extends Table {
     ScrollText messageLabel;
     private float maxTimer;
     private float timer;
-    public Runnable chain;
 
     public Dialogue(Line[] lines, String player, String[] enemies) {
         super(Main.skin);
@@ -143,7 +144,6 @@ public class Dialogue extends Table {
         timer = maxTimer;
         next();
         remove();
-        if (chain != null) chain.run();
     }
 
     private void next() {
@@ -231,8 +231,8 @@ public class Dialogue extends Table {
     }
 
     public static class ScrollText extends Label {
-        private float time = 6 / Constants.TEXT_SPEED;
-        private int chars = 3;
+        private float time = 0;
+        private int chars = 0;
         public String message = "";
 
         public ScrollText() {
@@ -243,17 +243,38 @@ public class Dialogue extends Table {
             super.act(delta);
             if (!message.equals("")) {
                 time += delta;
-                if (chars < Math.min(message.length(), (int) (time * Constants.TEXT_SPEED))) {
-                    chars += 3;
+                String scroll = "";
+                int chars = 0;
+                int currentChar = 0;
+                while (chars < time * Constants.TEXT_SPEED && currentChar < message.length()) {
+                    switch (message.charAt(currentChar)) {
+                        default:
+                            scroll += message.charAt(currentChar);
+                            chars++;
+                            currentChar++;
+                            break;
+                        case '_':
+                            chars++;
+                            currentChar++;
+                            break;
+                        case '[':
+                            String color = message.substring(currentChar, message.indexOf(']', currentChar));
+                            scroll += color;
+                            currentChar += color.length();
+                            break;
+                    }
                 }
-                setText(message.substring(0, Math.min(message.length(), (int) (time * Constants.TEXT_SPEED))));
+                if (this.chars < Math.min(scroll.length(), (int) (time * Constants.TEXT_SPEED))) {
+                    this.chars += 3;
+                }
+                setText(scroll);
             }
         }
 
         public void setMessage(String message) {
             this.message = message;
-            time = 6 / Constants.TEXT_SPEED;
-            chars = 3;
+            time = 1 / Constants.TEXT_SPEED;
+            chars = 1;
         }
 
         public boolean isFinished() {

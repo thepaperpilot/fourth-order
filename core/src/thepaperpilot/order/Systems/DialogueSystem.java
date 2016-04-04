@@ -13,7 +13,7 @@ public class DialogueSystem extends IteratingSystem {
     private Stage stage;
 
     public DialogueSystem(Stage stage) {
-        super(Family.all(DialogueComponent.class).get(), 15);
+        super(Family.all(DialogueComponent.class).get(), 5);
         this.stage = stage;
     }
 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -80,28 +81,28 @@ public class Main extends Game implements Screen {
                 skin.getFont("font").getData().markupEnabled = true;
             }
 
+            DialogueComponent dc = new DialogueComponent();
+            DialogueScreen ds = new DialogueScreen(dc);
             if (Player.hasPlayer()) {
-                changeScreen(getOpponentSelector());
+                dc.lines = new Dialogue.Line[]{getOpponentSelector(ds)};
             } else {
-                changeScreen(getClassSelector());
+                dc.lines = new Dialogue.Line[]{getClassSelector(), getOpponentSelector(ds)};
             }
+            changeScreen(ds);
         }
     }
 
-    private DialogueScreen getOpponentSelector() {
+    private Dialogue.Line getOpponentSelector(final DialogueScreen ds) {
         final Runnable reset = new Runnable() {
             @Override
             public void run() {
                 Main.changeScreen(Main.instance);
             }
         };
-        DialogueComponent dc = new DialogueComponent();
-        final DialogueScreen ds = new DialogueScreen(dc);
-        dc.lines = new Dialogue.Line[1];
-        dc.lines[0] = new Dialogue.Line("There are 5 guardians in the Fourth Order, one for each element. Who should I go beat up?", "Player", 0);
-        dc.lines[0].options = new Dialogue.Option[6];
-        dc.lines[0].options[0] = new Dialogue.Option("Poison");
-        dc.lines[0].options[0].events = new Runnable() {
+        Dialogue.Line line = new Dialogue.Line("There are 5 guardians in the Fourth Order, one for each element. Who should I go beat up?", "Player", 0);
+        line.options = new Dialogue.Option[6];
+        line.options[0] = new Dialogue.Option("Poison");
+        line.options[0].events = new Runnable() {
             @Override
             public void run() {
                 DialogueComponent dc = new DialogueComponent();
@@ -137,8 +138,8 @@ public class Main extends Game implements Screen {
                 ds.engine.addEntity(dialogue);
             }
         };
-        dc.lines[0].options[1] = new Dialogue.Option("Surprise");
-        dc.lines[0].options[1].events = new Runnable() {
+        line.options[1] = new Dialogue.Option("Surprise");
+        line.options[1].events = new Runnable() {
             @Override
             public void run() {
                 DialogueComponent dc = new DialogueComponent();
@@ -174,8 +175,8 @@ public class Main extends Game implements Screen {
                 ds.engine.addEntity(dialogue);
             }
         };
-        dc.lines[0].options[2] = new Dialogue.Option("Mason");
-        dc.lines[0].options[2].events = new Runnable() {
+        line.options[2] = new Dialogue.Option("Mason");
+        line.options[2].events = new Runnable() {
             @Override
             public void run() {
                 DialogueComponent dc = new DialogueComponent();
@@ -209,14 +210,14 @@ public class Main extends Game implements Screen {
                 ds.engine.addEntity(dialogue);
             }
         };
-        dc.lines[0].options[3] = new Dialogue.Option("Steam");
-        dc.lines[0].options[3].events = new Runnable() {
+        line.options[3] = new Dialogue.Option("Steam");
+        line.options[3].events = new Runnable() {
             @Override
             public void run() {
                 DialogueComponent dc = new DialogueComponent();
                 dc.enemies = new String[]{"PortraitPaladin"};
                 dc.lines = new Dialogue.Line[1];
-                dc.lines[0] = new Dialogue.Line("I will stop you, in the name of \nThe Light!", "Guardian of Steam", 1);
+                dc.lines[0] = new Dialogue.Line("I will stop you, in the name of [YELLOW]The Light![]", "Guardian of Steam", 1);
                 final FighterComponent enemy = new FighterComponent();
                 enemy.portrait = "PortraitPaladin";
                 enemy.add(SpellComponent.getStrikeSpell());
@@ -244,8 +245,8 @@ public class Main extends Game implements Screen {
                 ds.engine.addEntity(dialogue);
             }
         };
-        dc.lines[0].options[4] = new Dialogue.Option("Mortal");
-        dc.lines[0].options[4].events = new Runnable() {
+        line.options[4] = new Dialogue.Option("Mortal");
+        line.options[4].events = new Runnable() {
             @Override
             public void run() {
                 DialogueComponent dc = new DialogueComponent();
@@ -280,9 +281,8 @@ public class Main extends Game implements Screen {
                 ds.engine.addEntity(dialogue);
             }
         };
-        // ranger goes here
-        dc.lines[0].options[5] = new Dialogue.Option("YOURSELF (bonus level)");
-        dc.lines[0].options[5].events = new Runnable() {
+        line.options[5] = new Dialogue.Option("YOURSELF (bonus level)");
+        line.options[5].events = new Runnable() {
             @Override
             public void run() {
                 final FighterComponent enemy = new FighterComponent();
@@ -292,57 +292,48 @@ public class Main extends Game implements Screen {
                 Main.changeScreen(new Battle(17, enemy));
             }
         };
-        return ds;
+        return line;
     }
 
-    private DialogueScreen getClassSelector() {
-        DialogueComponent dc = new DialogueComponent();
-        final DialogueScreen ds = new DialogueScreen(dc);
-        dc.lines = new Dialogue.Line[1];
-        dc.lines[0] = new Dialogue.Line("What is my class?", "Player", 0);
-        dc.lines[0].options = new Dialogue.Option[5];
-        dc.lines[0].options[0] = new Dialogue.Option("Alchemist");
-        dc.lines[0].options[0].events = new Runnable() {
+    private Dialogue.Line getClassSelector() {
+        Dialogue.Line line = new Dialogue.Line("What is my class?", "Player", 0);
+        line.options = new Dialogue.Option[5];
+        line.options[0] = new Dialogue.Option("Alchemist");
+        line.options[0].events = new Runnable() {
             @Override
             public void run() {
                 Player.getPlayer().add(SpellComponent.getTruthSpell());
             }
         };
-        dc.lines[0].options[1] = new Dialogue.Option("Rogue");
-        dc.lines[0].options[1].events = new Runnable() {
+        line.options[1] = new Dialogue.Option("Rogue");
+        line.options[1].events = new Runnable() {
             @Override
             public void run() {
                 Player.getPlayer().add(SpellComponent.getCondenseSpell());
             }
         };
-        dc.lines[0].options[2] = new Dialogue.Option("Ranger");
-        dc.lines[0].options[2].events = new Runnable() {
+        line.options[2] = new Dialogue.Option("Ranger");
+        line.options[2].events = new Runnable() {
             @Override
             public void run() {
                 Player.getPlayer().add(SpellComponent.getAntidoteSpell());
             }
         };
-        dc.lines[0].options[3] = new Dialogue.Option("Paladin");
-        dc.lines[0].options[3].events = new Runnable() {
+        line.options[3] = new Dialogue.Option("Paladin");
+        line.options[3].events = new Runnable() {
             @Override
             public void run() {
                 Player.getPlayer().add(SpellComponent.getImmortalitySpell());
             }
         };
-        dc.lines[0].options[4] = new Dialogue.Option("Wizard");
-        dc.lines[0].options[4].events = new Runnable() {
+        line.options[4] = new Dialogue.Option("Wizard");
+        line.options[4].events = new Runnable() {
             @Override
             public void run() {
                 Player.getPlayer().add(SpellComponent.getPremonitionSpell());
             }
         };
-        dc.lines[0].events = new Runnable() {
-            @Override
-            public void run() {
-                changeScreen(instance);
-            }
-        };
-        return ds;
+        return line;
     }
 
     @Override
