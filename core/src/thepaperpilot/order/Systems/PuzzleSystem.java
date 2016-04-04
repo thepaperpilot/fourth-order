@@ -86,7 +86,7 @@ public class PuzzleSystem extends EntitySystem {
             cooldown[i] += deltaTime;
         }
         stable = true;
-        for (int i = 0; i < size; i++) {
+        for (int i = size - 1; i >= 0; i--) {
             for (int j = 0; j < size; j++) {
                 if (runes[i][j] == null) {
                     stable = false;
