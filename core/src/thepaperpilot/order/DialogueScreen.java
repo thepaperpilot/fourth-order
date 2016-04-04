@@ -17,7 +17,7 @@ public class DialogueScreen implements Screen { //possible for things other than
 
     public DialogueScreen(DialogueComponent dc) {
         /* Create Stuff */
-        ui = new Stage(new StretchViewport(Constants.WORLD_WIDTH * 2, Constants.WORLD_HEIGHT * 2)); // rebel
+        ui = new Stage(new StretchViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT));
         engine = new Engine();
 
         /* Add Listeners to Engine */
