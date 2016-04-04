@@ -116,10 +116,12 @@ public class FighterComponent implements Component {
         if (health == 0) {
             message = new Entity();
             if (puzzle.enemy == this) {
+                Main.playSound("victory.wav");
                 message.add(new MessageComponent("[GOLD]You Are Victorious"));
                 if (victory != null) puzzle.transition(new DialogueScreen(victory));
                 else puzzle.transition(Main.instance);
             } else if (puzzle.player == this) {
+                Main.playSound("lose.wav");
                 message.add(new MessageComponent("[FIREBRICK]You Have Been Defeated"));
                 if (puzzle.enemy.loss != null) puzzle.transition(new DialogueScreen(puzzle.enemy.loss));
                 else puzzle.transition(Main.instance);
@@ -207,6 +209,7 @@ public class FighterComponent implements Component {
         mc.y = coords.y;
         message.add(mc);
         puzzle.getEngine().addEntity(message);
+        Main.playSound("level.wav");
 
         if (puzzle.player == this) {
             final ArrayList<Entity> spells = new ArrayList<Entity>();

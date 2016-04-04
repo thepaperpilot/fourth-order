@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Components.Spells.CommandComponent;
+import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.Spells.SpellSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -85,6 +86,8 @@ public class DestroyRuneSystem extends IteratingSystem {
                 }
             }
         }
+
+        Main.playSound("rune.wav");
 
         pc.puzzle.runes[rc.x][rc.y] = null;
         entity.remove(RuneComponent.class);

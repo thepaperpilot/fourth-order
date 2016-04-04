@@ -155,6 +155,7 @@ public class PuzzleSystem extends EntitySystem {
                             mc.x = Constants.UI_WIDTH + getRuneSize() * i;
                             mc.y = getRuneSize() * (j + matched) / 2;
                             message.add(mc);
+                            Main.playSound("match4.wav");
                         }
                         message.add(new ScreenShakeComponent(Constants.MATCH_4_RUMBLE));
                         getEngine().addEntity(message);
@@ -168,6 +169,7 @@ public class PuzzleSystem extends EntitySystem {
                         message.add(mc);
                         message.add(new ScreenShakeComponent(Constants.MATCH_5_RUMBLE));
                         getEngine().addEntity(message);
+                        Main.playSound("match5.wav");
                     }
                 }
                 if (checkForVerticalTriples(i, j, true)) {
@@ -197,6 +199,7 @@ public class PuzzleSystem extends EntitySystem {
                             mc.x = Constants.UI_WIDTH + getRuneSize() * (i + matched) / 2;
                             mc.y = getRuneSize() * j;
                             message.add(mc);
+                            Main.playSound("match4.wav");
                         }
                         message.add(new ScreenShakeComponent(Constants.MATCH_4_RUMBLE));
                         getEngine().addEntity(message);
@@ -210,6 +213,7 @@ public class PuzzleSystem extends EntitySystem {
                         message.add(mc);
                         message.add(new ScreenShakeComponent(Constants.MATCH_5_RUMBLE));
                         getEngine().addEntity(message);
+                        Main.playSound("match5.wav");
                     }
                 }
             }

@@ -17,6 +17,9 @@ public class Constants {
     public static final float TEXT_SPEED = 24;
     public static final float PARTICLE_FREQUENCY = 1/100f;
 
+    /* Audio */
+    public static final float MASTER_VOLUME = 1;
+
     /* Balancing */
     public static final int DESTROY_LOW = 7;
     public static final int DESTROY_HIGH = 9;

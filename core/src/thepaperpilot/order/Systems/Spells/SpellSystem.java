@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import thepaperpilot.order.Components.SpellComponent;
+import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -40,6 +41,7 @@ public class SpellSystem extends IteratingSystem {
         } else if (Mappers.spell.has(entity)) {
             castSpell(entity);
 
+            Main.playSound("spell.wav");
             entity.remove(SpellComponent.class);
         }
     }

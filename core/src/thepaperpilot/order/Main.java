@@ -5,6 +5,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
@@ -44,6 +46,7 @@ public class Main extends Game implements Screen {
 
         // start loading all our assets
         manager.load("skin.json", Skin.class);
+        manager.load("audio/bgm.wav", Music.class);
 
         changeScreen(this);
     }
@@ -79,6 +82,10 @@ public class Main extends Game implements Screen {
                 skin.getFont("large").getData().markupEnabled = true;
                 skin.getFont("font").getData().setScale(.5f);
                 skin.getFont("font").getData().markupEnabled = true;
+
+                Music bgm = manager.get("audio/bgm.wav", Music.class);
+                bgm.setLooping(true);
+                bgm.play();
             }
 
             DialogueComponent dc = new DialogueComponent();
@@ -401,5 +408,12 @@ public class Main extends Game implements Screen {
         manager.load(name, Texture.class);
         manager.finishLoadingAsset(name);
         return Main.manager.get(name, Texture.class);
+    }
+
+    public static void playSound(String sound) {
+        sound = "audio/" + sound;
+        manager.load(sound, Sound.class);
+        manager.finishLoading();
+        Main.manager.get(sound, Sound.class).play(Constants.MASTER_VOLUME);
     }
 }
