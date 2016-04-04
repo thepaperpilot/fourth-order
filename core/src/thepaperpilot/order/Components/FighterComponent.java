@@ -220,7 +220,7 @@ public class FighterComponent implements Component {
 
             } else if (classSpell.equals("Premonition")) { //wizard
 
-            } else System.out.println(classSpell);
+            }
 
             for (Iterator<Entity> iterator = spells.iterator(); iterator.hasNext(); ) {
                 Entity spell = iterator.next();
