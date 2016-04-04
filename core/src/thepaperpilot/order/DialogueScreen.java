@@ -36,7 +36,7 @@ public class DialogueScreen implements Screen { //possible for things other than
     @Override
     public void show() {
         Gdx.input.setInputProcessor(ui);
-        ui.addAction(Actions.fadeIn(1));
+        ui.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(1)));
     }
 
     @Override

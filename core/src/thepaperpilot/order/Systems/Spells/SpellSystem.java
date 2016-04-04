@@ -31,6 +31,7 @@ public class SpellSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         if (Mappers.rune.has(entity) && Mappers.ui.has(entity)) {
+            if (Mappers.totem.has(entity)) updateTotem(entity);
             if (Mappers.destroy.has(entity) && Mappers.destroy.get(entity).collector != PuzzleSystem.NULL_FIGHTER) {
                 destroyRune(entity);
             }
@@ -40,6 +41,10 @@ public class SpellSystem extends IteratingSystem {
 
             entity.remove(SpellComponent.class);
         }
+    }
+
+    protected void updateTotem(Entity entity) {
+
     }
 
     // make sure to remove the spell component from the entity (not SpellComponent)

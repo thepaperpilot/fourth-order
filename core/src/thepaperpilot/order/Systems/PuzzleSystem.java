@@ -47,11 +47,11 @@ public class PuzzleSystem extends EntitySystem {
         // Player Side
         playerEntity = new Entity();
         player = Player.getPlayer();
-        player.poison = 0;
-        player.surprise = 0;
-        player.mortal = 0;
-        player.steam = 0;
-        player.mason = 0;
+        player.poison = 20;
+        player.surprise = 20;
+        player.mortal = 20;
+        player.steam = 20;
+        player.mason = 20;
         player.health = player.maxHealth;
         playerEntity.add(this.player);
         playerEntity.add(new UIComponent());

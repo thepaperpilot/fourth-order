@@ -37,9 +37,11 @@ public class ParticleEffectSystem extends EntitySystem {
             player.getEmitters().first().getTint().setColors(new float[]{.047f, .27f, .01f});
             enemy.getEmitters().first().getTint().setColors(new float[]{.72f, .1f, .03f});
         } else {
-            player.getEmitters().first().getTint().setColors(new float[]{.27f, .04f, .01f});
-            enemy.getEmitters().first().getTint().setColors(new float[]{.047f, .27f, .01f});
+            player.getEmitters().first().getTint().setColors(new float[]{.047f, .27f, .01f});
+            enemy.getEmitters().first().getTint().setColors(new float[]{.27f, .04f, .01f});
         }
+        player.getEmitters().first().getTransparency().setHigh(batch.getColor().a);
+        enemy.getEmitters().first().getTransparency().setHigh(batch.getColor().a);
 
         batch.begin();
         player.draw(batch, deltaTime);

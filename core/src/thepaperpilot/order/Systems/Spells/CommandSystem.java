@@ -5,11 +5,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
-import thepaperpilot.order.Components.ElectrifiedComponent;
-import thepaperpilot.order.Components.FighterComponent;
-import thepaperpilot.order.Components.PuzzleComponent;
+import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Components.Spells.CommandComponent;
-import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Mappers;
 
@@ -22,6 +20,21 @@ public class CommandSystem extends SpellSystem {
         super(batch, Family.all(CommandComponent.class).get());
         glyph.setOrigin(Align.center);
         damage.setOrigin(Align.center);
+    }
+
+    protected void updateTotem(Entity entity) {
+        FighterComponent fc = Mappers.fighter.get(entity);
+        CommandComponent cc = Mappers.command.get(entity);
+
+        Entity status = new Entity();
+        StatusEffectComponent sc = new StatusEffectComponent();
+        sc.target = fc;
+        sc.turns = 1;
+        status.add(sc);
+        DamageMultiplierComponent dc = new DamageMultiplierComponent();
+        dc.multiplier = cc.mulDamage;
+        status.add(dc);
+        getEngine().addEntity(status);
     }
 
     protected void destroyRune(Entity entity) {
@@ -38,15 +51,15 @@ public class CommandSystem extends SpellSystem {
         UIComponent uc = Mappers.ui.get(entity);
         CommandComponent cc = Mappers.command.get(entity);
 
-        if (cc.damaged) {
+        if (cc != null && cc.damaged) {
             damage.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
             damage.setPosition(uc.actor.getX(), uc.actor.getY());
-            damage.draw(batch, 1);
+            damage.draw(batch, batch.getColor().a);
         }
 
         glyph.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
         glyph.setPosition(uc.actor.getX(), uc.actor.getY());
-        glyph.draw(batch, 1);
+        glyph.draw(batch, batch.getColor().a);
     }
 
     protected void castSpell(Entity entity) {
@@ -67,6 +80,7 @@ public class CommandSystem extends SpellSystem {
                 UIComponent uc = Mappers.ui.get(random);
                 zoom(uc.actor);
                 random.add(cc);
+                random.add(new TotemComponent());
                 break;
             }
         }

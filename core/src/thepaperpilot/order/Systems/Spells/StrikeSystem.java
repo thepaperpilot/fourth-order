@@ -45,7 +45,7 @@ public class StrikeSystem extends SpellSystem {
 
         strike.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
         strike.setPosition(uc.actor.getX(), uc.actor.getY());
-        strike.draw(batch, 1);
+        strike.draw(batch, batch.getColor().a);
     }
 
     protected void castSpell(Entity entity) {

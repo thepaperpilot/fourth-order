@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import thepaperpilot.order.Components.Spells.CommandComponent;
+import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Dialogue;
 import thepaperpilot.order.DialogueScreen;
 import thepaperpilot.order.Main;
@@ -87,11 +87,12 @@ public class FighterComponent implements Component {
     }
 
     public void hit(float damage, PuzzleSystem puzzle) {
-        for (Entity entity : puzzle.getEngine().getEntitiesFor(Family.all(RuneComponent.class, CommandComponent.class).get())) {
-            CommandComponent cc = Mappers.command.get(entity);
+        for (Entity entity : puzzle.getEngine().getEntitiesFor(Family.all(StatusEffectComponent.class, DamageMultiplierComponent.class).get())) {
+            StatusEffectComponent sc = Mappers.statusEffect.get(entity);
+            DamageMultiplierComponent dc = Mappers.damageMultiplier.get(entity);
 
-            if (cc.caster != this) {
-                damage *= cc.mulDamage;
+            if (sc.target != this) {
+                damage *= dc.multiplier;
             }
         }
 

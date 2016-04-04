@@ -10,8 +10,8 @@ max: 1000
 - Emission - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 400.0
-highMax: 400.0
+highMin: 100.0
+highMax: 200.0
 relative: false
 scalingCount: 1
 scaling0: 1.0

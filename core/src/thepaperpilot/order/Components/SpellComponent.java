@@ -65,6 +65,7 @@ public class SpellComponent implements Component {
         Entity spell = new Entity();
         spell.add(new SpellComponent("Command", 10, 0, 20, 0, 0));
         spell.add(new CommandComponent());
+        spell.add(new TotemComponent());
         return spell;
     }
 

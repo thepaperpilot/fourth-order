@@ -2,6 +2,7 @@ package thepaperpilot.order.Util;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Components.Spells.CommandComponent;
 import thepaperpilot.order.Components.Spells.DestroyColorComponent;
 import thepaperpilot.order.Components.Spells.RefreshComponent;
@@ -19,7 +20,12 @@ public class Mappers {
     public static final ComponentMapper<RuneComponent> rune = ComponentMapper.getFor(RuneComponent.class);
     public static final ComponentMapper<ScreenShakeComponent> screenShake = ComponentMapper.getFor(ScreenShakeComponent.class);
     public static final ComponentMapper<SpellComponent> spell = ComponentMapper.getFor(SpellComponent.class);
+    public static final ComponentMapper<StatusEffectComponent> statusEffect = ComponentMapper.getFor(StatusEffectComponent.class);
+    public static ComponentMapper<TotemComponent> totem = ComponentMapper.getFor(TotemComponent.class);
     public static final ComponentMapper<UIComponent> ui = ComponentMapper.getFor(UIComponent.class);
+
+    /* Effects */
+    public static final ComponentMapper<DamageMultiplierComponent> damageMultiplier = ComponentMapper.getFor(DamageMultiplierComponent.class);
 
     /* Spells */
     public static final ComponentMapper<CommandComponent> command = ComponentMapper.getFor(CommandComponent.class);
