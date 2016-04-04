@@ -90,7 +90,7 @@ public class Battle implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(ui);
-        ui.addAction(Actions.fadeIn(1));
+        ui.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(1)));
         engine.getSystem(PuzzleSystem.class).stableTimer = -1;
     }
 

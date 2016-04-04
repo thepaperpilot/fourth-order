@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import thepaperpilot.order.Components.IdleAnimationComponent;
 import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Util.Mappers;
@@ -25,7 +26,7 @@ public class IdleAnimationSystem extends IteratingSystem {
                 ic.animating = false;
                 ic.time = 0;
             }
-            ((Image) uc.actor).setDrawable(new Image(ic.animation.getKeyFrame(ic.time)).getDrawable());
+            ((Image) uc.actor).setDrawable(new TextureRegionDrawable(ic.animation.getKeyFrame(ic.time)));
         } else if (MathUtils.randomBoolean(ic.chance)) {
             ic.animating = true;
         }

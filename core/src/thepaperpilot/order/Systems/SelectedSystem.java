@@ -24,6 +24,7 @@ public class SelectedSystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
+        if (getEntities().size() == 0) return;
         batch.begin();
         super.update(deltaTime);
         batch.end();

@@ -36,6 +36,7 @@ public class ElectrifiedSystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
+        if (getEntities().size() == 0) return;
         batch.begin();
         super.update(deltaTime);
         batch.end();
@@ -55,10 +56,6 @@ public class ElectrifiedSystem extends IteratingSystem {
         else if (ec.color.equals("Red")) animation = red;
         else if (ec.color.equals("Yellow")) animation = yellow;
 
-        Image image = new Image(animation.getKeyFrame(ec.time));
-        image.setOrigin(Align.center);
-        image.setPosition(uc.actor.getX(), uc.actor.getY());
-        image.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
-        image.draw(batch, 1);
+        batch.draw(animation.getKeyFrame(ec.time), uc.actor.getX(), uc.actor.getY(), uc.actor.getOriginX(), uc.actor.getOriginY(), uc.actor.getWidth(), uc.actor.getHeight(), uc.actor.getScaleX(), uc.actor.getScaleY(), uc.actor.getRotation());
     }
 }

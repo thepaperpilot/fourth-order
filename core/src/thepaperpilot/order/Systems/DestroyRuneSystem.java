@@ -53,21 +53,21 @@ public class DestroyRuneSystem extends IteratingSystem {
             }
             Action left = Actions.sequence(
                     Actions.parallel(
-                            Actions.moveTo(0, Constants.WORLD_HEIGHT, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
-                            Actions.moveBy(MathUtils.random(-2000, 2000), -2000, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                            Actions.moveBy(-uc.actor.getX(), Constants.WORLD_HEIGHT - uc.actor.getY() + 200, Constants.RUNE_EXIT_SPEED, Interpolation.circleIn),
+                            Actions.moveBy(MathUtils.random(-200, 200), -200, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
                     Actions.run(remove));
             Action right = Actions.sequence(
                     Actions.parallel(
-                            Actions.moveTo(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Constants.RUNE_EXIT_SPEED, Interpolation.swingIn),
-                            Actions.moveBy(MathUtils.random(-2000, 2000), -2000, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
+                            Actions.moveBy(Constants.WORLD_WIDTH - uc.actor.getX(), Constants.WORLD_HEIGHT - uc.actor.getY() + 200, Constants.RUNE_EXIT_SPEED, Interpolation.circleIn),
+                            Actions.moveBy(MathUtils.random(-200, 200), -200, Constants.RUNE_EXIT_SPEED, Interpolation.pow2)),
                     Actions.run(remove));
             Action zoom = Actions.sequence(
-                    Actions.scaleBy(3, 3, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2),
-                    Actions.scaleBy(-2, -2, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2));
+                    Actions.scaleBy(2, 2, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2),
+                    Actions.scaleTo(0, 0, Constants.RUNE_EXIT_SPEED / 2f, Interpolation.pow2In));
 
             if (dc.collector == pc.puzzle.player) {
                 if (rc.damage == 0) {
-                    uc.actor.addAction(left);
+                    uc.actor.addAction(Actions.parallel(left, zoom));
                     pc.puzzle.player.add(rc, pc.puzzle);
                 } else {
                     pc.puzzle.enemy.hit(rc.damage, pc.puzzle);
@@ -76,7 +76,7 @@ public class DestroyRuneSystem extends IteratingSystem {
                 }
             } else if (dc.collector == pc.puzzle.enemy){
                 if (rc.damage == 0) {
-                    uc.actor.addAction(right);
+                    uc.actor.addAction(Actions.parallel(right, zoom));
                     pc.puzzle.enemy.add(rc, pc.puzzle);
                 } else {
                     pc.puzzle.player.hit(rc.damage, pc.puzzle);
