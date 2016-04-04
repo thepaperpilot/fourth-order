@@ -5,8 +5,11 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
-import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.ElectrifiedComponent;
+import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.PuzzleComponent;
 import thepaperpilot.order.Components.Spells.CommandComponent;
+import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Mappers;
 

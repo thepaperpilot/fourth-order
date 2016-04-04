@@ -13,8 +13,6 @@ import thepaperpilot.order.Systems.Spells.SpellSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
-import java.util.Arrays;
-
 public class DestroyRuneSystem extends IteratingSystem {
     public DestroyRuneSystem() {
         super(Family.all(DestroyComponent.class, RuneComponent.class, PuzzleComponent.class, UIComponent.class).get(), 25);

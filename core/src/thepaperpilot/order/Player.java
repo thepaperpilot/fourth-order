@@ -31,7 +31,6 @@ public class Player {
         if (player == null) {
             player = new FighterComponent();
             player.add(SpellComponent.getStrikeSpell());
-            player.add(SpellComponent.getCommandSpell());
         }
         return player;
     }

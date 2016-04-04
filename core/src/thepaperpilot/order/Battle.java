@@ -1,7 +1,6 @@
 package thepaperpilot.order;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -11,8 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
-import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.IdleAnimationComponent;
+import thepaperpilot.order.Components.PuzzleComponent;
+import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;

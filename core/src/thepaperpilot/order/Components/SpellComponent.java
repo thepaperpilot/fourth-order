@@ -7,7 +7,6 @@ import thepaperpilot.order.Components.Spells.CommandComponent;
 import thepaperpilot.order.Components.Spells.DestroyColorComponent;
 import thepaperpilot.order.Components.Spells.RefreshComponent;
 import thepaperpilot.order.Components.Spells.StrikeComponent;
-import thepaperpilot.order.Systems.PuzzleSystem;
 
 public class SpellComponent implements Component {
 
