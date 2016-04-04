@@ -45,7 +45,8 @@ public class Battle implements Screen {
         engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
         engine.addSystem(new FighterSystem()); //priority 5
         engine.addSystem(new MessageSystem(ui)); //priority 15
-        engine.addSystem(new ParticleEffectSystem(ui.getBatch())); //priority 9
+        // too slow on web atm
+        // engine.addSystem(new ParticleEffectSystem(ui.getBatch())); //priority 9
         engine.addSystem(new PuzzleSystem(size, enemy)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(ui)); //priority 10
@@ -57,28 +58,29 @@ public class Battle implements Screen {
         engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
 
-        /* Input Processing (debug suff) */
-        ui.addListener(new InputListener() {
-            public boolean keyDown (InputEvent event, int keycode) {
-                switch (keycode) {
-                    case Input.Keys.SPACE:
-                        Main.changeScreen(new Battle(size, enemy));
-                        break;
-                    case Input.Keys.P:
-                        Constants.PLAYERLESS = !Constants.PLAYERLESS;
-                        Constants.UNDYING = Constants.PLAYERLESS;
-                        break;
-                    case Input.Keys.LEFT:
-                        Constants.DELTA_MOD -= .1f;
-                        if (Constants.DELTA_MOD < 0) Constants.DELTA_MOD = 0;
-                        break;
-                    case Input.Keys.RIGHT:
-                        Constants.DELTA_MOD += .1f;
-                        break;
+        if (Constants.DEBUG) {
+            ui.addListener(new InputListener() {
+                public boolean keyDown (InputEvent event, int keycode) {
+                    switch (keycode) {
+                        case Input.Keys.SPACE:
+                            Main.changeScreen(new Battle(size, enemy));
+                            break;
+                        case Input.Keys.P:
+                            Constants.PLAYERLESS = !Constants.PLAYERLESS;
+                            Constants.UNDYING = Constants.PLAYERLESS;
+                            break;
+                        case Input.Keys.LEFT:
+                            Constants.DELTA_MOD -= .1f;
+                            if (Constants.DELTA_MOD < 0) Constants.DELTA_MOD = 0;
+                            break;
+                        case Input.Keys.RIGHT:
+                            Constants.DELTA_MOD += .1f;
+                            break;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+        }
     }
 
     public Battle(FighterComponent enemy) {

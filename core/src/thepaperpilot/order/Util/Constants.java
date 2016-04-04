@@ -15,16 +15,17 @@ public class Constants {
     public static final float IDLE_CHANCE = .0002f;
     public static final float STABLE_TIME = 1;
     public static final float TEXT_SPEED = 24;
-    public static /* final */ float DELTA_MOD = 1;
 
     /* Balancing */
     public static final int DESTROY_LOW = 7;
     public static final int DESTROY_HIGH = 9;
 
     /* Debug */
+    public static final boolean DEBUG = true;
     public static final boolean PROFILING = false;
-    public static /* final */ boolean PLAYERLESS = false;
-    public static /* final */ boolean UNDYING = true;
+    public static boolean PLAYERLESS = false;
+    public static boolean UNDYING = true;
+    public static float DELTA_MOD = 1;
 
     /* Other */
     public static final int MATCH_4_RUMBLE = 100;
