@@ -150,7 +150,7 @@ public class PuzzleSystem extends EntitySystem {
                             runes[k][j].add(new DestroyComponent(collector));
                         } else break;
                     }
-                    if (matched >= 4) {
+                    if (matched >= 4 && collector != NULL_FIGHTER) {
                         /// destroy row
                         for (int k = 0; k < i; k++) {
                             if (runes[k][j] != null) runes[k][j].add(new DestroyComponent(NULL_FIGHTER));
@@ -168,7 +168,7 @@ public class PuzzleSystem extends EntitySystem {
                         message.add(new ScreenShakeComponent(Constants.MATCH_4_RUMBLE));
                         getEngine().addEntity(message);
                     }
-                    if (matched >= 5) {
+                    if (matched >= 5 && collector != NULL_FIGHTER) {
                         turn = collector;
                         Entity message = new Entity();
                         MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
@@ -192,7 +192,7 @@ public class PuzzleSystem extends EntitySystem {
 
                         } else break;
                     }
-                    if (matched >= 4) {
+                    if (matched >= 4 && collector != NULL_FIGHTER) {
                         // destroy column
                         for (int k = 0; k < j; k++) {
                             if (runes[i][k] != null) runes[i][k].add(new DestroyComponent(NULL_FIGHTER));
@@ -210,7 +210,7 @@ public class PuzzleSystem extends EntitySystem {
                         message.add(new ScreenShakeComponent(Constants.MATCH_4_RUMBLE));
                         getEngine().addEntity(message);
                     }
-                    if (matched >= 5) {
+                    if (matched >= 5 && collector != NULL_FIGHTER) {
                         turn = collector;
                         Entity message = new Entity();
                         MessageComponent mc = new MessageComponent("Matched 5\nExtra Turn");
