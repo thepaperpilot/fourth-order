@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import thepaperpilot.order.Components.IdleAnimationComponent;
+import thepaperpilot.order.Components.Spells.CollectComponent;
 import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Util.Mappers;
 

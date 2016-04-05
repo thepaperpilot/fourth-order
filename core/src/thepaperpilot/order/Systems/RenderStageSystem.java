@@ -2,7 +2,6 @@ package thepaperpilot.order.Systems;
 
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import thepaperpilot.order.Util.Constants;
 
 public class RenderStageSystem extends EntitySystem {
     public Stage stage;

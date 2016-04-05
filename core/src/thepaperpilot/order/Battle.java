@@ -10,18 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-import thepaperpilot.order.Components.FighterComponent;
-import thepaperpilot.order.Components.IdleAnimationComponent;
-import thepaperpilot.order.Components.PuzzleComponent;
-import thepaperpilot.order.Components.UIComponent;
+import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Systems.*;
-import thepaperpilot.order.Systems.Spells.CommandSystem;
-import thepaperpilot.order.Systems.Spells.DestroyColorSystem;
-import thepaperpilot.order.Systems.Spells.RefreshSystem;
-import thepaperpilot.order.Systems.Spells.StrikeSystem;
+import thepaperpilot.order.Systems.Spells.*;
 import thepaperpilot.order.Util.Constants;
 
 public class Battle implements Screen {
@@ -52,8 +46,11 @@ public class Battle implements Screen {
         engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StatusEffectSystem()); //priority 15
 
+        engine.addSystem(new CollectSystem(ui.getBatch())); //priority 20
         engine.addSystem(new CommandSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new DamageSystem(ui.getBatch())); //priority 20
         engine.addSystem(new DestroyColorSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new HealingSystem(ui.getBatch())); //priority 20
         engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
         engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
 

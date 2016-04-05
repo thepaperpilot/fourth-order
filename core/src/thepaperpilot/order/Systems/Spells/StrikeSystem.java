@@ -1,64 +1,39 @@
 package thepaperpilot.order.Systems.Spells;
 
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Align;
-import thepaperpilot.order.Components.ElectrifiedComponent;
 import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.GlyphComponent;
 import thepaperpilot.order.Components.PuzzleComponent;
 import thepaperpilot.order.Components.Spells.StrikeComponent;
-import thepaperpilot.order.Components.UIComponent;
-import thepaperpilot.order.Main;
-import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Mappers;
 
-public class StrikeSystem extends SpellSystem {
-
-    private Image strike = new Image(Main.getTexture("GlyphStrike"));
+public class StrikeSystem extends GlyphSystem {
 
     public StrikeSystem(Batch batch) {
-        super(batch, Family.all(StrikeComponent.class).get());
-        strike.setOrigin(Align.center);
+        super(batch, new StrikeComponent());
     }
 
-    protected void destroyRune(Entity entity) {
+    @Override
+    protected void runEffect(Entity entity) {
         StrikeComponent sc = Mappers.strike.get(entity);
-        FighterComponent fc = sc.caster;
-
-        if (fc == PuzzleSystem.NULL_FIGHTER) return;
-
-        PuzzleSystem puzzle = getEngine().getSystem(PuzzleSystem.class);
-        if (fc == puzzle.player) {
-            puzzle.enemy.hit(sc.damage, puzzle);
-        } else if (fc == puzzle.enemy) {
-            puzzle.player.hit(sc.damage, puzzle);
-        }
-
-        entity.remove(StrikeComponent.class);
-        entity.add(new ElectrifiedComponent());
-    }
-
-    protected void renderRuneEffect(Entity entity) {
-        UIComponent uc = Mappers.ui.get(entity);
-
-        strike.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
-        strike.setPosition(uc.actor.getX(), uc.actor.getY());
-        strike.draw(batch, batch.getColor().a);
-    }
-
-    protected void castSpell(Entity entity) {
-        StrikeComponent sc = Mappers.strike.get(entity);
-        FighterComponent fc = Mappers.fighter.get(entity);
         PuzzleComponent pc = Mappers.puzzle.get(entity);
+        FighterComponent fc = Mappers.glyph.get(entity).caster;
 
-        Entity random = pc.puzzle.randomRune();
-        if (random != null) {
-            UIComponent uc = Mappers.ui.get(random);
-            zoom(uc.actor);
-            sc.caster = fc;
-            random.add(sc);
+        if (fc == pc.puzzle.player) {
+            pc.puzzle.enemy.hit(sc.damage, pc.puzzle);
+        } else if (fc == pc.puzzle.enemy) {
+            pc.puzzle.player.hit(sc.damage, pc.puzzle);
         }
+    }
+
+    @Override
+    void copyFields(GlyphComponent to, GlyphComponent from) {
+        ((StrikeComponent) to).damage = ((StrikeComponent) from).damage;
+    }
+
+    @Override
+    protected boolean canCastRune(Entity entity) {
+        return true;
     }
 }

@@ -10,7 +10,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -122,6 +121,7 @@ public class Main extends Game implements Screen {
                 enemy.portrait = "PortraitAlchemist";
                 enemy.add(SpellComponent.getStrikeSpell());
                 enemy.add(SpellComponent.getTruthSpell());
+                enemy.add(SpellComponent.getWitherSpell());
                 DialogueComponent victory = new DialogueComponent();
                 victory.enemies = new String[]{"PortraitAlchemist"};
                 victory.lines = new Dialogue.Line[1];
@@ -159,6 +159,7 @@ public class Main extends Game implements Screen {
                 enemy.portrait = "PortraitRogue";
                 enemy.add(SpellComponent.getStrikeSpell());
                 enemy.add(SpellComponent.getCondenseSpell());
+                enemy.add(SpellComponent.getCollectSpell());
                 DialogueComponent victory = new DialogueComponent();
                 victory.enemies = new String[]{"PortraitRogue"};
                 victory.lines = new Dialogue.Line[1];
@@ -229,6 +230,7 @@ public class Main extends Game implements Screen {
                 enemy.portrait = "PortraitPaladin";
                 enemy.add(SpellComponent.getStrikeSpell());
                 enemy.add(SpellComponent.getImmortalitySpell());
+                enemy.add(SpellComponent.getSustainSpell());
                 DialogueComponent victory = new DialogueComponent();
                 victory.enemies = new String[]{"PortraitPaladin"};
                 victory.lines = new Dialogue.Line[1];

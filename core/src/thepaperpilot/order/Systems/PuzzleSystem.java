@@ -3,6 +3,7 @@ package thepaperpilot.order.Systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Components.Effects.DamageOverTimeComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
 import thepaperpilot.order.Util.Constants;
@@ -505,6 +507,15 @@ public class PuzzleSystem extends EntitySystem {
         if (fighterComponent == NULL_FIGHTER || fighterComponent == player) {
             turn = enemy;
         } else turn = player;
+
+        for (Entity entity : getEngine().getEntitiesFor(Family.all(StatusEffectComponent.class, DamageOverTimeComponent.class).get())) {
+            StatusEffectComponent sc = Mappers.statusEffect.get(entity);
+            DamageOverTimeComponent hc = Mappers.damageOverTime.get(entity);
+
+            if (sc.target == turn) {
+                turn.hit(hc.amount, this);
+            }
+        }
     }
 
     public void updateFighters() {
@@ -512,60 +523,5 @@ public class PuzzleSystem extends EntitySystem {
         getEngine().removeEntity(enemyEntity);
         getEngine().addEntity(playerEntity);
         getEngine().addEntity(enemyEntity);
-    }
-
-    public int countBlueRunes() {
-        int rune = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (runes[i][j] == null) continue;
-                rune += Mappers.rune.get(runes[i][j]).steam;
-            }
-        }
-        return rune;
-    }
-
-    public int countGreenRunes() {
-        int rune = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (runes[i][j] == null) continue;
-                rune += Mappers.rune.get(runes[i][j]).mason;
-            }
-        }
-        return rune;
-    }
-
-    public int countPurpleRunes() {
-        int rune = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (runes[i][j] == null) continue;
-                rune += Mappers.rune.get(runes[i][j]).poison;
-            }
-        }
-        return rune;
-    }
-
-    public int countRedRunes() {
-        int rune = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (runes[i][j] == null) continue;
-                rune += Mappers.rune.get(runes[i][j]).mortal;
-            }
-        }
-        return rune;
-    }
-
-    public int countYellowRunes() {
-        int rune = 0;
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                if (runes[i][j] == null) continue;
-                rune += Mappers.rune.get(runes[i][j]).surprise;
-            }
-        }
-        return rune;
     }
 }

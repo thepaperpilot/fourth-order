@@ -35,11 +35,16 @@ public class RuneListener implements EntityListener {
         uc.actor = new Image(frames[0]);
         uc.actor.setPosition(x, y);
 
-        uc.actor.setPosition(Constants.UI_WIDTH + rc.x * pc.puzzle.getRuneSize(), Constants.WORLD_HEIGHT);
-        uc.actor.setScale(pc.puzzle.getRuneSize() / uc.actor.getHeight() * .75f);
+        if (Mappers.destroy.has(entity)) {
+            uc.actor.setPosition(Constants.UI_WIDTH + (rc.x + .375f) * pc.puzzle.getRuneSize(), Constants.WORLD_HEIGHT - (rc.y + .625f) * pc.puzzle.getRuneSize());
+            uc.actor.setScale(pc.puzzle.getRuneSize() / uc.actor.getHeight() * .5f);
+        } else {
+            uc.actor.setPosition(Constants.UI_WIDTH + rc.x * pc.puzzle.getRuneSize(), Constants.WORLD_HEIGHT);
+            uc.actor.setScale(pc.puzzle.getRuneSize() / uc.actor.getHeight() * .75f);
+            pc.puzzle.runes[rc.x][rc.y] = entity;
+            pc.puzzle.updateRune(entity);
+        }
         uc.actor.setOrigin(Align.center);
-        pc.puzzle.runes[rc.x][rc.y] = entity;
-        pc.puzzle.updateRune(entity);
 
         uc.actor.addListener(new ClickListener() {
             public void clicked (InputEvent event, float x, float y) {

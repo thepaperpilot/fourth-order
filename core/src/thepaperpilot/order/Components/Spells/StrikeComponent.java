@@ -1,9 +1,11 @@
 package thepaperpilot.order.Components.Spells;
 
-import com.badlogic.ashley.core.Component;
-import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.GlyphComponent;
 
-public class StrikeComponent implements Component {
+public class StrikeComponent extends GlyphComponent {
     public int damage = 3;
-    public FighterComponent caster;
+
+    {
+        glyph = "Strike";
+    }
 }

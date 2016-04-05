@@ -97,13 +97,13 @@ public class FighterComponent implements Component {
             }
         }
 
-        health = Math.max(0, health - damage);
+        health = Math.min(maxHealth, Math.max(0, health - damage));
 
         healthBar.setValue(health);
 
         Entity message = new Entity();
-        MessageComponent mc = new MessageComponent("-" + (int) damage);
-        mc.color = Color.RED;
+        MessageComponent mc = new MessageComponent((damage < 0 ? "+" : "-") + (int) Math.abs(damage));
+        mc.color = damage < 0 ? Color.GREEN : Color.RED;
         mc.large = false;
         Vector2 coords = experience.localToStageCoordinates(new Vector2(experience.getX(), experience.getY()));
         coords.y += 100;
@@ -132,8 +132,6 @@ public class FighterComponent implements Component {
 
     public void add(Entity spell) {
         spells.add(spell);
-
-        // TODO sub to existing spell sheet?
     }
 
     public void sub(SpellComponent sc) {
@@ -170,7 +168,6 @@ public class FighterComponent implements Component {
 
         if (!puzzle.isStable()) return false;
         if (puzzle.turn != this && !Constants.PLAYERLESS) return false;
-        // TODO find someway to check the spells themselves if they are castable
 
         return true;
     }
@@ -183,8 +180,6 @@ public class FighterComponent implements Component {
         spell.add(new PuzzleComponent(puzzle));
         spell.add(this); // caster
         puzzle.getEngine().addEntity(spell);
-        puzzle.takeTurn(this);
-        sub(Mappers.spell.get(entity));
     }
 
     public void levelUp(final PuzzleSystem puzzle) {
@@ -198,7 +193,7 @@ public class FighterComponent implements Component {
         maxHealth += 1;
         healthBar.setValue(health);
         healthBar.setRange(0, maxHealth);
-        // TODO give player choice to increase stats of some sort, doing things like increasing damage, mana collection, or mana storage
+        // TODO revamp level system
 
         Entity message = new Entity();
         MessageComponent mc = new MessageComponent("Level up!");
@@ -216,13 +211,13 @@ public class FighterComponent implements Component {
             String classSpell = Mappers.spell.get(this.spells.get(1)).name;
             spells.add(SpellComponent.getRefreshSpell());
             if (classSpell.equals("Truth")) { //alchemist
-
+                spells.add(SpellComponent.getWitherSpell());
             } else if (classSpell.equals("Condense")) { //rogue
-
+                spells.add(SpellComponent.getCollectSpell());
             } else if (classSpell.equals("Antidote")) { //ranger
                 spells.add(SpellComponent.getCommandSpell());
             } else if (classSpell.equals("Immortality")) { //paladin
-
+                spells.add(SpellComponent.getSustainSpell());
             } else if (classSpell.equals("Premonition")) { //wizard
 
             }

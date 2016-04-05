@@ -2,10 +2,10 @@ package thepaperpilot.order.Components.Spells;
 
 import thepaperpilot.order.Components.TotemComponent;
 
-public class CommandComponent extends TotemComponent {
-    public float mulDamage = 2;
+public class DamageComponent extends TotemComponent {
+    public float damage = 1;
 
     {
-        color = "Red";
+        color = "Purple";
     }
 }

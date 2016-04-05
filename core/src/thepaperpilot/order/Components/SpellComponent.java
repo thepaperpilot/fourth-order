@@ -3,15 +3,19 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import thepaperpilot.order.Components.Spells.CommandComponent;
-import thepaperpilot.order.Components.Spells.DestroyColorComponent;
-import thepaperpilot.order.Components.Spells.RefreshComponent;
-import thepaperpilot.order.Components.Spells.StrikeComponent;
+import thepaperpilot.order.Components.Spells.*;
 
 public class SpellComponent implements Component {
 
     // TODO do this in a better way
     // poison, surprise, mortal, steam, mason
+
+    // how to implement a spell:
+    // add it to this list (ugh)
+    // create a component for the spell, extending GlyphComponent or TotemComponent, or Component (for generic spells)
+    // create a system for the spell- extend GlyphSystem or TotemSystem or SpellSystem
+    // if its a totem, also create an effect component, and check for that effect wherever it should apply
+    // add the spell to the fightercomponents of all enemies with the spell, and to any/all class spelllists (currently in fightercomponent, ugh)
     public static Entity getStrikeSpell() {
         Entity spell = new Entity();
         spell.add(new SpellComponent("Strike", 0, 0, 6, 0, 0));
@@ -65,6 +69,39 @@ public class SpellComponent implements Component {
         Entity spell = new Entity();
         spell.add(new SpellComponent("Command", 10, 0, 20, 0, 0));
         spell.add(new CommandComponent());
+        spell.add(new TotemComponent());
+        return spell;
+    }
+
+    public static Entity getSustainSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Sustain", 0, 0, 10, 20, 0));
+        spell.add(new HealingComponent());
+        spell.add(new TotemComponent());
+        return spell;
+    }
+
+    public static Entity getCollectSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Collect", 0, 20, 0, 10, 0));
+        spell.add(new CollectComponent());
+        spell.add(new TotemComponent());
+        return spell;
+    }
+
+    /* TODO what does a disrupt totem do?
+    public static Entity getDisruptSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Disrupt", 0, 10, 0, 0, 20));
+        spell.add(new DisruptComponent());
+        spell.add(new TotemComponent());
+        return spell;
+    }*/
+
+    public static Entity getWitherSpell() {
+        Entity spell = new Entity();
+        spell.add(new SpellComponent("Wither", 20, 0, 0, 0, 10));
+        spell.add(new DamageComponent());
         spell.add(new TotemComponent());
         return spell;
     }
