@@ -40,9 +40,4 @@ public class DamageSystem extends TotemSystem {
     void copyFields(TotemComponent to, TotemComponent from) {
         ((DamageComponent) to).damage = ((DamageComponent) from).damage;
     }
-
-    @Override
-    protected boolean canCastRune(Entity spell, Entity rune) {
-        return Mappers.rune.get(rune).poison != 0;
-    }
 }

@@ -21,10 +21,10 @@ public abstract class TotemSystem<T extends TotemComponent> extends SpellSystem 
         this.component = component;
         this.componentClass = (Class<? extends T>) component.getClass();
 
-        glyph = new Image(Main.getTexture("GlyphUlti" + component.color));
+        glyph = new Image(Main.getTexture("GlyphUlti" + component.rune.colorName));
         glyph.setOrigin(Align.center);
 
-        damage = new Image(Main.getTexture("OverlayDamage" + component.color));
+        damage = new Image(Main.getTexture("OverlayDamage" + component.rune.colorName));
         damage.setOrigin(Align.center);
     }
 
@@ -45,7 +45,7 @@ public abstract class TotemSystem<T extends TotemComponent> extends SpellSystem 
 
         if (!c.damaged) return;
         ElectrifiedComponent ec = new ElectrifiedComponent();
-        ec.color = component.color;
+        ec.color = component.rune.colorName;
         entity.add(ec);
     }
 
@@ -110,5 +110,7 @@ public abstract class TotemSystem<T extends TotemComponent> extends SpellSystem 
 
     abstract void copyFields(T to, T from);
 
-    abstract protected boolean canCastRune(Entity spell, Entity rune);
+    protected boolean canCastRune(Entity spell, Entity rune) {
+        return Mappers.rune.get(rune).rune == Mappers.totem.get(spell).rune;
+    }
 }

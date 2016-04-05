@@ -24,9 +24,4 @@ public class CommandSystem extends TotemSystem {
     void copyFields(TotemComponent to, TotemComponent from) {
         ((CommandComponent) to).mulDamage = ((CommandComponent) from).mulDamage;
     }
-
-    @Override
-    protected boolean canCastRune(Entity spell, Entity rune) {
-        return Mappers.rune.get(rune).mortal != 0;
-    }
 }

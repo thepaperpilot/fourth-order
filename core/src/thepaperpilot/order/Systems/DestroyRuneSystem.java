@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.Spells.SpellSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -66,22 +67,22 @@ public class DestroyRuneSystem extends IteratingSystem {
                     Actions.scaleTo(0, 0, Constants.RUNE_EXIT_TIME / 2f, Interpolation.pow2In));
 
             if (dc.collector == pc.puzzle.player) {
-                if (rc.damage == 0) {
+                if (rc.rune == Rune.DAMAGE) {
+                    pc.puzzle.enemy.hit(1, pc.puzzle);
+                    uc.actor.addAction(Actions.parallel(right, zoom));
+                    entity.add(new ElectrifiedComponent());
+                } else {
                     uc.actor.addAction(Actions.parallel(left, zoom));
                     pc.puzzle.player.add(rc, pc.puzzle);
-                } else {
-                    pc.puzzle.enemy.hit(rc.damage, pc.puzzle);
-                    uc.actor.addAction(Actions.parallel(right, zoom));
-                    entity.add(new ElectrifiedComponent());
                 }
             } else if (dc.collector == pc.puzzle.enemy){
-                if (rc.damage == 0) {
-                    uc.actor.addAction(Actions.parallel(right, zoom));
-                    pc.puzzle.enemy.add(rc, pc.puzzle);
-                } else {
-                    pc.puzzle.player.hit(rc.damage, pc.puzzle);
+                if (rc.rune == Rune.DAMAGE) {
+                    pc.puzzle.player.hit(1, pc.puzzle);
                     uc.actor.addAction(Actions.parallel(left, zoom));
                     entity.add(new ElectrifiedComponent());
+                } else {
+                    uc.actor.addAction(Actions.parallel(right, zoom));
+                    pc.puzzle.enemy.add(rc, pc.puzzle);
                 }
             }
         }

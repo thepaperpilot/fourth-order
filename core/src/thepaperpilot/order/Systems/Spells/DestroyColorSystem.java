@@ -23,24 +23,7 @@ public class DestroyColorSystem extends SpellSystem {
         for (int i = 0; i < pc.puzzle.size; i++) {
             for (int j = 0; j < pc.puzzle.size; j++) {
                 RuneComponent rc = Mappers.rune.get(pc.puzzle.runes[i][j]);
-                switch (dc.color) {
-                    case 0:
-                        if (rc.poison != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
-                        break;
-                    case 1:
-                        if (rc.surprise != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
-                        break;
-                    case 2:
-                        if (rc.mortal != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
-                        break;
-                    case 3:
-                        if (rc.steam != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
-                        break;
-                    case 4:
-                        if (rc.mason != 0) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
-                        break;
-
-                }
+                if (rc.rune == dc.rune) pc.puzzle.runes[i][j].add(new DestroyComponent(PuzzleSystem.NULL_FIGHTER));
             }
         }
     }

@@ -86,5 +86,7 @@ public abstract class GlyphSystem<T extends GlyphComponent> extends SpellSystem 
 
     abstract void copyFields(T to, T from);
 
-    abstract protected boolean canCastRune(Entity entity);
+    protected boolean canCastRune(Entity entity) {
+        return true;
+    }
 }

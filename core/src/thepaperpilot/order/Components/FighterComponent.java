@@ -15,75 +15,84 @@ import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Dialogue;
 import thepaperpilot.order.DialogueScreen;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
+import java.util.Map;
 
 public class FighterComponent implements Component {
     Drawable empty = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
+    Drawable filled = new Image(Main.getTexture("UICircleFilled")).getDrawable();
 
     public String portrait = "PortraitPlayer";
 
-    public float exp = 0;
-    public float health = 10;
-    public float poison = 0;
-    public float surprise = 0;
-    public float mortal = 0;
-    public float steam = 0;
-    public float mason = 0;
-    public float maxExp = 4;
-    public float maxHealth = 10;
-    public float maxPoision = 20;
-    public float maxSurprise = 20;
-    public float maxMortal = 20;
-    public float maxSteam = 20;
-    public float maxMason = 20;
+    public Map<Rune, Float> runes = new EnumMap<Rune, Float>(Rune.class);
+    public Map<Rune, Float> maxRunes = new EnumMap<Rune, Float>(Rune.class);
+    public Map<Rune, ProgressBar> bars = new EnumMap<Rune, ProgressBar>(Rune.class);
+    public Map<Rune, Label> labels = new EnumMap<Rune, Label>(Rune.class);
     public ArrayList<Entity> spells = new ArrayList<Entity>();
-
-    public ProgressBar experience;
-    public ProgressBar healthBar;
-    public ProgressBar poisonBar;
-    public ProgressBar surpriseBar;
-    public ProgressBar mortalBar;
-    public ProgressBar steamBar;
-    public ProgressBar masonBar;
-
-    public Label experienceLabel;
-    public Label healthLabel;
-    public Label poisonLabel;
-    public Label surpriseLabel;
-    public Label mortalLabel;
-    public Label steamLabel;
-    public Label masonLabel;
 
     public DialogueComponent victory;
     public DialogueComponent loss;
 
+    public FighterComponent() {
+        // TODO skills
+        for (Rune rune : Rune.values()) {
+            switch (rune) {
+                case DAMAGE:
+                    runes.put(rune, 20f);
+                    maxRunes.put(rune, 20f);
+                    break;
+                case EXP:
+                    runes.put(rune, 0f);
+                    maxRunes.put(rune, 7f);
+                    break;
+                default:
+                    runes.put(rune, 0f);
+                    maxRunes.put(rune, 40f);
+                    break;
+            }
+        }
+    }
+
+    public void reset() {
+        for (Rune rune : Rune.values()) {
+            switch (rune) {
+                case DAMAGE:
+                    runes.put(rune, maxRunes.get(rune));
+                    break;
+                case EXP:
+                    // don't reset experience
+                    break;
+                default:
+                    runes.put(rune, 0f);
+                    break;
+            }
+        }
+    }
+
     public void add(RuneComponent rc, PuzzleSystem puzzle) {
-        poison = Math.min(maxPoision, poison + rc.poison);
-        surprise = Math.min(maxSurprise, surprise + rc.surprise);
-        mortal = Math.min(maxMortal, mortal + rc.mortal);
-        steam = Math.min(maxSteam, steam + rc.steam);
-        mason = Math.min(maxMason, mason + rc.mason);
-        exp = Math.min(maxExp, exp + rc.exp);
+        if (rc.rune == Rune.EXP)
+            runes.put(Rune.EXP, runes.get(Rune.EXP) + 1);
+        else
+            runes.put(rc.rune, Math.min(runes.get(rc.rune) + 1, maxRunes.get(rc.rune)));
 
         updateProgressBars();
 
-        if (exp == maxExp) {
+        if (runes.get(Rune.EXP).equals(maxRunes.get(Rune.EXP))) {
             levelUp(puzzle);
         }
     }
 
     public void updateProgressBars() {
-        poisonBar.setValue(poison);
-        surpriseBar.setValue(surprise);
-        mortalBar.setValue(mortal);
-        steamBar.setValue(steam);
-        masonBar.setValue(mason);
-        experience.setValue(exp);
+        for (Rune rune : Rune.values()) {
+            bars.get(rune).setValue(runes.get(rune));
+        }
     }
 
     public void hit(float damage, PuzzleSystem puzzle) {
@@ -97,15 +106,14 @@ public class FighterComponent implements Component {
             }
         }
 
-        health = Math.min(maxHealth, Math.max(0, health - damage));
-
-        healthBar.setValue(health);
+        runes.put(Rune.DAMAGE, Math.max(0, Math.min(runes.get(Rune.DAMAGE) - damage, maxRunes.get(Rune.DAMAGE))));
+        bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
 
         Entity message = new Entity();
         MessageComponent mc = new MessageComponent((damage < 0 ? "+" : "-") + (int) Math.abs(damage));
         mc.color = damage < 0 ? Color.GREEN : Color.RED;
         mc.large = false;
-        Vector2 coords = experience.localToStageCoordinates(new Vector2(experience.getX(), experience.getY()));
+        Vector2 coords = bars.get(Rune.EXP).localToStageCoordinates(new Vector2(bars.get(Rune.EXP).getX(), bars.get(Rune.EXP).getY()));
         coords.y += 100;
         coords.add(MathUtils.random(-100, 100), MathUtils.random(-100, 100));
         mc.x = coords.x;
@@ -113,7 +121,7 @@ public class FighterComponent implements Component {
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
-        if (health == 0) {
+        if (runes.get(Rune.DAMAGE) <= 0) {
             message = new Entity();
             if (puzzle.enemy == this) {
                 Main.playSound("victory.wav");
@@ -135,39 +143,37 @@ public class FighterComponent implements Component {
     }
 
     public void sub(SpellComponent sc) {
-        poison = Math.max(0, poison - sc.poison);
-        surprise = Math.max(0, surprise - sc.surprise);
-        mortal = Math.max(0, mortal - sc.mortal);
-        steam = Math.max(0, steam - sc.steam);
-        mason = Math.max(0, mason - sc.mason);
+        for (Rune rune : Rune.values()) {
+            if (rune == Rune.DAMAGE || rune == Rune.EXP) continue;
+            runes.put(rune, Math.max(0, runes.get(rune) - sc.cost.get(rune)));
+        }
 
         updateProgressBars();
         updateSpellCosts();
     }
 
-    private void updateSpellCosts() {
+    public void updateSpellCosts() {
         for (Entity spell : spells) {
             SpellComponent sc = Mappers.spell.get(spell);
 
-            if (sc.poison != 0 && poison < sc.poison) sc.poisonDisplay.setDrawable(empty);
-            if (sc.surprise != 0 && surprise < sc.surprise) sc.surpriseDisplay.setDrawable(empty);
-            if (sc.mortal != 0 && mortal < sc.mortal) sc.mortalDisplay.setDrawable(empty);
-            if (sc.steam != 0 && steam < sc.steam) sc.steamDisplay.setDrawable(empty);
-            if (sc.mason != 0 && mason < sc.mason) sc.masonDisplay.setDrawable(empty);
+            for (Rune rune : Rune.values()) {
+                if (rune == Rune.DAMAGE || rune == Rune.EXP) continue;
+                if (runes.get(rune) < sc.cost.get(rune)) sc.displays.get(rune).setDrawable(empty);
+                else sc.displays.get(rune).setDrawable(filled);
+            }
         }
     }
 
     public boolean canCast(Entity entity, PuzzleSystem puzzle) {
         SpellComponent sc = Mappers.spell.get(entity);
 
-        if (poison < sc.poison) return false;
-        if (surprise < sc.surprise) return false;
-        if (mortal < sc.mortal) return false;
-        if (steam < sc.steam) return false;
-        if (mason < sc.mason) return false;
-
         if (!puzzle.isStable()) return false;
         if (puzzle.turn != this && !Constants.PLAYERLESS) return false;
+
+        for (Rune rune : Rune.values()) {
+            if (rune == Rune.DAMAGE || rune == Rune.EXP) continue;
+            if (runes.get(rune) < sc.cost.get(rune)) return false;
+        }
 
         return true;
     }
@@ -183,23 +189,23 @@ public class FighterComponent implements Component {
     }
 
     public void levelUp(final PuzzleSystem puzzle) {
-        exp -= maxExp;
-        maxExp *= 2;
-        experience.setValue(exp);
-        experience.setRange(0, maxExp);
+        runes.put(Rune.EXP, runes.get(Rune.EXP) - maxRunes.get(Rune.EXP));
+        maxRunes.put(Rune.EXP, maxRunes.get(Rune.EXP) * 2);
+        bars.get(Rune.EXP).setValue(runes.get(Rune.EXP));
+        bars.get(Rune.EXP).setRange(0, maxRunes.get(Rune.EXP));
 
         // this is all arbitrary atm
-        health += 1;
-        maxHealth += 1;
-        healthBar.setValue(health);
-        healthBar.setRange(0, maxHealth);
-        // TODO revamp level system
+        runes.put(Rune.DAMAGE, runes.get(Rune.DAMAGE) + 2);
+        maxRunes.put(Rune.DAMAGE, maxRunes.get(Rune.DAMAGE) + 2);
+        bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
+        bars.get(Rune.DAMAGE).setRange(0, maxRunes.get(Rune.DAMAGE));
 
+        // TODO revamp level system (and level up after battle, with no max exp
         Entity message = new Entity();
         MessageComponent mc = new MessageComponent("Level up!");
         mc.color = Color.GREEN;
         mc.large = false;
-        Vector2 coords = experience.localToStageCoordinates(new Vector2(experience.getX(), experience.getY()));
+        Vector2 coords = bars.get(Rune.EXP).localToStageCoordinates(new Vector2(bars.get(Rune.EXP).getX(), bars.get(Rune.EXP).getY()));
         mc.x = coords.x;
         mc.y = coords.y;
         message.add(mc);

@@ -13,6 +13,7 @@ import thepaperpilot.order.Components.FighterComponent;
 import thepaperpilot.order.Components.SpellComponent;
 import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -25,7 +26,6 @@ public class FighterListener implements EntityListener {
         this.engine = engine;
     }
 
-    // TODO make this class cleaner/smaller
     @Override
     public void entityAdded(final Entity entity) {
         final FighterComponent fc = Mappers.fighter.get(entity);
@@ -44,66 +44,52 @@ public class FighterListener implements EntityListener {
         portrait.setBackground(Main.skin.getDrawable("default-round"));
         left.add(portrait).size(150, 200).padBottom(2).row();
 
-        fc.experience = new ProgressBar(0, fc.maxExp, 1, false, Main.skin);
-        fc.experience.setColor(Color.GREEN);
-        fc.experience.setAnimateDuration(1f);
+        ProgressBar experience = new ProgressBar(0, fc.maxRunes.get(Rune.EXP), 1, false, Main.skin);
+        experience.setColor(Color.GREEN);
+        experience.setAnimateDuration(1f);
         Label exp = new Label("Exp:", Main.skin);
         exp.setColor(0, 1, 0, .75f);
         left.add(exp).left().padBottom(2).row();
-        left.add(fc.experience).minWidth(1).expandX().fill().row();
-        fc.experienceLabel = new Label((int) fc.exp + "/" + (int) fc.maxExp, Main.skin);
-        fc.experienceLabel.setColor(0, 1, 0, 1);
-        left.add(fc.experienceLabel).padTop(2).right();
+        left.add(experience).minWidth(1).expandX().fill().row();
+        Label experienceLabel = new Label(fc.runes.get(Rune.EXP).intValue() + "/" + fc.maxRunes.get(Rune.EXP).intValue(), Main.skin);
+        experienceLabel.setColor(0, 1, 0, 1);
+        left.add(experienceLabel).padTop(2).right();
+        fc.bars.put(Rune.EXP, experience);
+        fc.labels.put(Rune.EXP, experienceLabel);
 
         Table right = new Table(Main.skin);
-        fc.healthBar = new ProgressBar(0, fc.maxHealth, 1, false, Main.skin);
-        fc.healthBar.setValue(fc.health);
-        fc.healthBar.setColor(Color.RED);
-        fc.healthBar.setAnimateDuration(1f);
+        ProgressBar healthBar = new ProgressBar(0, fc.maxRunes.get(Rune.DAMAGE), 1, false, Main.skin);
+        healthBar.setValue(fc.runes.get(Rune.DAMAGE));
+        healthBar.setColor(Color.RED);
+        healthBar.setAnimateDuration(1f);
         Label hp = new Label("hp:", Main.skin);
         hp.setColor(1, 0, 0, .75f);
         right.add(hp).left().padBottom(2).colspan(5).row();
-        right.add(fc.healthBar).minWidth(1).colspan(5).padBottom(2).expandX().fill().row();
-        fc.healthLabel = new Label((int) fc.health + "/" + (int) fc.maxHealth, Main.skin);
-        fc.healthLabel.setColor(1, 0, 0, 1);
-        right.add(fc.healthLabel).padBottom(2).colspan(5).right().row();
+        right.add(healthBar).minWidth(1).colspan(5).padBottom(2).expandX().fill().row();
+        Label healthLabel = new Label(fc.runes.get(Rune.DAMAGE).intValue() + "/" + fc.maxRunes.get(Rune.DAMAGE).intValue(), Main.skin);
+        healthLabel.setColor(1, 0, 0, 1);
+        right.add(healthLabel).padBottom(2).colspan(5).right().row();
+        fc.bars.put(Rune.DAMAGE, healthBar);
+        fc.labels.put(Rune.DAMAGE, healthLabel);
 
-        fc.poisonBar = new ProgressBar(0, fc.maxPoision, 1, true, Main.skin);
-        fc.poisonBar.setColor(Color.PURPLE);
-        fc.poisonBar.setAnimateDuration(1f);
-        fc.poisonLabel = new Label("0", Main.skin);
-        fc.poisonLabel.setColor(Color.PURPLE);
-        fc.surpriseBar = new ProgressBar(0, fc.maxSurprise, 1, true, Main.skin);
-        fc.surpriseBar.setColor(Color.YELLOW);
-        fc.surpriseBar.setAnimateDuration(1f);
-        fc.surpriseLabel = new Label("0", Main.skin);
-        fc.surpriseLabel.setColor(Color.YELLOW);
-        fc.mortalBar = new ProgressBar(0, fc.maxMortal, 1, true, Main.skin);
-        fc.mortalBar.setColor(Color.FIREBRICK);
-        fc.mortalBar.setAnimateDuration(1f);
-        fc.mortalLabel = new Label("0", Main.skin);
-        fc.mortalLabel.setColor(Color.FIREBRICK);
-        fc.steamBar = new ProgressBar(0, fc.maxSteam, 1, true, Main.skin);
-        fc.steamBar.setColor(Color.TEAL);
-        fc.steamBar.setAnimateDuration(1f);
-        fc.steamLabel = new Label("0", Main.skin);
-        fc.steamLabel.setColor(Color.TEAL);
-        fc.masonBar = new ProgressBar(0, fc.maxMason, 1, true, Main.skin);
-        fc.masonBar.setColor(Color.LIME);
-        fc.masonBar.setAnimateDuration(1f);
-        fc.masonLabel = new Label("0", Main.skin);
-        fc.masonLabel.setColor(Color.LIME);
+        for (Rune rune : Rune.elementRunes) {
+            ProgressBar bar = new ProgressBar(0, fc.maxRunes.get(rune), 1, true, Main.skin);
+            bar.setColor(rune.color);
+            bar.setAnimateDuration(1f);
+            fc.bars.put(rune, bar);
+
+            Label label = new Label("0", Main.skin);
+            label.setColor(rune.color);
+            fc.labels.put(rune, label);
+        }
         fc.updateProgressBars();
-        right.add(fc.poisonBar).minWidth(1).height(180).pad(2);
-        right.add(fc.surpriseBar).minWidth(1).height(180).pad(2);
-        right.add(fc.mortalBar).minWidth(1).height(180).pad(2);
-        right.add(fc.steamBar).minWidth(1).height(180).pad(2);
-        right.add(fc.masonBar).minWidth(1).height(180).pad(2).row();
-        right.add(fc.poisonLabel);
-        right.add(fc.surpriseLabel);
-        right.add(fc.mortalLabel);
-        right.add(fc.steamLabel);
-        right.add(fc.masonLabel);
+        for (Rune rune : Rune.elementRunes) {
+            right.add(fc.bars.get(rune)).minWidth(1).height(180).pad(2);
+        }
+        right.row();
+        for (Rune rune : Rune.elementRunes) {
+            right.add(fc.labels.get(rune));
+        }
 
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
@@ -113,11 +99,9 @@ public class FighterListener implements EntityListener {
             Table button = new Button(Main.skin);
             button.setBackground(Main.skin.getDrawable("default-round"));
             button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
-            if (sc.poison != 0) button.add(createDisplay(sc.poison, sc.poisonDisplay, Color.PURPLE)).expandX();
-            if (sc.surprise != 0) button.add(createDisplay(sc.surprise, sc.surpriseDisplay, Color.YELLOW)).expandX();
-            if (sc.mortal != 0) button.add(createDisplay(sc.mortal, sc.mortalDisplay, Color.RED)).expandX();
-            if (sc.steam != 0) button.add(createDisplay(sc.steam, sc.steamDisplay, Color.TEAL)).expandX();
-            if (sc.mason != 0) button.add(createDisplay(sc.mason, sc.masonDisplay, Color.GREEN)).expandX();
+            for (Rune rune : Rune.elementRunes) {
+                if (sc.cost.get(rune) != 0) button.add(createDisplay(sc.cost.get(rune).intValue(), sc.displays.get(rune), rune.color)).expandX();
+            }
             if (engine.getSystem(PuzzleSystem.class).player == fc) {
                 button.addListener(new ClickListener() {
                     @Override

@@ -31,9 +31,4 @@ public class StrikeSystem extends GlyphSystem {
     void copyFields(GlyphComponent to, GlyphComponent from) {
         ((StrikeComponent) to).damage = ((StrikeComponent) from).damage;
     }
-
-    @Override
-    protected boolean canCastRune(Entity entity) {
-        return true;
-    }
 }

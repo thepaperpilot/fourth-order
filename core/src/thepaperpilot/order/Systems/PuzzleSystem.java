@@ -14,6 +14,7 @@ import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Components.Effects.DamageOverTimeComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
+import thepaperpilot.order.Rune;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
@@ -49,12 +50,7 @@ public class PuzzleSystem extends EntitySystem {
         // Player Side
         playerEntity = new Entity();
         player = Player.getPlayer();
-        player.poison = 0;
-        player.surprise = 0;
-        player.mortal = 0;
-        player.steam = 0;
-        player.mason = 0;
-        player.health = player.maxHealth;
+        player.reset();
         playerEntity.add(this.player);
         playerEntity.add(new UIComponent());
         playerEntity.add(new PlayerControlledComponent());
@@ -62,12 +58,7 @@ public class PuzzleSystem extends EntitySystem {
 
         // Enemy Side
         enemyEntity = new Entity();
-        enemy.poison = 0;
-        enemy.surprise = 0;
-        enemy.mortal = 0;
-        enemy.steam = 0;
-        enemy.mason = 0;
-        enemy.health = enemy.maxHealth;
+        enemy.reset();
         enemyEntity.add(enemy);
         enemyEntity.add(new UIComponent());
         engine.addEntity(enemyEntity);
@@ -138,7 +129,7 @@ public class PuzzleSystem extends EntitySystem {
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = i + 3; k < size; k++) {
-                        if (runes[k][j] != null && rc.matches(Mappers.rune.get(runes[k][j])) && !Mappers.destroy.has(runes[k][j])) {
+                        if (runes[k][j] != null && rc.rune == Mappers.rune.get(runes[k][j]).rune && !Mappers.destroy.has(runes[k][j])) {
                             matched++;
                             runes[k][j].add(new DestroyComponent(collector));
                         } else break;
@@ -181,7 +172,7 @@ public class PuzzleSystem extends EntitySystem {
                     RuneComponent rc = Mappers.rune.get(runes[i][j]);
                     int matched = 3;
                     for (int k = j + 3; k < size; k++) {
-                        if (runes[i][k] != null && rc.matches(Mappers.rune.get(runes[i][k])) && !Mappers.destroy.has(runes[i][k])) {
+                        if (runes[i][k] != null && rc.rune == Mappers.rune.get(runes[i][k]).rune && !Mappers.destroy.has(runes[i][k])) {
                             matched++;
                             runes[i][k].add(new DestroyComponent(collector));
 
@@ -254,50 +245,25 @@ public class PuzzleSystem extends EntitySystem {
     }
 
     private void createRune(int column) {
-        Entity rune = new Entity();
-        PuzzleComponent pc = new PuzzleComponent(this);
-        RuneComponent rc = new RuneComponent();
-        IdleAnimationComponent ic = new IdleAnimationComponent();
-        UIComponent uc = new UIComponent();
+        Entity rune = getRune(true);
+        RuneComponent rc = Mappers.rune.get(rune);
         rc.x = column;
         rc.y = 0;
-        switch (MathUtils.random(6)) {
-            case 0:
-                rc.poison = 1;
-                ic.file = "PurpleGem";
-                break;
-            case 1:
-                rc.surprise = 1;
-                ic.file = "YellowGem";
-                break;
-            case 2:
-                rc.mortal = 1;
-                ic.file = "RedGem";
-                break;
-            case 3:
-                rc.steam = 1;
-                ic.file = "BlueGem";
-                break;
-            case 4:
-                rc.mason = 1;
-                ic.file = "GreenGem";
-                break;
-            case 5:
-                rc.exp = 1;
-                ic.file = "XPGem";
-                ic.chance = 1;
-                break;
-            case 6:
-                rc.damage = 1;
-                ic.file = "DamageRune";
-                ic.chance = 1;
-                break;
-        }
-        rune.add(pc);
+        getEngine().addEntity(rune);
+    }
+
+    public Entity getRune(boolean inclusive) {
+        Entity rune = new Entity();
+        RuneComponent rc = new RuneComponent();
+        IdleAnimationComponent ic = new IdleAnimationComponent();
+        rc.rune = Rune.randomRune(inclusive);
+        ic.file = rc.rune.colorName + "Gem";
+        if (rc.rune == Rune.EXP || rc.rune == Rune.DAMAGE) ic.chance = 1;
         rune.add(rc);
         rune.add(ic);
-        rune.add(uc);
-        getEngine().addEntity(rune);
+        rune.add(new UIComponent());
+        rune.add(new PuzzleComponent(this));
+        return rune;
     }
 
     public void updateRune(Entity rune) {
@@ -401,7 +367,7 @@ public class PuzzleSystem extends EntitySystem {
         UIComponent ui1 = Mappers.ui.get(runes[x + 1][y]);
         UIComponent ui2 = Mappers.ui.get(runes[x + 2][y]);
 
-        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.matches(rc1) && rc.matches(rc2);
+        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.rune == rc1.rune && rc.rune == rc2.rune;
 
     }
 
@@ -416,7 +382,7 @@ public class PuzzleSystem extends EntitySystem {
         UIComponent ui1 = Mappers.ui.get(runes[x][y + 1]);
         UIComponent ui2 = Mappers.ui.get(runes[x][y + 2]);
 
-        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.matches(rc1) && rc.matches(rc2);
+        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.rune == rc1.rune && rc.rune == rc2.rune;
 
     }
 

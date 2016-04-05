@@ -1,16 +1,12 @@
 package thepaperpilot.order.Components.Spells;
 
 import com.badlogic.ashley.core.Component;
+import thepaperpilot.order.Rune;
 
 public class DestroyColorComponent implements Component {
-    public int color;
-    //  0 - poison
-    //  1 - surprise
-    //  2 - mortal
-    //  3 - steam
-    //  4 - mason
+    public Rune rune;
 
-    public DestroyColorComponent(int color) {
-        this.color = color;
+    public DestroyColorComponent(Rune rune) {
+        this.rune = rune;
     }
 }
