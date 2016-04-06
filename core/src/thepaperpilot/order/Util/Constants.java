@@ -16,7 +16,7 @@ public class Constants {
     public static final float STABLE_TIME = 1;
     public static final float TEXT_SPEED = 24;
     public static final float PARTICLE_FREQUENCY = 1/100f;
-    public static final float RUNE_DELAY = .5f;
+    public static final float RUNE_DELAY = .1f;
 
     /* Audio */
     public static final float MASTER_VOLUME = 1;
