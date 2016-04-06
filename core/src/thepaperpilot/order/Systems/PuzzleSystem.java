@@ -8,6 +8,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import thepaperpilot.order.Components.*;
@@ -282,13 +283,13 @@ public class PuzzleSystem extends EntitySystem {
         uc.actor.addAction(moveRuneAction(rune));
     }
 
-    private MoveToAction moveRuneAction(Entity entity) {
+    private Action moveRuneAction(Entity entity) {
         RuneComponent rc = Mappers.rune.get(entity);
         UIComponent uc = Mappers.ui.get(entity);
 
         Vector2 dest = new Vector2(Constants.UI_WIDTH + (rc.x + .375f) * getRuneSize(), Constants.WORLD_HEIGHT - (rc.y + .625f) * getRuneSize());
         float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
-        return Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In);
+        return Actions.sequence(Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In), Actions.delay(Constants.RUNE_DELAY));
     }
 
     public void select(final Entity entity) {
