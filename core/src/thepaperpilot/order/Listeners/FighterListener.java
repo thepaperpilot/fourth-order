@@ -9,9 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import thepaperpilot.order.Components.ActorComponent;
 import thepaperpilot.order.Components.FighterComponent;
 import thepaperpilot.order.Components.SpellComponent;
-import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
@@ -29,7 +29,7 @@ public class FighterListener implements EntityListener {
     @Override
     public void entityAdded(final Entity entity) {
         final FighterComponent fc = Mappers.fighter.get(entity);
-        UIComponent uc = Mappers.ui.get(entity);
+        ActorComponent ac = Mappers.actor.get(entity);
 
         Table ui = new Table(Main.skin);
         ui.setFillParent(true);
@@ -115,7 +115,7 @@ public class FighterListener implements EntityListener {
             table.add(button).expandX().fill().height(60).colspan(2).pad(2).row();
         }
         ui.add(table).expandY().fill().width(Constants.UI_WIDTH);
-        uc.actor = ui;
+        ac.actor = ui;
     }
 
     private Actor createDisplay(int element, Image display, Color color) {

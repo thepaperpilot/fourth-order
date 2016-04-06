@@ -42,7 +42,7 @@ public class SpellSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        if (Mappers.ui.has(entity)) {
+        if (Mappers.actor.has(entity)) {
             renderRuneEffect(entity);
             if (Mappers.rune.has(entity)) {
                 if (Mappers.totem.has(entity) && updateTotems && turn == Mappers.totem.get(entity).caster) updateTotem(entity);

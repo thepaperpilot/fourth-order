@@ -1,0 +1,93 @@
+{
+    "lines": {
+        "alchemist": {
+            "name": "Guardian of Poison",
+            "message": "Eureka! That was quite an impressive fight, but I appear to have lost.\nWell... don't worry, I will uphold my part of the deal.\nDon't hesitate to come back and help me with my research...\n__________...if you'd like to discover new ways to lose to me! Hahahaha!",
+            "face": 1,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "rogue": {
+            "name": "Guardian of Surprise",
+            "message": "Woah, you beat me! I'm surprised... What brings you here anyway?",
+            "face": 2,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "rogue2"
+        },
+        "rogue2": {
+            "name": "Knight",
+            "message": "I need for you to stop attacking people... like you just did.",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "rogue3"
+        },
+        "rogue3": {
+            "name": "Guardian of Surprise",
+            "message": "Aww man... that's no fun, but I guess I'll follow along.\nHey you're a pretty good fighter, mind stopping by to spar sometime?",
+            "face": 2,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "ranger": {
+            "name": "Guardian of Mortal",
+            "message": "Ouch, you're tougher than I though! Fine, I yield!\nI guess I have to go hunt for something better to do now...\nFeel free to come back here if you ever want to train your aim!",
+            "face": 3,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "paladin": {
+            "name": "Guardian of Steam",
+            "message": "Okay, fine- You beat me! I'll stop helping these Fourth Order guys.\nMy prototype is almost finished anyway.\nIf you'd ever like to help me test it out, just come back here\nand I can dispense you some more bandaids!",
+            "face": 4,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "wizard": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "wizard2"
+        },
+        "wizard2": {
+            "name": "Knight",
+            "message": "I know you aren't talking but look, just stop attacking people, okay?\nI'll be back here to check on you if you don't!",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "wizard3"
+        },
+        "wizard3": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+    },
+    "player": "PortraitPlayer",
+    "actors": [
+        "PortraitAlchemist",
+        "PortraitRogue",
+        "PortraitRanger",
+        "PortraitPaladin",
+        "PortraitWizard"
+    ]
+}

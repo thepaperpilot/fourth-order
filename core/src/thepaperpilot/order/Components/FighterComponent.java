@@ -3,7 +3,6 @@ package thepaperpilot.order.Components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -12,8 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
-import thepaperpilot.order.Dialogue;
-import thepaperpilot.order.DialogueScreen;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
@@ -22,7 +19,6 @@ import thepaperpilot.order.Util.Mappers;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class FighterComponent implements Component {
@@ -37,8 +33,8 @@ public class FighterComponent implements Component {
     public Map<Rune, Label> labels = new EnumMap<Rune, Label>(Rune.class);
     public ArrayList<Entity> spells = new ArrayList<Entity>();
 
-    public DialogueComponent victory;
-    public DialogueComponent loss;
+    public String victory;
+    public String defeat;
 
     public FighterComponent() {
         // TODO skills
@@ -95,7 +91,7 @@ public class FighterComponent implements Component {
         }
     }
 
-    public void hit(float damage, PuzzleSystem puzzle) {
+    public void hit(float damage, final PuzzleSystem puzzle) {
         if (Constants.UNDYING) return;
         for (Entity entity : puzzle.getEngine().getEntitiesFor(Family.all(StatusEffectComponent.class, DamageMultiplierComponent.class).get())) {
             StatusEffectComponent sc = Mappers.statusEffect.get(entity);
@@ -121,20 +117,33 @@ public class FighterComponent implements Component {
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
-        if (runes.get(Rune.DAMAGE) <= 0) {
+        if (runes.get(Rune.DAMAGE) <= 0 && puzzle.turn != PuzzleSystem.NULL_FIGHTER) {
             message = new Entity();
             if (puzzle.enemy == this) {
                 Main.playSound("victory.wav");
                 message.add(new MessageComponent("[GOLD]You Are Victorious"));
-                if (victory != null) puzzle.transition(new DialogueScreen(victory));
-                else puzzle.transition(Main.instance);
+                if (victory != null) {
+                    Entity entity = new Entity();
+                    DialogueComponent dc = DialogueComponent.read("dialogue/victory.json");
+                    dc.start = victory;
+                    entity.add(dc);
+                    entity.add(new ActorComponent());
+                    puzzle.returnScreen.engine.addEntity(entity);
+                }
             } else if (puzzle.player == this) {
                 Main.playSound("lose.wav");
                 message.add(new MessageComponent("[FIREBRICK]You Have Been Defeated"));
-                if (puzzle.enemy.loss != null) puzzle.transition(new DialogueScreen(puzzle.enemy.loss));
-                else puzzle.transition(Main.instance);
+                if (puzzle.enemy.defeat != null) {
+                    Entity entity = new Entity();
+                    DialogueComponent dc = DialogueComponent.read("dialogue/defeat.json");
+                    dc.start = puzzle.enemy.defeat;
+                    entity.add(dc);
+                    entity.add(new ActorComponent());
+                    puzzle.returnScreen.engine.addEntity(entity);
+                }
             }
             puzzle.getEngine().addEntity(message);
+            puzzle.transition(puzzle.returnScreen);
         }
     }
 
@@ -212,7 +221,7 @@ public class FighterComponent implements Component {
         puzzle.getEngine().addEntity(message);
         Main.playSound("level.wav");
 
-        if (puzzle.player == this) {
+        /*if (puzzle.player == this) {
             final ArrayList<Entity> spells = new ArrayList<Entity>();
             String classSpell = Mappers.spell.get(this.spells.get(1)).name;
             spells.add(SpellComponent.getRefreshSpell());
@@ -244,30 +253,37 @@ public class FighterComponent implements Component {
             puzzle.turn = PuzzleSystem.NULL_FIGHTER;
             final Screen screen = Main.instance.getScreen();
             DialogueComponent dc = new DialogueComponent();
-            DialogueScreen ds = new DialogueScreen(dc);
-            dc.lines = new Dialogue.Line[1];
-            dc.lines[0] = new Dialogue.Line("I can learn a new spell, sweet! But which one?");
-            dc.lines[0].options = new Dialogue.Option[spells.size()];
+            IntroScreen ds = new IntroScreen();
+            dc.start = "first";
+            Line first = new Line("I can learn a new spell, sweet! But which one?");
+            first.options = new Option[spells.size()];
             for (int i = 0; i < spells.size(); i++) {
                 final Entity spell = spells.get(i);
                 SpellComponent sc = Mappers.spell.get(spell);
-                dc.lines[0].options[i] = new Dialogue.Option(sc.name);
-                dc.lines[0].options[i].events = new Runnable() {
+                first.options[i] = new Option(sc.name);
+                first.options[i].event = sc.name;
+                dc.events.put(sc.name, new Runnable() {
                     @Override
                     public void run() {
                         FighterComponent.this.spells.add(spell);
                     }
-                };
+                });
             }
-            dc.lines[0].events = new Runnable() {
+            first.event = "end";
+            dc.events.put("end", new Runnable() {
                 @Override
                 public void run() {
                     Main.changeScreen(screen);
                     puzzle.turn = temp;
                     puzzle.updateFighters();
                 }
-            };
+            });
+            dc.lines.put("first", first);
+            Entity dialogue = new Entity();
+            dialogue.add(dc);
+            dialogue.add(new ActorComponent());
+            ds.engine.addEntity(dialogue);
             puzzle.transition(ds);
-        }
+        }*/
     }
 }

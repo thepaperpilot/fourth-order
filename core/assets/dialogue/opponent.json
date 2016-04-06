@@ -1,0 +1,221 @@
+{
+    "lines": {
+        "first": {
+            "name": "Knight",
+            "message": "I'm prepared for a fight, Which guardian should I challenge?",
+            "face": 0,
+            "event": null,
+            "options": [{
+                "event": null,
+                "message": "Guardian of Poison",
+                "next": "poison"
+            }, {
+                "event": null,
+                "message": "Guardian of Surprise",
+                "next": "surprise"
+            }, {
+                "event": null,
+                "message": "Guardian of Mortal",
+                "next": "mortal"
+            }, {
+                "event": null,
+                "message": "Guardian of Steam",
+                "next": "steam"
+            }, {
+                "event": null,
+                "message": "Guardian of Mason",
+                "next": "mason"
+            }],
+            "timer": 0,
+            "next": null
+        },
+        "poison": {
+            "name": "Knight",
+            "message": "You! Cease your vile brews at once!",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "poison2"
+        },
+        "poison2": {
+            "name": "Guardian of Poison",
+            "message": "Hmmm... I disagree. If you wish me to stop my craft then you'll need a better reason.",
+            "face": 1,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "poison3"
+        },
+        "poison3": {
+            "name": "Knight",
+            "message": "I'll show you how a true hero fights!",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "poison4"
+        },
+        "poison4": {
+            "name": "Guardian of Poison",
+            "message": "Hehe, how amusing. Here, I'll make a deal with you:\nIf you can defeat me, I'll quit bothering you, blah blah.\nBut if you lose, well then.....\n...Then I'll get to laugh at you! Hahaha!",
+            "face": 1,
+            "event": "alchemist",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "surprise": {
+            "name": "Guardian of Surprise",
+            "message": "Hi-Yah!",
+            "face": 2,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "surprise2"
+        },
+        "surprise2": {
+            "name": "Knight",
+            "message": "Whoah, where'd you come from?",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "surprise3"
+        },
+        "surprise3": {
+            "name": "Guardian of Surprise",
+            "message": "Hah! sneaking up on you was easy, for I am the guardian of the element of Surprise!___\nYou've practically walked into my trap, now prepare for battle!",
+            "face": 2,
+            "event": "rogue",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "mortal": {
+            "name": "Knight",
+            "message": "Halt! Your reign of terror ends here!",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mortal2"
+        },
+        "mortal2": {
+            "name": "Guardian of Mortal",
+            "message": "Not so fast! You may have managed to hunt me down, but don't jump so quickly to conclude which one of us is the prey!\nI hope you've brought good armor, because I'm the guardian of the Mortal element.\nThat means I know just how to inflict the worst injuries! Still eager to fight me?",
+            "face": 3,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mortal3"
+        },
+        "mortal3": {
+            "name": "Knight",
+            "message": "Think you can scare me that easily?\nBring it on!",
+            "face": 0,
+            "event": "ranger",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "steam": {
+            "name": "Knight",
+            "message": "You! Quit.... uhh... healing people?\nWhatever you're doing that's wrong, stop it!",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "steam2"
+        },
+        "steam2": {
+            "name": "Guardian of Steam",
+            "message": "No! I joined the Fourth Order so that I could make sure there were always patients to test out my new healing machines on.\nI'm not going to let your little 'honor' get in the way of my breakthrough!",
+            "face": 4,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "steam3"
+        },
+        "steam3": {
+            "name": "Knight",
+            "message": "Couldn't you just wait for people to get hurt?",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "steam4"
+        },
+        "steam4": {
+            "name": "Guardian of Steam",
+            "message": "That would take too long! Speaking of which, stop wasting my time.\nFight me or leave!",
+            "face": 4,
+            "event": "paladin",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "mason": {
+            "name": "Knight",
+            "message": "Hey, you!",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mason2"
+        },
+        "mason2": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mason3"
+        },
+        "mason3": {
+            "name": "Knight",
+            "message": "I'm uh__________.__________.__________.____________________ here to stop you?",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mason4"
+        },
+        "mason4": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mason5"
+        },
+        "mason5": {
+            "name": "Knight",
+            "message": "Ri___i___i___i___ight then. I suppose we must battle?",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "mason6"
+        },
+        "mason6": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": "wizard",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+    },
+    "player": "PortraitPlayer",
+    "actors": [
+        "PortraitAlchemist",
+        "PortraitRogue",
+        "PortraitRanger",
+        "PortraitPaladin",
+        "PortraitWizard"
+    ]
+}

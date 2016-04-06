@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
+import thepaperpilot.order.Components.ActorComponent;
 import thepaperpilot.order.Components.ElectrifiedComponent;
-import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Mappers;
 
@@ -28,7 +28,7 @@ public class ElectrifiedSystem extends IteratingSystem {
     private Batch batch;
 
     public ElectrifiedSystem(Batch batch) {
-        super(Family.all(UIComponent.class, ElectrifiedComponent.class).get(), 20);
+        super(Family.all(ActorComponent.class, ElectrifiedComponent.class).get(), 20);
         this.batch = batch;
     }
 
@@ -42,7 +42,7 @@ public class ElectrifiedSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        UIComponent uc = Mappers.ui.get(entity);
+        ActorComponent ac = Mappers.actor.get(entity);
         ElectrifiedComponent ec = Mappers.electrified.get(entity);
 
         ec.time += deltaTime;
@@ -54,6 +54,6 @@ public class ElectrifiedSystem extends IteratingSystem {
         else if (ec.color.equals("Red")) animation = red;
         else if (ec.color.equals("Yellow")) animation = yellow;
 
-        batch.draw(animation.getKeyFrame(ec.time), uc.actor.getX(), uc.actor.getY(), uc.actor.getOriginX(), uc.actor.getOriginY(), uc.actor.getWidth(), uc.actor.getHeight(), uc.actor.getScaleX(), uc.actor.getScaleY(), uc.actor.getRotation());
+        batch.draw(animation.getKeyFrame(ec.time), ac.actor.getX(), ac.actor.getY(), ac.actor.getOriginX(), ac.actor.getOriginY(), ac.actor.getWidth(), ac.actor.getHeight(), ac.actor.getScaleX(), ac.actor.getScaleY(), ac.actor.getRotation());
     }
 }

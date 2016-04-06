@@ -1,0 +1,75 @@
+{
+    "lines": {
+        "alchemist": {
+            "name": "Guardian of Poison",
+            "message": "Just what I expected, you're all fumes and no mettle.\nCome back when you've transmuted yourself into sterner stuff!",
+            "face": 1,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "rogue": {
+            "name": "Guardian of Surprise",
+            "message": "Hah! You're as WEAK as you are UNOBSERVANT and CLUMSY!\nCome fight me again when you're skilled enough to not tarnish your honor!",
+            "face": 2,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "ranger": {
+            "name": "Guardian of Mortal",
+            "message": "Hah! Too easy. Lick your wounds and come challenge me again when you've got game.",
+            "face": 3,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "paladin": {
+            "name": "Guardian of Steam",
+            "message": "Hah! My machines could fight harder than that and they're for HEALING.\nCome challenge me again when you're strong enough not to make a fool of yourself!",
+            "face": 4,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+        "wizard": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "wizard2"
+        },
+        "wizard2": {
+            "name": "Knight",
+            "message": "Yeah yeah, I know. \"Come back when you are stronger\" and stuff.",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "wizard3"
+        },
+        "wizard3": {
+            "name": "Guardian of Mason",
+            "message": "______________________________.______________________________.______________________________.",
+            "face": 5,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        },
+    },
+    "player": "PortraitPlayer",
+    "actors": [
+        "PortraitAlchemist",
+        "PortraitRogue",
+        "PortraitRanger",
+        "PortraitPaladin",
+        "PortraitWizard"
+    ]
+}

@@ -6,8 +6,8 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
+import thepaperpilot.order.Components.ActorComponent;
 import thepaperpilot.order.Components.SelectedComponent;
-import thepaperpilot.order.Components.UIComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Mappers;
 
@@ -17,7 +17,7 @@ public class SelectedSystem extends IteratingSystem {
     private Batch batch;
 
     public SelectedSystem(Batch batch) {
-        super(Family.all(UIComponent.class, SelectedComponent.class).get(), 20);
+        super(Family.all(ActorComponent.class, SelectedComponent.class).get(), 20);
         this.batch = batch;
         selected.setOrigin(Align.center);
     }
@@ -32,10 +32,10 @@ public class SelectedSystem extends IteratingSystem {
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        UIComponent uc = Mappers.ui.get(entity);
+        ActorComponent ac = Mappers.actor.get(entity);
 
-        selected.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
-        selected.setPosition(uc.actor.getX(), uc.actor.getY());
+        selected.setScale(ac.actor.getScaleX(), ac.actor.getScaleY());
+        selected.setPosition(ac.actor.getX(), ac.actor.getY());
         selected.draw(batch, 1);
     }
 }

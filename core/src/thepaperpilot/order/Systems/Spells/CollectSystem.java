@@ -2,12 +2,8 @@ package thepaperpilot.order.Systems.Spells;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import thepaperpilot.order.Components.*;
-import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Components.Spells.CollectComponent;
-import thepaperpilot.order.Components.Spells.CommandComponent;
-import thepaperpilot.order.Rune;
 import thepaperpilot.order.Util.Mappers;
 
 public class CollectSystem extends TotemSystem {

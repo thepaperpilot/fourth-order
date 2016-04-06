@@ -1,0 +1,130 @@
+{
+    "lines": {
+        "first": {
+            "name": "King",
+            "message": "Noble champion, I have for you an important task.\nThe guardians of the Pentagonal Table have united under the banner of \"The Fourth Order\" and are terrorizing my kingdom.",
+            "face": 1,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "second"
+        },
+        "second": {
+            "name": "Knight",
+            "message": "What is my quest?",
+            "face": 0,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "third"
+        },
+        "third": {
+            "name": "King",
+            "message": "This will be no easy task. In order to defeat these masters of the elements, you will need to learn them yourself.",
+            "face": 1,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "fourth"
+        },
+        "fourth": {
+            "name": "King",
+            "message": "Will you become a deadly Ranger, mortally wounding your foes with pinpointed strikes?\nOr a sturdy Paladin, able to withstand injuries with the help of healing steam?\nPerhaps a mysterious Wizard, manipulating the physical world using masonic secrets?\nOr still yet a clever Alchemist, concocting alchemical poisons to weaken your foes?\nIf not then maybe a stealthy Rogue, capitalizing on your enemy's surprise?",
+            "face": 1,
+            "event": null,
+            "options": [],
+            "timer": 0,
+            "next": "fifth"
+        },
+        "fifth": {
+            "name": "Knight",
+            "message": "That's a difficult question. I think I want to be...",
+            "face": 0,
+            "event": null,
+            "options": [{
+                "event": null,
+                "message": "Ranger",
+                "next": "ranger"
+            }, {
+                "event": null,
+                "message": "Paladin",
+                "next": "paladin"
+            }, {
+                "event": null,
+                "message": "Wizard",
+                "next": "wizard"
+            }, {
+                "event": null,
+                "message": "Alchemist",
+                "next": "alchemist"
+            }, {
+                "event": null,
+                "message": "Rogue",
+                "next": "rogue"
+            }, {
+                "event": null,
+                "message": "I'm not sure... can you repeat that?",
+                "next": "fourth"
+            }],
+            "timer": 0
+        },
+        "ranger": {
+            "name": "Knight",
+            "message": "My aim is true. Ranger it is!",
+            "face": 0,
+            "event": "ranger",
+            "options": [],
+            "timer": 0,
+            "next": "end"
+        },
+        "paladin": {
+            "name": "Knight",
+            "message": "No enemy can fell me as a righteous Paladin!",
+            "face": 0,
+            "event": "paladin",
+            "options": [],
+            "timer": 0,
+            "next": "end"
+        },
+        "wizard": {
+            "name": "Knight",
+            "message": "I will discover ancient secrets as a Wizard!",
+            "face": 0,
+            "event": "wizard",
+            "options": [],
+            "timer": 0,
+            "next": "end"
+        },
+        "alchemist": {
+            "name": "Knight",
+            "message": "None will be impervious to my Alchemist concoctions!",
+            "face": 0,
+            "event": "alchemist",
+            "options": [],
+            "timer": 0,
+            "next": "end"
+        },
+        "rogue": {
+            "name": "Knight",
+            "message": "Nobody will expect me if I go Rogue!",
+            "face": 0,
+            "event": "rogue",
+            "options": [],
+            "timer": 0,
+            "next": "end"
+        },
+        "end": {
+            "name": "King",
+            "message": "Excellent. I wish you luck... the fate of this kingdom lies in your hands!",
+            "face": 1,
+            "event": "end",
+            "options": [],
+            "timer": 0,
+            "next": null
+        }
+    },
+    "player": "PortraitPlayer",
+    "actors": [
+        "PortraitKing"
+    ]
+}

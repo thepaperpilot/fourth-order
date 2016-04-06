@@ -34,10 +34,10 @@ public abstract class GlyphSystem<T extends GlyphComponent> extends SpellSystem 
     }
 
     protected void renderRuneEffect(Entity entity) {
-        UIComponent uc = Mappers.ui.get(entity);
+        ActorComponent ac = Mappers.actor.get(entity);
 
-        glyph.setScale(uc.actor.getScaleX(), uc.actor.getScaleY());
-        glyph.setPosition(uc.actor.getX(), uc.actor.getY());
+        glyph.setScale(ac.actor.getScaleX(), ac.actor.getScaleY());
+        glyph.setPosition(ac.actor.getX(), ac.actor.getY());
         glyph.draw(batch, batch.getColor().a);
     }
 
@@ -61,8 +61,8 @@ public abstract class GlyphSystem<T extends GlyphComponent> extends SpellSystem 
         while(true) {
             Entity random = pc.puzzle.randomRune();
             if (random != null && canCastRune(random)) {
-                UIComponent uc = Mappers.ui.get(random);
-                zoom(uc.actor);
+                ActorComponent ac = Mappers.actor.get(random);
+                zoom(ac.actor);
                 random.add(c);
                 random.add(gc);
                 break;

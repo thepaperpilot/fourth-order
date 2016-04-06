@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Components.Spells.CommandComponent;
 import thepaperpilot.order.Components.TotemComponent;
-import thepaperpilot.order.Util.Mappers;
 
 public class CommandSystem extends TotemSystem {
 

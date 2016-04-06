@@ -10,12 +10,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Components.Effects.DamageOverTimeComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
 import thepaperpilot.order.Rune;
+import thepaperpilot.order.Screens.MapScreen;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
@@ -25,6 +25,7 @@ public class PuzzleSystem extends EntitySystem {
     public static final FighterComponent NULL_FIGHTER = new FighterComponent();
     public FighterComponent player;
     public FighterComponent enemy;
+    public MapScreen returnScreen;
 
     public final int size;
     public Entity[][] runes;
@@ -39,9 +40,10 @@ public class PuzzleSystem extends EntitySystem {
 
     // TODO make this class cleaner/smaller
     // too much hard coding of the 5 types
-    public PuzzleSystem(int size, FighterComponent enemy) {
+    public PuzzleSystem(int size, FighterComponent enemy, MapScreen returnScreen) {
         super(5);
         this.size = size;
+        this.returnScreen = returnScreen;
         runes = new Entity[size][size];
         cooldown = new float[size];
         this.enemy = enemy;
@@ -53,7 +55,7 @@ public class PuzzleSystem extends EntitySystem {
         player = Player.getPlayer();
         player.reset();
         playerEntity.add(this.player);
-        playerEntity.add(new UIComponent());
+        playerEntity.add(new ActorComponent());
         playerEntity.add(new PlayerControlledComponent());
         engine.addEntity(playerEntity);
 
@@ -61,7 +63,7 @@ public class PuzzleSystem extends EntitySystem {
         enemyEntity = new Entity();
         enemy.reset();
         enemyEntity.add(enemy);
-        enemyEntity.add(new UIComponent());
+        enemyEntity.add(new ActorComponent());
         engine.addEntity(enemyEntity);
 
         Entity message = new Entity();
@@ -92,7 +94,7 @@ public class PuzzleSystem extends EntitySystem {
                     } else if (runes[i][j - 1] != null){
                         updateRune(runes[i][j - 1]);
                     }
-                } else if (Mappers.ui.get(runes[i][j]).actor.hasActions()) {
+                } else if (Mappers.actor.get(runes[i][j]).actor.hasActions()) {
                     stable = false;
                 }
             }
@@ -262,14 +264,14 @@ public class PuzzleSystem extends EntitySystem {
         if (rc.rune == Rune.EXP || rc.rune == Rune.DAMAGE) ic.chance = 1;
         rune.add(rc);
         rune.add(ic);
-        rune.add(new UIComponent());
+        rune.add(new ActorComponent());
         rune.add(new PuzzleComponent(this));
         return rune;
     }
 
     public void updateRune(Entity rune) {
         RuneComponent rc = Mappers.rune.get(rune);
-        UIComponent uc = Mappers.ui.get(rune);
+        ActorComponent ac = Mappers.actor.get(rune);
 
         int targetY = rc.y;
         for (int i = rc.y + 1; i < size; i++) {
@@ -280,15 +282,15 @@ public class PuzzleSystem extends EntitySystem {
         runes[rc.x][rc.y] = runes[rc.x][targetY];
         runes[rc.x][targetY] = rune;
         rc.y = targetY;
-        uc.actor.addAction(moveRuneAction(rune));
+        ac.actor.addAction(moveRuneAction(rune));
     }
 
     private Action moveRuneAction(Entity entity) {
         RuneComponent rc = Mappers.rune.get(entity);
-        UIComponent uc = Mappers.ui.get(entity);
+        ActorComponent ac = Mappers.actor.get(entity);
 
         Vector2 dest = new Vector2(Constants.UI_WIDTH + (rc.x + .375f) * getRuneSize(), Constants.WORLD_HEIGHT - (rc.y + .625f) * getRuneSize());
-        float dist = dest.dst(uc.actor.getX(), uc.actor.getY());
+        float dist = dest.dst(ac.actor.getX(), ac.actor.getY());
         return Actions.sequence(Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In), Actions.delay(Constants.RUNE_DELAY));
     }
 
@@ -318,17 +320,17 @@ public class PuzzleSystem extends EntitySystem {
                     updateRune(selected);
                 } else {
                     final Entity selected = this.selected;
-                    final UIComponent uc1 = Mappers.ui.get(entity);
-                    final UIComponent uc2 = Mappers.ui.get(selected);
-                    uc1.actor.addAction(Actions.sequence(moveRuneAction(entity), Actions.run(new Runnable() {
+                    final ActorComponent ac1 = Mappers.actor.get(entity);
+                    final ActorComponent ac2 = Mappers.actor.get(selected);
+                    ac1.actor.addAction(Actions.sequence(moveRuneAction(entity), Actions.run(new Runnable() {
                         @Override
                         public void run() {
                             // play error sound
-                            uc1.actor.addAction(moveRuneAction(entity));
-                            uc2.actor.addAction(moveRuneAction(selected));
+                            ac1.actor.addAction(moveRuneAction(entity));
+                            ac2.actor.addAction(moveRuneAction(selected));
                         }
                     })));
-                    uc2.actor.addAction(moveRuneAction(selected));
+                    ac2.actor.addAction(moveRuneAction(selected));
                     tempX = rc1.x;
                     tempY = rc1.y;
                     rc1.x = rc2.x;
@@ -364,11 +366,11 @@ public class PuzzleSystem extends EntitySystem {
         RuneComponent rc = Mappers.rune.get(runes[x][y]);
         RuneComponent rc1 = Mappers.rune.get(runes[x + 1][y]);
         RuneComponent rc2 = Mappers.rune.get(runes[x + 2][y]);
-        UIComponent ui = Mappers.ui.get(runes[x][y]);
-        UIComponent ui1 = Mappers.ui.get(runes[x + 1][y]);
-        UIComponent ui2 = Mappers.ui.get(runes[x + 2][y]);
+        ActorComponent ac = Mappers.actor.get(runes[x][y]);
+        ActorComponent ac1 = Mappers.actor.get(runes[x + 1][y]);
+        ActorComponent ac2 = Mappers.actor.get(runes[x + 2][y]);
 
-        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.rune == rc1.rune && rc.rune == rc2.rune;
+        return rc != null && rc1 != null && rc2 != null && !(visual && (ac.actor.hasActions() || ac1.actor.hasActions() || ac2.actor.hasActions())) && rc.rune == rc1.rune && rc.rune == rc2.rune;
 
     }
 
@@ -379,11 +381,11 @@ public class PuzzleSystem extends EntitySystem {
         RuneComponent rc = Mappers.rune.get(runes[x][y]);
         RuneComponent rc1 = Mappers.rune.get(runes[x][y + 1]);
         RuneComponent rc2 = Mappers.rune.get(runes[x][y + 2]);
-        UIComponent ui = Mappers.ui.get(runes[x][y]);
-        UIComponent ui1 = Mappers.ui.get(runes[x][y + 1]);
-        UIComponent ui2 = Mappers.ui.get(runes[x][y + 2]);
+        ActorComponent ac = Mappers.actor.get(runes[x][y]);
+        ActorComponent ac1 = Mappers.actor.get(runes[x][y + 1]);
+        ActorComponent ac2 = Mappers.actor.get(runes[x][y + 2]);
 
-        return rc != null && rc1 != null && rc2 != null && !(visual && (ui.actor.hasActions() || ui1.actor.hasActions() || ui2.actor.hasActions())) && rc.rune == rc1.rune && rc.rune == rc2.rune;
+        return rc != null && rc1 != null && rc2 != null && !(visual && (ac.actor.hasActions() || ac1.actor.hasActions() || ac2.actor.hasActions())) && rc.rune == rc1.rune && rc.rune == rc2.rune;
 
     }
 

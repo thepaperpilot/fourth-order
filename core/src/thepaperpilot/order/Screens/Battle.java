@@ -1,4 +1,4 @@
-package thepaperpilot.order;
+package thepaperpilot.order.Screens;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Family;
@@ -11,55 +11,58 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import thepaperpilot.order.Components.*;
+import thepaperpilot.order.Listeners.DialogueListener;
 import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Listeners.RuneListener;
 import thepaperpilot.order.Listeners.UIListener;
+import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.*;
 import thepaperpilot.order.Systems.Spells.*;
 import thepaperpilot.order.Util.Constants;
 
 public class Battle implements Screen {
-    public final Stage ui;
+    public final Stage stage;
     public final Engine engine;
 
-    public Battle(final int size, final FighterComponent enemy) {
+    public Battle(final int size, final FighterComponent enemy, final MapScreen returnScreen) {
         /* Create Stuff */
-        ui = new Stage(new StretchViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT));
+        stage = new Stage(new StretchViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT));
         engine = new Engine();
 
         /* Add Listeners to Engine */
-        engine.addEntityListener(Family.all(UIComponent.class, FighterComponent.class).get(), 10, new FighterListener(engine));
-        engine.addEntityListener(Family.all(UIComponent.class, IdleAnimationComponent.class, PuzzleComponent.class).get(), 10, new RuneListener());
-        engine.addEntityListener(Family.all(UIComponent.class).get(), 11, new UIListener(ui));
+        engine.addEntityListener(Family.all(ActorComponent.class, DialogueComponent.class).get(), 10, new DialogueListener(stage, engine));
+        engine.addEntityListener(Family.all(ActorComponent.class, FighterComponent.class).get(), 10, new FighterListener(engine));
+        engine.addEntityListener(Family.all(ActorComponent.class, IdleAnimationComponent.class, PuzzleComponent.class).get(), 10, new RuneListener());
+        engine.addEntityListener(Family.all(ActorComponent.class).get(), 11, new UIListener(stage));
 
         /* Add Systems to Engine */
         engine.addSystem(new DestroyRuneSystem()); //priority 25
-        engine.addSystem(new DialogueSystem(ui)); //priority 5
-        engine.addSystem(new ElectrifiedSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new DialogueSystem()); //priority 5
+        engine.addSystem(new ElectrifiedSystem(stage.getBatch())); //priority 20
         engine.addSystem(new FighterSystem()); //priority 5
-        engine.addSystem(new MessageSystem(ui)); //priority 15
-        engine.addSystem(new ParticleEffectSystem(ui.getBatch())); //priority 9
-        engine.addSystem(new PuzzleSystem(size, enemy)); //priority 5
+        engine.addSystem(new MessageSystem(stage)); //priority 15
+        engine.addSystem(new ParticleEffectSystem(stage.getBatch())); //priority 11
+        engine.addSystem(new PuzzleSystem(size, enemy, returnScreen)); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
-        engine.addSystem(new RenderStageSystem(ui)); //priority 10
-        engine.addSystem(new ScreenShakeSystem(ui)); //priority 9
-        engine.addSystem(new SelectedSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new RenderStageSystem(stage)); //priority 10
+        engine.addSystem(new ScreenShakeSystem(stage)); //priority 9
+        engine.addSystem(new SelectedSystem(stage.getBatch())); //priority 20
         engine.addSystem(new StatusEffectSystem()); //priority 15
 
-        engine.addSystem(new CollectSystem(ui.getBatch())); //priority 20
-        engine.addSystem(new CommandSystem(ui.getBatch())); //priority 20
-        engine.addSystem(new DamageSystem(ui.getBatch())); //priority 20
-        engine.addSystem(new DestroyColorSystem(ui.getBatch())); //priority 20
-        engine.addSystem(new HealingSystem(ui.getBatch())); //priority 20
-        engine.addSystem(new RefreshSystem(ui.getBatch())); //priority 20
-        engine.addSystem(new StrikeSystem(ui.getBatch())); //priority 20
+        engine.addSystem(new CollectSystem(stage.getBatch())); //priority 20
+        engine.addSystem(new CommandSystem(stage.getBatch())); //priority 20
+        engine.addSystem(new DamageSystem(stage.getBatch())); //priority 20
+        engine.addSystem(new DestroyColorSystem(stage.getBatch())); //priority 20
+        engine.addSystem(new HealingSystem(stage.getBatch())); //priority 20
+        engine.addSystem(new RefreshSystem(stage.getBatch())); //priority 20
+        engine.addSystem(new StrikeSystem(stage.getBatch())); //priority 20
 
         if (Constants.DEBUG) {
-            ui.addListener(new InputListener() {
+            stage.addListener(new InputListener() {
                 public boolean keyDown (InputEvent event, int keycode) {
                     switch (keycode) {
                         case Input.Keys.SPACE:
-                            Main.changeScreen(new Battle(size, enemy));
+                            Main.changeScreen(new Battle(size, enemy, returnScreen));
                             break;
                         case Input.Keys.P:
                             Constants.PLAYERLESS = !Constants.PLAYERLESS;
@@ -79,14 +82,14 @@ public class Battle implements Screen {
         }
     }
 
-    public Battle(FighterComponent enemy) {
-        this(9, enemy);
+    public Battle(FighterComponent enemy, MapScreen returnScreen) {
+        this(9, enemy, returnScreen);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(ui);
-        ui.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(1)));
+        Gdx.input.setInputProcessor(stage);
+        stage.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(1)));
         engine.getSystem(PuzzleSystem.class).stableTimer = -1;
     }
 
@@ -97,7 +100,7 @@ public class Battle implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        ui.getViewport().update(width, height);
+        stage.getViewport().update(width, height);
     }
 
     @Override
@@ -117,6 +120,6 @@ public class Battle implements Screen {
 
     @Override
     public void dispose() {
-        ui.dispose();
+        stage.dispose();
     }
 }

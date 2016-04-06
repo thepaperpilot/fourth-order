@@ -14,7 +14,7 @@ public class Constants {
     public static final float RUNE_EXIT_TIME = 1.5f;
     public static final float IDLE_CHANCE = .0002f;
     public static final float STABLE_TIME = 1;
-    public static final float TEXT_SPEED = 24;
+    public static final float TEXT_SPEED = 32;
     public static final float PARTICLE_FREQUENCY = 1/100f;
     public static final float RUNE_DELAY = .1f;
 

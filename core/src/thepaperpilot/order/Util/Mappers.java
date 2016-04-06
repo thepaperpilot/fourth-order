@@ -24,7 +24,7 @@ public class Mappers {
     public static final ComponentMapper<SpellComponent> spell = ComponentMapper.getFor(SpellComponent.class);
     public static final ComponentMapper<StatusEffectComponent> statusEffect = ComponentMapper.getFor(StatusEffectComponent.class);
     public static ComponentMapper<TotemComponent> totem = ComponentMapper.getFor(TotemComponent.class);
-    public static final ComponentMapper<UIComponent> ui = ComponentMapper.getFor(UIComponent.class);
+    public static final ComponentMapper<ActorComponent> actor = ComponentMapper.getFor(ActorComponent.class);
 
     /* Spells + Effects */
     public static final ComponentMapper<DamageMultiplierComponent> damageMultiplier = ComponentMapper.getFor(DamageMultiplierComponent.class);
