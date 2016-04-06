@@ -111,6 +111,6 @@ public abstract class TotemSystem<T extends TotemComponent> extends SpellSystem 
     abstract void copyFields(T to, T from);
 
     protected boolean canCastRune(Entity spell, Entity rune) {
-        return Mappers.rune.get(rune).rune == Mappers.totem.get(spell).rune;
+        return Mappers.rune.get(rune).rune == spell.getComponent(componentClass).rune;
     }
 }
