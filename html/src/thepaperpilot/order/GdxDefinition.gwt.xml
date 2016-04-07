@@ -8,4 +8,7 @@
 	<entry-point class='thepaperpilot.order.client.HtmlLauncher' />
 
 	<set-configuration-property name="gdx.assetpath" value="../core/assets" />
+
+	<extend-configuration-property name="gdx.reflect.include" value="thepaperpilot.order.Components.DialogueComponent" />
+	<extend-configuration-property name="gdx.reflect.include" value="thepaperpilot.order.UI" />
 </module>

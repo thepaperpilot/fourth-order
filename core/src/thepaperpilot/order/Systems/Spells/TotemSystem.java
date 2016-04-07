@@ -5,6 +5,8 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.reflect.ClassReflection;
+import com.badlogic.gdx.utils.reflect.ReflectionException;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Util.Mappers;
@@ -67,10 +69,8 @@ public abstract class TotemSystem<T extends TotemComponent> extends SpellSystem 
     protected void castSpell(Entity entity) {
         T c;
         try {
-            c = componentClass.newInstance();
-        } catch (InstantiationException e) {
-            return;
-        } catch (IllegalAccessException e) {
+            c = ClassReflection.newInstance(componentClass);
+        } catch (ReflectionException e) {
             return;
         }
         T entityComponent = entity.getComponent(componentClass);
