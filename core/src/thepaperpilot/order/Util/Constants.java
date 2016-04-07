@@ -8,6 +8,7 @@ public class Constants {
     public static final int DIALOGUE_SIZE = 340;
     public static final float RUNE_ZOOM = 3;
     public static final float FACE_SIZE = 90;
+    public static final float MAP_MARGIN = 40;
 
     /* Speeds */
     public static final float TILE_SPEED = 600;

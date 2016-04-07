@@ -19,6 +19,7 @@ import thepaperpilot.order.Listeners.DialogueListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.DialogueSystem;
+import thepaperpilot.order.Systems.MapButtonsSystem;
 import thepaperpilot.order.Systems.RenderStageSystem;
 import thepaperpilot.order.Util.Constants;
 
@@ -37,6 +38,7 @@ public class MapScreen implements Screen {
 
         /* Add Systems to Engine */
         engine.addSystem(new DialogueSystem()); //priority 5
+        engine.addSystem(new MapButtonsSystem(stage)); //priority 12
         engine.addSystem(new RenderStageSystem(stage)); //priority 10
 
         /* Add the the temporary battle button */
