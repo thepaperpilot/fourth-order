@@ -35,9 +35,6 @@ public class FighterComponent implements Component {
     public ArrayList<Entity> spells = new ArrayList<Entity>();
     public int level = 1;
 
-    public String victory;
-    public String defeat;
-
     public FighterComponent() {
         // TODO skills
         for (Rune rune : Rune.values()) {
@@ -124,33 +121,7 @@ public class FighterComponent implements Component {
         puzzle.getEngine().addEntity(message);
 
         if (runes.get(Rune.DAMAGE) <= 0 && puzzle.turn != PuzzleSystem.NULL_FIGHTER) {
-            message = new Entity();
-            if (puzzle.enemy == this) {
-                Main.playSound("victory.wav");
-                message.add(new MessageComponent("[GOLD]You Are Victorious"));
-                if (victory != null) {
-                    Entity entity = new Entity();
-                    DialogueComponent dc = DialogueComponent.read("dialogue/victory.json");
-                    dc.start = victory;
-                    entity.add(dc);
-                    entity.add(new ActorComponent());
-                    puzzle.returnScreen.engine.addEntity(entity);
-                }
-            } else if (puzzle.player == this) {
-                Main.playSound("lose.wav");
-                message.add(new MessageComponent("[FIREBRICK]You Have Been Defeated"));
-                if (puzzle.enemy.defeat != null) {
-                    Entity entity = new Entity();
-                    DialogueComponent dc = DialogueComponent.read("dialogue/defeat.json");
-                    dc.start = puzzle.enemy.defeat;
-                    entity.add(dc);
-                    entity.add(new ActorComponent());
-                    puzzle.returnScreen.engine.addEntity(entity);
-                }
-            }
-            puzzle.getEngine().addEntity(message);
-            puzzle.transition(puzzle.returnScreen);
-            Player.save();
+            puzzle.end(this);
         }
     }
 
@@ -234,70 +205,5 @@ public class FighterComponent implements Component {
             puzzle.getEngine().addEntity(message);
             Main.playSound("level.wav");
         }
-
-        /*if (puzzle.player == this) {
-            final ArrayList<Entity> spells = new ArrayList<Entity>();
-            String classSpell = Mappers.spell.get(this.spells.get(1)).name;
-            spells.add(SpellComponent.getRefreshSpell());
-            if (classSpell.equals("Truth")) { //alchemist
-                spells.add(SpellComponent.getWitherSpell());
-            } else if (classSpell.equals("Condense")) { //rogue
-                spells.add(SpellComponent.getCollectSpell());
-            } else if (classSpell.equals("Antidote")) { //ranger
-                spells.add(SpellComponent.getCommandSpell());
-            } else if (classSpell.equals("Immortality")) { //paladin
-                spells.add(SpellComponent.getSustainSpell());
-            } else if (classSpell.equals("Premonition")) { //wizard
-
-            }
-
-            for (Iterator<Entity> iterator = spells.iterator(); iterator.hasNext(); ) {
-                Entity spell = iterator.next();
-                String name = Mappers.spell.get(spell).name;
-
-                for (Entity knownSpell : this.spells) {
-                    if (Mappers.spell.get(knownSpell).name.equals(name))
-                        iterator.remove();
-                }
-            }
-
-            if (spells.isEmpty()) return;
-
-            final FighterComponent temp = puzzle.turn;
-            puzzle.turn = PuzzleSystem.NULL_FIGHTER;
-            final Screen screen = Main.instance.getScreen();
-            DialogueComponent dc = new DialogueComponent();
-            IntroScreen ds = new IntroScreen();
-            dc.start = "first";
-            Line first = new Line("I can learn a new spell, sweet! But which one?");
-            first.options = new Option[spells.size()];
-            for (int i = 0; i < spells.size(); i++) {
-                final Entity spell = spells.get(i);
-                SpellComponent sc = Mappers.spell.get(spell);
-                first.options[i] = new Option(sc.name);
-                first.options[i].event = sc.name;
-                dc.events.put(sc.name, new Runnable() {
-                    @Override
-                    public void run() {
-                        FighterComponent.this.spells.add(spell);
-                    }
-                });
-            }
-            first.event = "end";
-            dc.events.put("end", new Runnable() {
-                @Override
-                public void run() {
-                    Main.changeScreen(screen);
-                    puzzle.turn = temp;
-                    puzzle.updateFighters();
-                }
-            });
-            dc.lines.put("first", first);
-            Entity dialogue = new Entity();
-            dialogue.add(dc);
-            dialogue.add(new ActorComponent());
-            ds.engine.addEntity(dialogue);
-            puzzle.transition(ds);
-        }*/
     }
 }

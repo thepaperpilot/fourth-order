@@ -15,6 +15,7 @@ import thepaperpilot.order.Components.Effects.DamageOverTimeComponent;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
 import thepaperpilot.order.Rune;
+import thepaperpilot.order.Screens.Location;
 import thepaperpilot.order.Screens.MapScreen;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
@@ -25,7 +26,11 @@ public class PuzzleSystem extends EntitySystem {
     public static final FighterComponent NULL_FIGHTER = new FighterComponent();
     public FighterComponent player;
     public FighterComponent enemy;
-    public MapScreen returnScreen;
+    public String victoryDialogue;
+    public Runnable victoryEvent;
+    public String defeatDialogue;
+    public Runnable defeatEvent;
+    public Location returnScreen;
 
     public final int size;
     public Entity[][] runes;
@@ -35,12 +40,12 @@ public class PuzzleSystem extends EntitySystem {
     public FighterComponent turn;
     public boolean stable;
     public float stableTimer;
-    private Entity playerEntity;
-    private Entity enemyEntity;
 
-    // TODO make this class cleaner/smaller
-    // too much hard coding of the 5 types
-    public PuzzleSystem(int size, FighterComponent enemy, MapScreen returnScreen) {
+    public PuzzleSystem(FighterComponent fighter, Location returnScreen) {
+        this(9, fighter, returnScreen);
+    }
+
+    public PuzzleSystem(int size, FighterComponent enemy, Location returnScreen) {
         super(5);
         this.size = size;
         this.returnScreen = returnScreen;
@@ -51,7 +56,7 @@ public class PuzzleSystem extends EntitySystem {
 
     public void addedToEngine (Engine engine) {
         // Player Side
-        playerEntity = new Entity();
+        Entity playerEntity = new Entity();
         player = Player.getPlayer();
         player.reset(this);
         playerEntity.add(this.player);
@@ -60,7 +65,7 @@ public class PuzzleSystem extends EntitySystem {
         engine.addEntity(playerEntity);
 
         // Enemy Side
-        enemyEntity = new Entity();
+        Entity enemyEntity = new Entity();
         enemy.reset(this);
         enemyEntity.add(enemy);
         enemyEntity.add(new ActorComponent());
@@ -487,10 +492,35 @@ public class PuzzleSystem extends EntitySystem {
         }
     }
 
-    public void updateFighters() {
-        getEngine().removeEntity(playerEntity);
-        getEngine().removeEntity(enemyEntity);
-        getEngine().addEntity(playerEntity);
-        getEngine().addEntity(enemyEntity);
+    public void end(FighterComponent fighter) {
+        Entity message = new Entity();
+        if (fighter == enemy) {
+            Main.playSound("victory.wav");
+            message.add(new MessageComponent("[GOLD]You Are Victorious"));
+            if (victoryDialogue != null) {
+                Entity entity = new Entity();
+                DialogueComponent dc = DialogueComponent.read("dialogue/victory.json");
+                dc.start = victoryDialogue;
+                dc.events.put("end", victoryEvent);
+                entity.add(dc);
+                entity.add(new ActorComponent());
+                returnScreen.engine.addEntity(entity);
+            }
+        } else if (fighter == player) {
+            Main.playSound("lose.wav");
+            message.add(new MessageComponent("[FIREBRICK]You Have Been Defeated"));
+            if (defeatDialogue != null) {
+                Entity entity = new Entity();
+                DialogueComponent dc = DialogueComponent.read("dialogue/defeat.json");
+                dc.start = defeatDialogue;
+                dc.events.put("end", defeatEvent);
+                entity.add(dc);
+                entity.add(new ActorComponent());
+                returnScreen.engine.addEntity(entity);
+            }
+        }
+        getEngine().addEntity(message);
+        transition(returnScreen);
+        Player.save();
     }
 }

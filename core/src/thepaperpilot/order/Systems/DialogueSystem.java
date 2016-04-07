@@ -51,8 +51,7 @@ public class DialogueSystem extends IteratingSystem {
 
         if (dc.line == null)
             dc.line = start;
-
-        if (dc.events.containsKey(dc.lines.get(dc.line).event))
+        else if (dc.events.get(dc.lines.get(dc.line).event) != null)
             dc.events.get(dc.lines.get(dc.line).event).run();
 
         if (!dc.lines.containsKey(start)) {

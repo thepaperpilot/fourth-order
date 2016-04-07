@@ -21,6 +21,7 @@ import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Systems.DialogueSystem;
 import thepaperpilot.order.Systems.MapButtonsSystem;
+import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Systems.RenderStageSystem;
 import thepaperpilot.order.Util.Constants;
 
@@ -38,7 +39,6 @@ public class MapScreen implements Screen {
         engine.addEntityListener(Family.all(ActorComponent.class).get(), 11, new UIListener(stage));
 
         /* Add Systems to Engine */
-        engine.addSystem(new DialogueSystem()); //priority 5
         engine.addSystem(new MapButtonsSystem(stage)); //priority 12
         engine.addSystem(new RenderStageSystem(stage)); //priority 10
 
@@ -48,6 +48,7 @@ public class MapScreen implements Screen {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                final Location location = new Location();
                 DialogueComponent dc = DialogueComponent.read("dialogue/opponent.json");
                 dc.start = "first";
                 dc.events.put("alchemist", new Runnable() {
@@ -58,9 +59,16 @@ public class MapScreen implements Screen {
                         enemy.add(SpellComponent.getSpell("Strike"));
                         enemy.add(SpellComponent.getSpell("Truth"));
                         enemy.add(SpellComponent.getSpell("Wither"));
-                        enemy.victory = "alchemist";
-                        enemy.defeat = "alchemist";
-                        Main.changeScreen(new Battle(enemy, MapScreen.this));
+                        PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
+                        puzzle.victoryDialogue = "alchemist";
+                        puzzle.defeatDialogue = "alchemist";
+                        puzzle.victoryEvent = puzzle.defeatEvent = new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.changeScreen(MapScreen.this);
+                            }
+                        };
+                        Main.changeScreen(new Battle(puzzle));
                     }
                 });
                 dc.events.put("rogue", new Runnable() {
@@ -71,9 +79,16 @@ public class MapScreen implements Screen {
                         enemy.add(SpellComponent.getSpell("Strike"));
                         enemy.add(SpellComponent.getSpell("Condense"));
                         enemy.add(SpellComponent.getSpell("Collect"));
-                        enemy.victory = "rogue";
-                        enemy.defeat = "rogue";
-                        Main.changeScreen(new Battle(enemy, MapScreen.this));
+                        PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
+                        puzzle.victoryDialogue = "rogue";
+                        puzzle.defeatDialogue = "rogue";
+                        puzzle.victoryEvent = puzzle.defeatEvent = new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.changeScreen(MapScreen.this);
+                            }
+                        };
+                        Main.changeScreen(new Battle(puzzle));
                     }
                 });
                 dc.events.put("ranger", new Runnable() {
@@ -84,9 +99,16 @@ public class MapScreen implements Screen {
                         enemy.add(SpellComponent.getSpell("Strike"));
                         enemy.add(SpellComponent.getSpell("Premonition"));
                         // TODO distort totem spell
-                        enemy.victory = "ranger";
-                        enemy.defeat = "ranger";
-                        Main.changeScreen(new Battle(enemy, MapScreen.this));
+                        PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
+                        puzzle.victoryDialogue = "ranger";
+                        puzzle.defeatDialogue = "ranger";
+                        puzzle.victoryEvent = puzzle.defeatEvent = new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.changeScreen(MapScreen.this);
+                            }
+                        };
+                        Main.changeScreen(new Battle(puzzle));
                     }
                 });
                 dc.events.put("paladin", new Runnable() {
@@ -97,9 +119,16 @@ public class MapScreen implements Screen {
                         enemy.add(SpellComponent.getSpell("Strike"));
                         enemy.add(SpellComponent.getSpell("Immortality"));
                         enemy.add(SpellComponent.getSpell("Sustain"));
-                        enemy.victory = "paladin";
-                        enemy.defeat = "paladin";
-                        Main.changeScreen(new Battle(enemy, MapScreen.this));
+                        PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
+                        puzzle.victoryDialogue = "paladin";
+                        puzzle.defeatDialogue = "paladin";
+                        puzzle.victoryEvent = puzzle.defeatEvent = new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.changeScreen(MapScreen.this);
+                            }
+                        };
+                        Main.changeScreen(new Battle(puzzle));
                     }
                 });
                 dc.events.put("wizard", new Runnable() {
@@ -110,16 +139,23 @@ public class MapScreen implements Screen {
                         enemy.add(SpellComponent.getSpell("Strike"));
                         enemy.add(SpellComponent.getSpell("Antidote"));
                         enemy.add(SpellComponent.getSpell("Command"));
-                        enemy.victory = "wizard";
-                        enemy.defeat = "wizard";
-                        Main.changeScreen(new Battle(enemy, MapScreen.this));
+                        PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
+                        puzzle.victoryDialogue = "wizard";
+                        puzzle.defeatDialogue = "wizard";
+                        puzzle.victoryEvent = puzzle.defeatEvent = new Runnable() {
+                            @Override
+                            public void run() {
+                                Main.changeScreen(MapScreen.this);
+                            }
+                        };
+                        Main.changeScreen(new Battle(puzzle));
                     }
                 });
                 Entity dialogue = new Entity();
                 dialogue.add(dc);
                 dialogue.add(new ActorComponent());
-                engine.addEntity(dialogue);
-                button.toBack();
+                location.engine.addEntity(dialogue);
+                Main.changeScreen(location);
             }
         });
         Entity entity = new Entity();

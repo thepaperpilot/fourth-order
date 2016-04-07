@@ -24,7 +24,7 @@ public class Battle implements Screen {
     public final Stage stage;
     public final Engine engine;
 
-    public Battle(final int size, final FighterComponent enemy, final MapScreen returnScreen) {
+    public Battle(final PuzzleSystem puzzle) {
         /* Create Stuff */
         stage = new Stage(new StretchViewport(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT));
         engine = new Engine();
@@ -42,7 +42,7 @@ public class Battle implements Screen {
         engine.addSystem(new FighterSystem()); //priority 5
         engine.addSystem(new MessageSystem(stage)); //priority 15
         engine.addSystem(new ParticleEffectSystem(stage.getBatch())); //priority 11
-        engine.addSystem(new PuzzleSystem(size, enemy, returnScreen)); //priority 5
+        engine.addSystem(puzzle); //priority 5
         engine.addSystem(new IdleAnimationSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(stage)); //priority 10
         engine.addSystem(new ScreenShakeSystem(stage)); //priority 9
@@ -62,7 +62,7 @@ public class Battle implements Screen {
                 public boolean keyDown (InputEvent event, int keycode) {
                     switch (keycode) {
                         case Input.Keys.SPACE:
-                            Main.changeScreen(new Battle(size, enemy, returnScreen));
+                            Main.changeScreen(new Battle(puzzle));
                             break;
                         case Input.Keys.P:
                             Constants.PLAYERLESS = !Constants.PLAYERLESS;
@@ -80,10 +80,6 @@ public class Battle implements Screen {
                 }
             });
         }
-    }
-
-    public Battle(FighterComponent enemy, MapScreen returnScreen) {
-        this(9, enemy, returnScreen);
     }
 
     @Override
