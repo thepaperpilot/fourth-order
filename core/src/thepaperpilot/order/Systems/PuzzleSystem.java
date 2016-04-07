@@ -53,7 +53,7 @@ public class PuzzleSystem extends EntitySystem {
         // Player Side
         playerEntity = new Entity();
         player = Player.getPlayer();
-        player.reset();
+        player.reset(this);
         playerEntity.add(this.player);
         playerEntity.add(new ActorComponent());
         playerEntity.add(new PlayerControlledComponent());
@@ -61,7 +61,7 @@ public class PuzzleSystem extends EntitySystem {
 
         // Enemy Side
         enemyEntity = new Entity();
-        enemy.reset();
+        enemy.reset(this);
         enemyEntity.add(enemy);
         enemyEntity.add(new ActorComponent());
         engine.addEntity(enemyEntity);

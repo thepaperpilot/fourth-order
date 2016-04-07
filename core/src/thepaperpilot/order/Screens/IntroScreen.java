@@ -41,37 +41,39 @@ public class IntroScreen implements Screen {
         dc.events.put("end", new Runnable() {
             @Override
             public void run() {
+                Player.addAttribute("intro");
+                Player.save();
                 Main.changeScreen(new MapScreen());
             }
         });
         dc.events.put("alchemist", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getTruthSpell());
+                Player.getPlayer().add(SpellComponent.getSpell("Truth"));
             }
         });
         dc.events.put("rogue", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getCondenseSpell());
+                Player.getPlayer().add(SpellComponent.getSpell("Condense"));
             }
         });
         dc.events.put("ranger", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getAntidoteSpell());
+                Player.getPlayer().add(SpellComponent.getSpell("Antidote"));
             }
         });
         dc.events.put("paladin", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getImmortalitySpell());
+                Player.getPlayer().add(SpellComponent.getSpell("Immortality"));
             }
         });
         dc.events.put("wizard", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getPremonitionSpell());
+                Player.getPlayer().add(SpellComponent.getSpell("Premonition"));
             }
         });
         Entity dialogue = new Entity();

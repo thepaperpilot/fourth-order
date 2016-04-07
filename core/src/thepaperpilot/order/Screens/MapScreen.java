@@ -52,9 +52,9 @@ public class MapScreen implements Screen {
                     public void run() {
                         final FighterComponent enemy = new FighterComponent();
                         enemy.portrait = "PortraitAlchemist";
-                        enemy.add(SpellComponent.getStrikeSpell());
-                        enemy.add(SpellComponent.getTruthSpell());
-                        enemy.add(SpellComponent.getWitherSpell());
+                        enemy.add(SpellComponent.getSpell("Strike"));
+                        enemy.add(SpellComponent.getSpell("Truth"));
+                        enemy.add(SpellComponent.getSpell("Wither"));
                         enemy.victory = "alchemist";
                         enemy.defeat = "alchemist";
                         Main.changeScreen(new Battle(enemy, MapScreen.this));
@@ -65,9 +65,9 @@ public class MapScreen implements Screen {
                     public void run() {
                         final FighterComponent enemy = new FighterComponent();
                         enemy.portrait = "PortraitRogue";
-                        enemy.add(SpellComponent.getStrikeSpell());
-                        enemy.add(SpellComponent.getCondenseSpell());
-                        enemy.add(SpellComponent.getCollectSpell());
+                        enemy.add(SpellComponent.getSpell("Strike"));
+                        enemy.add(SpellComponent.getSpell("Condense"));
+                        enemy.add(SpellComponent.getSpell("Collect"));
                         enemy.victory = "rogue";
                         enemy.defeat = "rogue";
                         Main.changeScreen(new Battle(enemy, MapScreen.this));
@@ -78,8 +78,8 @@ public class MapScreen implements Screen {
                     public void run() {
                         final FighterComponent enemy = new FighterComponent();
                         enemy.portrait = "PortraitRanger";
-                        enemy.add(SpellComponent.getStrikeSpell());
-                        enemy.add(SpellComponent.getPremonitionSpell());
+                        enemy.add(SpellComponent.getSpell("Strike"));
+                        enemy.add(SpellComponent.getSpell("Premonition"));
                         // TODO distort totem spell
                         enemy.victory = "ranger";
                         enemy.defeat = "ranger";
@@ -91,9 +91,9 @@ public class MapScreen implements Screen {
                     public void run() {
                         final FighterComponent enemy = new FighterComponent();
                         enemy.portrait = "PortraitPaladin";
-                        enemy.add(SpellComponent.getStrikeSpell());
-                        enemy.add(SpellComponent.getImmortalitySpell());
-                        enemy.add(SpellComponent.getSustainSpell());
+                        enemy.add(SpellComponent.getSpell("Strike"));
+                        enemy.add(SpellComponent.getSpell("Immortality"));
+                        enemy.add(SpellComponent.getSpell("Sustain"));
                         enemy.victory = "paladin";
                         enemy.defeat = "paladin";
                         Main.changeScreen(new Battle(enemy, MapScreen.this));
@@ -104,9 +104,9 @@ public class MapScreen implements Screen {
                     public void run() {
                         final FighterComponent enemy = new FighterComponent();
                         enemy.portrait = "PortraitWizard";
-                        enemy.add(SpellComponent.getStrikeSpell());
-                        enemy.add(SpellComponent.getAntidoteSpell());
-                        enemy.add(SpellComponent.getCommandSpell());
+                        enemy.add(SpellComponent.getSpell("Strike"));
+                        enemy.add(SpellComponent.getSpell("Antidote"));
+                        enemy.add(SpellComponent.getSpell("Command"));
                         enemy.victory = "wizard";
                         enemy.defeat = "wizard";
                         Main.changeScreen(new Battle(enemy, MapScreen.this));

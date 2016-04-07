@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Main;
+import thepaperpilot.order.Player;
 import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Constants;
@@ -32,6 +33,7 @@ public class FighterComponent implements Component {
     public Map<Rune, ProgressBar> bars = new EnumMap<Rune, ProgressBar>(Rune.class);
     public Map<Rune, Label> labels = new EnumMap<Rune, Label>(Rune.class);
     public ArrayList<Entity> spells = new ArrayList<Entity>();
+    public int level = 1;
 
     public String victory;
     public String defeat;
@@ -56,7 +58,7 @@ public class FighterComponent implements Component {
         }
     }
 
-    public void reset() {
+    public void reset(PuzzleSystem puzzle) {
         for (Rune rune : Rune.values()) {
             switch (rune) {
                 case DAMAGE:
@@ -64,11 +66,15 @@ public class FighterComponent implements Component {
                     break;
                 case EXP:
                     // don't reset experience
+                    maxRunes.put(rune, 7f);
                     break;
                 default:
                     runes.put(rune, 0f);
                     break;
             }
+        }
+        while (runes.get(Rune.EXP) >= maxRunes.get(Rune.EXP)) {
+            levelUp(puzzle);
         }
     }
 
@@ -80,7 +86,7 @@ public class FighterComponent implements Component {
 
         updateProgressBars();
 
-        if (runes.get(Rune.EXP).equals(maxRunes.get(Rune.EXP))) {
+        while (runes.get(Rune.EXP).equals(maxRunes.get(Rune.EXP))) {
             levelUp(puzzle);
         }
     }
@@ -144,6 +150,7 @@ public class FighterComponent implements Component {
             }
             puzzle.getEngine().addEntity(message);
             puzzle.transition(puzzle.returnScreen);
+            Player.save();
         }
     }
 
@@ -200,26 +207,33 @@ public class FighterComponent implements Component {
     public void levelUp(final PuzzleSystem puzzle) {
         runes.put(Rune.EXP, runes.get(Rune.EXP) - maxRunes.get(Rune.EXP));
         maxRunes.put(Rune.EXP, maxRunes.get(Rune.EXP) * 2);
-        bars.get(Rune.EXP).setValue(runes.get(Rune.EXP));
-        bars.get(Rune.EXP).setRange(0, maxRunes.get(Rune.EXP));
+        if (bars.get(Rune.EXP) != null) {
+            bars.get(Rune.EXP).setValue(runes.get(Rune.EXP));
+            bars.get(Rune.EXP).setRange(0, maxRunes.get(Rune.EXP));
+        }
 
         // this is all arbitrary atm
         runes.put(Rune.DAMAGE, runes.get(Rune.DAMAGE) + 2);
         maxRunes.put(Rune.DAMAGE, maxRunes.get(Rune.DAMAGE) + 2);
-        bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
-        bars.get(Rune.DAMAGE).setRange(0, maxRunes.get(Rune.DAMAGE));
+        if (bars.get(Rune.DAMAGE) != null) {
+            bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
+            bars.get(Rune.DAMAGE).setRange(0, maxRunes.get(Rune.DAMAGE));
+        }
+        level++;
 
-        // TODO revamp level system (and level up after battle, with no max exp
-        Entity message = new Entity();
-        MessageComponent mc = new MessageComponent("Level up!");
-        mc.color = Color.GREEN;
-        mc.large = false;
-        Vector2 coords = bars.get(Rune.EXP).localToStageCoordinates(new Vector2(bars.get(Rune.EXP).getX(), bars.get(Rune.EXP).getY()));
-        mc.x = coords.x;
-        mc.y = coords.y;
-        message.add(mc);
-        puzzle.getEngine().addEntity(message);
-        Main.playSound("level.wav");
+        if (bars.get(Rune.EXP) != null) {
+            // TODO revamp level system (and level up after battle, with no max exp
+            Entity message = new Entity();
+            MessageComponent mc = new MessageComponent("Level up!");
+            mc.color = Color.GREEN;
+            mc.large = false;
+            Vector2 coords = bars.get(Rune.EXP).localToStageCoordinates(new Vector2(bars.get(Rune.EXP).getX(), bars.get(Rune.EXP).getY()));
+            mc.x = coords.x;
+            mc.y = coords.y;
+            message.add(mc);
+            puzzle.getEngine().addEntity(message);
+            Main.playSound("level.wav");
+        }
 
         /*if (puzzle.player == this) {
             final ArrayList<Entity> spells = new ArrayList<Entity>();

@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import thepaperpilot.order.Screens.IntroScreen;
+import thepaperpilot.order.Screens.TitleScreen;
 import thepaperpilot.order.Util.Constants;
 
 public class Main extends Game implements Screen {
@@ -84,7 +84,7 @@ public class Main extends Game implements Screen {
                 bgm.play();
             }
 
-            changeScreen(new IntroScreen()); // TODO title screen
+            changeScreen(new TitleScreen());
         }
     }
 
