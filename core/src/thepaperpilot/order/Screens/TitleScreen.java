@@ -9,8 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
@@ -27,7 +30,7 @@ public class TitleScreen implements Screen {
 
         Table optionsTable = new Table(Main.skin);
         optionsTable.setFillParent(true);
-        optionsTable.pad(20);
+        optionsTable.pad(40);
         optionsTable.bottom();
         final Option continueGame = new Option("Continue Game") {
             @Override
@@ -64,8 +67,34 @@ public class TitleScreen implements Screen {
         };
         optionsTable.add(continueGame).center().row();
         optionsTable.add(newGame).center().row();
-        optionsTable.add(exit).center().spaceBottom(100).row();
+        optionsTable.add(exit).center().row();
         stage.addActor(optionsTable);
+
+        Table soundTable = new Table(Main.skin);
+        soundTable.setFillParent(true);
+        soundTable.pad(20).right().bottom();
+        Button soundToggle = new TextButton("sound", Main.skin, "toggle");
+        soundToggle.setChecked(Player.sound);
+        soundToggle.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Player.sound = !Player.sound;
+                Player.saveSound();
+            }
+        });
+        Button musicToggle = new TextButton("music", Main.skin, "toggle");
+        musicToggle.setChecked(Player.music);
+        musicToggle.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Player.music = !Player.music;
+                Player.saveSound();
+                Main.bgm.setVolume(Player.music ? 1 : 0);
+            }
+        });
+        soundTable.add(soundToggle).padRight(2);
+        soundTable.add(musicToggle);
+        stage.addActor(soundTable);
 
         this.options = new Option[]{continueGame, newGame, exit};
         updateSelected(continueGame);

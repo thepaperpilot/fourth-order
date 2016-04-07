@@ -17,8 +17,20 @@ public class Player {
     private static FighterComponent player;
     private static ArrayList<String> attributes = new ArrayList<String>();
 
+    public static boolean sound;
+    public static boolean music;
+
+    public static void saveSound() {
+        save.putBoolean("sound", sound);
+        save.putBoolean("music", music);
+
+        save.flush();
+    }
+
     public static void setPreferences(Preferences preferences) {
         save = preferences;
+        sound = save.getBoolean("sound", true);
+        music = save.getBoolean("music", true);
     }
 
     public static void save() {

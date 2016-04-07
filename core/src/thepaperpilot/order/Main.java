@@ -24,6 +24,7 @@ public class Main extends Game implements Screen {
     public static Skin skin;
     public static Main instance;
     private static Stage loadingStage;
+    public static Music bgm;
 
     public static void changeScreen(Screen screen) {
         if (screen == null)
@@ -79,8 +80,9 @@ public class Main extends Game implements Screen {
                 skin.getFont("font").getData().setScale(.5f);
                 skin.getFont("font").getData().markupEnabled = true;
 
-                Music bgm = manager.get("audio/bgm.wav", Music.class);
+                bgm = manager.get("audio/bgm.wav", Music.class);
                 bgm.setLooping(true);
+                if (!Player.music) bgm.setVolume(0);
                 bgm.play();
             }
 
@@ -156,6 +158,7 @@ public class Main extends Game implements Screen {
     }
 
     public static void playSound(String sound) {
+        if (!Player.sound) return;
         sound = "audio/" + sound;
         manager.load(sound, Sound.class);
         manager.finishLoading();
