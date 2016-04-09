@@ -18,6 +18,7 @@ public class Constants {
     public static final float TEXT_SPEED = 32;
     public static final float PARTICLE_FREQUENCY = 1/100f;
     public static final float RUNE_DELAY = .1f;
+    public static final float TRANSITION_TIME = .5f;
 
     /* Audio */
     public static final float MASTER_VOLUME = 1;
@@ -25,6 +26,13 @@ public class Constants {
     /* Balancing */
     public static final int DESTROY_LOW = 7;
     public static final int DESTROY_HIGH = 9;
+    public static final int POINTS_PER_LEVEL = 4;
+    public static final int BASE_EXP = 27;
+    public static final float EXP_CURVE = 2.1f;
+    public static final int MAX_SPELLS = 6;
+    public static final Integer PROFICIENCY_BONUS_FREQUENCY = 8;
+    public static final int BASE_HEALTH = 20;
+    public static final float HEALTH_CURVE = 1.1f;
 
     /* Debug */
     public static final boolean DEBUG = true;

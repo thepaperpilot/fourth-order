@@ -10,17 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import thepaperpilot.order.Class;
 import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
 import thepaperpilot.order.Main;
-import thepaperpilot.order.Player;
 import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 public class FighterComponent implements Component {
     Drawable empty = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
@@ -33,10 +31,15 @@ public class FighterComponent implements Component {
     public Map<Rune, ProgressBar> bars = new EnumMap<Rune, ProgressBar>(Rune.class);
     public Map<Rune, Label> labels = new EnumMap<Rune, Label>(Rune.class);
     public ArrayList<Entity> spells = new ArrayList<Entity>();
-    public int level = 1;
+    public ArrayList<Entity> knownSpells = new ArrayList<Entity>();
+    public Map<Rune, Float> skills = new EnumMap<Rune, Float>(Rune.class);
+    public Class fighterClass;
+    public int skillPoints = 0;
+    public int level = 0;
 
-    public FighterComponent() {
-        // TODO skills
+    public FighterComponent(Class fighterClass, int level) {
+        this.fighterClass = fighterClass;
+        this.level = level;
         for (Rune rune : Rune.values()) {
             switch (rune) {
                 case DAMAGE:
@@ -44,8 +47,8 @@ public class FighterComponent implements Component {
                     maxRunes.put(rune, 20f);
                     break;
                 case EXP:
-                    runes.put(rune, 0f);
-                    maxRunes.put(rune, 7f);
+                    runes.put(rune, (float) (Constants.BASE_EXP * (level == 0 ? 0 : Math.pow(Constants.EXP_CURVE, level - 1))));
+                    maxRunes.put(rune, (float) (Constants.BASE_EXP * Math.pow(Constants.EXP_CURVE, level)));
                     break;
                 default:
                     runes.put(rune, 0f);
@@ -59,11 +62,11 @@ public class FighterComponent implements Component {
         for (Rune rune : Rune.values()) {
             switch (rune) {
                 case DAMAGE:
-                    runes.put(rune, maxRunes.get(rune));
+                    runes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, skills.get(Rune.DAMAGE))));
+                    maxRunes.put(Rune.DAMAGE, runes.get(Rune.DAMAGE));
                     break;
                 case EXP:
                     // don't reset experience
-                    maxRunes.put(rune, 7f);
                     break;
                 default:
                     runes.put(rune, 0f);
@@ -120,7 +123,7 @@ public class FighterComponent implements Component {
         message.add(mc);
         puzzle.getEngine().addEntity(message);
 
-        if (runes.get(Rune.DAMAGE) <= 0 && puzzle.turn != PuzzleSystem.NULL_FIGHTER) {
+        if (runes.get(Rune.DAMAGE) < 1 && puzzle.turn != PuzzleSystem.NULL_FIGHTER) {
             puzzle.end(this);
         }
     }
@@ -176,24 +179,33 @@ public class FighterComponent implements Component {
     }
 
     public void levelUp(final PuzzleSystem puzzle) {
-        runes.put(Rune.EXP, runes.get(Rune.EXP) - maxRunes.get(Rune.EXP));
-        maxRunes.put(Rune.EXP, maxRunes.get(Rune.EXP) * 2);
+        maxRunes.put(Rune.EXP, (float) (Constants.BASE_EXP * Math.pow(Constants.EXP_CURVE, level)));
+        level++;
+        skillPoints += Constants.POINTS_PER_LEVEL;
         if (bars.get(Rune.EXP) != null) {
-            bars.get(Rune.EXP).setValue(runes.get(Rune.EXP));
             bars.get(Rune.EXP).setRange(0, maxRunes.get(Rune.EXP));
         }
-
-        // this is all arbitrary atm
-        runes.put(Rune.DAMAGE, runes.get(Rune.DAMAGE) + 2);
-        maxRunes.put(Rune.DAMAGE, maxRunes.get(Rune.DAMAGE) + 2);
-        if (bars.get(Rune.DAMAGE) != null) {
-            bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
-            bars.get(Rune.DAMAGE).setRange(0, maxRunes.get(Rune.DAMAGE));
+        for (Entity spell : fighterClass.spells.keySet()) {
+            if (knownSpells.contains(spell)) continue;
+            if (fighterClass.spells.get(spell) > level) break; // I can do this because the spell list maintains order (its a LinkedHashMap)
+            knownSpells.add(spell);
+            if (spells.size() < Constants.MAX_SPELLS)
+                spells.add(spell); // won't take place until next battle, since I'm not updating the spell list UI
+            break;
         }
-        level++;
+
+        for (Rune rune : Rune.values())
+            if (fighterClass.proficiency.get(rune) != 0 && level % (Constants.PROFICIENCY_BONUS_FREQUENCY / fighterClass.proficiency.get(rune)) == 0)
+                skills.put(rune, skills.get(rune) + 1);
+
+        float oldMax = maxRunes.get(Rune.DAMAGE);
+        maxRunes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, skills.get(Rune.DAMAGE))));
+        runes.put(Rune.DAMAGE, runes.get(Rune.DAMAGE) + maxRunes.get(Rune.DAMAGE) - oldMax);
+
+        bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
+        bars.get(Rune.DAMAGE).setRange(0, maxRunes.get(Rune.DAMAGE));
 
         if (bars.get(Rune.EXP) != null) {
-            // TODO revamp level system (and level up after battle, with no max exp
             Entity message = new Entity();
             MessageComponent mc = new MessageComponent("Level up!");
             mc.color = Color.GREEN;
@@ -205,5 +217,43 @@ public class FighterComponent implements Component {
             puzzle.getEngine().addEntity(message);
             Main.playSound("level.wav");
         }
+    }
+
+    public static FighterComponent getEnemy(Class fighterClass, int level) {
+        FighterComponent fc = new FighterComponent(fighterClass, level);
+        LinkedList<Entity> spells = new LinkedList<Entity>(fighterClass.spells.keySet());
+        Iterator<Entity> iterator = spells.descendingIterator();
+        while (iterator.hasNext()) {
+            Entity spell = iterator.next();
+            if (fighterClass.spells.get(spell) > level) continue;
+            fc.knownSpells.add(spell);
+            if (fc.spells.size() < Constants.MAX_SPELLS)
+                fc.spells.add(spell);
+            else break;
+        }
+
+        for (Rune rune : Rune.values()) {
+            fc.skills.put(rune, Float.valueOf(fighterClass.proficiency.get(rune)));
+        }
+
+        for (int i = 0; i < level; i++) {
+            for (Rune rune : Rune.values())
+                if (fighterClass.proficiency.get(rune) != 0 && i % (Constants.PROFICIENCY_BONUS_FREQUENCY / fighterClass.proficiency.get(rune)) == 0) {
+                    fc.skills.put(rune, fc.skills.get(rune) + 1);
+                }
+        }
+
+        fc.skillPoints = level * Constants.POINTS_PER_LEVEL;
+        while (fc.skillPoints > 0) { // TODO weighted average?
+            Rune rune = Rune.randomRune(true);
+            if (fc.skillPoints >= 5 - fighterClass.proficiency.get(rune)) {
+                fc.skillPoints -= 5 - fighterClass.proficiency.get(rune);
+                fc.skills.put(rune, fc.skills.get(rune) + 1);
+            }
+        }
+
+        fc.runes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, fc.skills.get(Rune.DAMAGE))));
+        fc.maxRunes.put(Rune.DAMAGE, fc.runes.get(Rune.DAMAGE));
+        return fc;
     }
 }

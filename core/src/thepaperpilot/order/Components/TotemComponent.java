@@ -7,5 +7,5 @@ import thepaperpilot.order.Systems.PuzzleSystem;
 public class TotemComponent implements Component {
     public Rune rune = Rune.DAMAGE;
     public boolean damaged = false;
-    public FighterComponent caster = PuzzleSystem.NULL_FIGHTER;
+    public FighterComponent caster = null;
 }

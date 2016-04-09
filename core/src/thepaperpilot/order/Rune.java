@@ -8,15 +8,16 @@ import java.util.Arrays;
 
 public enum Rune {
     // admittedly having exp and damage in here makes some parts a bit weird, but it's alright (or at least, better than previously, with all its hard coding)
-    POISON("Purple", Color.PURPLE),
-    SURPRISE("Yellow", Color.YELLOW),
-    MORTAL("Red", Color.FIREBRICK),
-    STEAM("Blue", Color.TEAL),
-    MASON("Green", Color.LIME),
-    EXP("Exp", Color.WHITE),
-    DAMAGE("Skull", Color.WHITE);
+    POISON("Purple", "Poison Mastery", Color.PURPLE),
+    SURPRISE("Yellow", "Surprise Mastery", Color.YELLOW),
+    MORTAL("Red", "Mortal Mastery", Color.FIREBRICK),
+    STEAM("Blue", "Steam Mastery", Color.TEAL),
+    MASON("Green", "Mason Mastery", Color.LIME),
+    EXP("Exp", "Morale", Color.WHITE),
+    DAMAGE("Skull", "Battle", Color.WHITE);
 
     public String colorName;
+    public String skill;
     public Color color;
 
     public static final Rune[] elementRunes;
@@ -29,8 +30,9 @@ public enum Rune {
         elementRunes = runes.toArray(new Rune[runes.size()]);
     }
 
-    Rune(String colorName, Color color) {
+    Rune(String colorName, String skill, Color color) {
         this.colorName = colorName;
+        this.skill = skill;
         this.color = color;
     }
 

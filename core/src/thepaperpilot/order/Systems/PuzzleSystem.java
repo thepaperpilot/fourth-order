@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import thepaperpilot.order.Class;
 import thepaperpilot.order.Components.*;
 import thepaperpilot.order.Components.Effects.DamageOverTimeComponent;
 import thepaperpilot.order.Main;
@@ -23,7 +24,7 @@ import thepaperpilot.order.Util.Mappers;
 import java.util.Collections;
 
 public class PuzzleSystem extends EntitySystem {
-    public static final FighterComponent NULL_FIGHTER = new FighterComponent();
+    public static final FighterComponent NULL_FIGHTER = FighterComponent.getEnemy(Class.PALADIN, 0);
     public FighterComponent player;
     public FighterComponent enemy;
     public String victoryDialogue;
@@ -111,14 +112,12 @@ public class PuzzleSystem extends EntitySystem {
                     //noinspection PointlessBooleanExpression
                     if (turn == enemy || Constants.PLAYERLESS) {
                         boolean cast = false;
-                        Collections.reverse(enemy.spells);
                         for (Entity entity : enemy.spells) {
                             if (enemy.canCast(entity, this) && MathUtils.randomBoolean(.3f)) {
                                 enemy.cast(entity, this);
                                 cast = true;
                             }
                         }
-                        Collections.reverse(enemy.spells);
                         if (!cast) makeRandomMove();
                         takeTurn(enemy);
                         return;

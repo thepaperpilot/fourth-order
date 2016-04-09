@@ -11,6 +11,7 @@ import thepaperpilot.order.Util.Mappers;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Map;
 
 public class Player {
     private static Preferences save;
@@ -43,14 +44,28 @@ public class Player {
         }
         save.putString("spells", spellString);
 
+        String knownSpellString = "";
+        for (Entity spell : player.knownSpells) {
+            knownSpellString += Mappers.spell.get(spell).name + ",";
+        }
+        save.putString("knownspells", knownSpellString);
+
+        String skillsString = "";
+        for (Rune rune : Rune.values()) {
+            skillsString += player.skills.get(rune) + ",";
+        }
+        save.putString("skills", skillsString);
+
+        save.putInteger("skillpoints", player.skillPoints);
         save.putInteger("level", player.level);
         save.putFloat("exp", player.runes.get(Rune.EXP));
+        save.putString("class", player.fighterClass.name());
 
         save.flush();
     }
 
     public static void load() {
-        player = new FighterComponent();
+        player = new FighterComponent(Class.valueOf(save.getString("class", "PALADIN")), save.getInteger("level", 0)); // paladin as default is completely arbitrary :)
 
         Player.attributes.clear();
         String[] attributes = save.getString("attributes", "").split(",");
@@ -61,7 +76,22 @@ public class Player {
             player.spells.add(SpellComponent.getSpell(spell));
         }
 
-        player.level = save.getInteger("level", 1);
+        String[] knownspells = save.getString("knownspells", "Strike").split(",");
+        for (String spell : knownspells) {
+            player.knownSpells.add(SpellComponent.getSpell(spell));
+        }
+
+        Map<Rune, Integer> baseStats = Class.PALADIN.proficiency;
+        String defaultSkills = "";
+        for (Rune rune : Rune.values()) {
+            defaultSkills += baseStats.get(rune) + ",";
+        }
+        String[] skills = save.getString("skills", defaultSkills).split(",");
+        for (int i = 0; i < skills.length; i++) {
+            player.skills.put(Rune.values()[i], Float.parseFloat(skills[i]));
+        }
+
+        player.skillPoints = save.getInteger("skillpoints");
         player.runes.put(Rune.EXP, save.getFloat("exp", 0));
 
         Main.changeScreen(getAttribute("intro") ? new MapScreen() : new IntroScreen());
@@ -69,9 +99,13 @@ public class Player {
 
     public static void reset() {
         save.remove("attributes");
+        save.remove("knownspells");
         save.remove("spells");
+        save.remove("skills");
         save.remove("level");
+        save.remove("skillpoints");
         save.remove("exp");
+        save.remove("class");
 
         load();
     }

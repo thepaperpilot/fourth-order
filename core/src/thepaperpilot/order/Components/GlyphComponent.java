@@ -5,5 +5,5 @@ import thepaperpilot.order.Systems.PuzzleSystem;
 
 public class GlyphComponent implements Component {
     public String glyph = "Strike";
-    public FighterComponent caster = PuzzleSystem.NULL_FIGHTER;
+    public FighterComponent caster = null;
 }

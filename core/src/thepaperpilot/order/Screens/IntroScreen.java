@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import thepaperpilot.order.Class;
 import thepaperpilot.order.Components.ActorComponent;
 import thepaperpilot.order.Components.DialogueComponent;
 import thepaperpilot.order.Components.SpellComponent;
@@ -49,31 +50,31 @@ public class IntroScreen implements Screen {
         dc.events.put("alchemist", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getSpell("Truth"));
+                Player.getPlayer().fighterClass = Class.ALCHEMIST;
             }
         });
         dc.events.put("rogue", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getSpell("Condense"));
+                Player.getPlayer().fighterClass = Class.ROGUE;
             }
         });
         dc.events.put("ranger", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getSpell("Antidote"));
+                Player.getPlayer().fighterClass = Class.RANGER;
             }
         });
         dc.events.put("paladin", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getSpell("Immortality"));
+                Player.getPlayer().fighterClass = Class.PALADIN;
             }
         });
         dc.events.put("wizard", new Runnable() {
             @Override
             public void run() {
-                Player.getPlayer().add(SpellComponent.getSpell("Premonition"));
+                Player.getPlayer().fighterClass = Class.WIZARD;
             }
         });
         Entity dialogue = new Entity();

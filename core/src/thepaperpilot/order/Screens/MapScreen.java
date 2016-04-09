@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import thepaperpilot.order.Class;
 import thepaperpilot.order.Components.ActorComponent;
 import thepaperpilot.order.Components.DialogueComponent;
 import thepaperpilot.order.Components.FighterComponent;
@@ -19,8 +20,8 @@ import thepaperpilot.order.Components.SpellComponent;
 import thepaperpilot.order.Listeners.DialogueListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Main;
-import thepaperpilot.order.Systems.DialogueSystem;
-import thepaperpilot.order.Systems.MapButtonsSystem;
+import thepaperpilot.order.Systems.HUDSystem;
+import thepaperpilot.order.Systems.MapSystem;
 import thepaperpilot.order.Systems.PuzzleSystem;
 import thepaperpilot.order.Systems.RenderStageSystem;
 import thepaperpilot.order.Util.Constants;
@@ -39,8 +40,9 @@ public class MapScreen implements Screen {
         engine.addEntityListener(Family.all(ActorComponent.class).get(), 11, new UIListener(stage));
 
         /* Add Systems to Engine */
-        engine.addSystem(new MapButtonsSystem(stage)); //priority 12
+        engine.addSystem(new HUDSystem()); //priority 12
         engine.addSystem(new RenderStageSystem(stage)); //priority 10
+        engine.addSystem(new MapSystem(stage)); //priority 9
 
         /* Add the the temporary battle button */
         final TextButton button = new TextButton("temporary\nbattle button", Main.skin);
@@ -54,11 +56,8 @@ public class MapScreen implements Screen {
                 dc.events.put("alchemist", new Runnable() {
                     @Override
                     public void run() {
-                        final FighterComponent enemy = new FighterComponent();
+                        final FighterComponent enemy = FighterComponent.getEnemy(Class.ALCHEMIST, 0);
                         enemy.portrait = "PortraitAlchemist";
-                        enemy.add(SpellComponent.getSpell("Strike"));
-                        enemy.add(SpellComponent.getSpell("Truth"));
-                        enemy.add(SpellComponent.getSpell("Wither"));
                         PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
                         puzzle.victoryDialogue = "alchemist";
                         puzzle.defeatDialogue = "alchemist";
@@ -74,11 +73,8 @@ public class MapScreen implements Screen {
                 dc.events.put("rogue", new Runnable() {
                     @Override
                     public void run() {
-                        final FighterComponent enemy = new FighterComponent();
+                        final FighterComponent enemy = FighterComponent.getEnemy(Class.ROGUE, 1);
                         enemy.portrait = "PortraitRogue";
-                        enemy.add(SpellComponent.getSpell("Strike"));
-                        enemy.add(SpellComponent.getSpell("Condense"));
-                        enemy.add(SpellComponent.getSpell("Collect"));
                         PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
                         puzzle.victoryDialogue = "rogue";
                         puzzle.defeatDialogue = "rogue";
@@ -94,11 +90,8 @@ public class MapScreen implements Screen {
                 dc.events.put("ranger", new Runnable() {
                     @Override
                     public void run() {
-                        final FighterComponent enemy = new FighterComponent();
+                        final FighterComponent enemy = FighterComponent.getEnemy(Class.RANGER, 2);
                         enemy.portrait = "PortraitRanger";
-                        enemy.add(SpellComponent.getSpell("Strike"));
-                        enemy.add(SpellComponent.getSpell("Premonition"));
-                        // TODO distort totem spell
                         PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
                         puzzle.victoryDialogue = "ranger";
                         puzzle.defeatDialogue = "ranger";
@@ -114,11 +107,8 @@ public class MapScreen implements Screen {
                 dc.events.put("paladin", new Runnable() {
                     @Override
                     public void run() {
-                        final FighterComponent enemy = new FighterComponent();
+                        final FighterComponent enemy = FighterComponent.getEnemy(Class.PALADIN, 3);
                         enemy.portrait = "PortraitPaladin";
-                        enemy.add(SpellComponent.getSpell("Strike"));
-                        enemy.add(SpellComponent.getSpell("Immortality"));
-                        enemy.add(SpellComponent.getSpell("Sustain"));
                         PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
                         puzzle.victoryDialogue = "paladin";
                         puzzle.defeatDialogue = "paladin";
@@ -134,11 +124,8 @@ public class MapScreen implements Screen {
                 dc.events.put("wizard", new Runnable() {
                     @Override
                     public void run() {
-                        final FighterComponent enemy = new FighterComponent();
+                        final FighterComponent enemy = FighterComponent.getEnemy(Class.WIZARD, 4);
                         enemy.portrait = "PortraitWizard";
-                        enemy.add(SpellComponent.getSpell("Strike"));
-                        enemy.add(SpellComponent.getSpell("Antidote"));
-                        enemy.add(SpellComponent.getSpell("Command"));
                         PuzzleSystem puzzle = new PuzzleSystem(enemy, location);
                         puzzle.victoryDialogue = "wizard";
                         puzzle.defeatDialogue = "wizard";
@@ -169,7 +156,7 @@ public class MapScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         stage.getRoot().getColor().a = 0;
-        stage.addAction(Actions.fadeIn(1));
+        stage.addAction(Actions.fadeIn(Constants.TRANSITION_TIME));
     }
 
     @Override

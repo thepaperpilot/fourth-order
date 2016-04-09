@@ -61,13 +61,11 @@ public class Battle implements Screen {
             stage.addListener(new InputListener() {
                 public boolean keyDown (InputEvent event, int keycode) {
                     switch (keycode) {
-                        case Input.Keys.SPACE:
-                            Main.changeScreen(new Battle(puzzle));
-                            break;
                         case Input.Keys.P:
                             Constants.PLAYERLESS = !Constants.PLAYERLESS;
-                            Constants.UNDYING = Constants.PLAYERLESS;
                             break;
+                        case Input.Keys.I:
+                            Constants.UNDYING = !Constants.UNDYING;
                         case Input.Keys.LEFT:
                             Constants.DELTA_MOD -= .1f;
                             if (Constants.DELTA_MOD < 0) Constants.DELTA_MOD = 0;
@@ -85,8 +83,8 @@ public class Battle implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        stage.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(1)));
-        engine.getSystem(PuzzleSystem.class).stableTimer = -1;
+        stage.addAction(Actions.sequence(Actions.fadeOut(0), Actions.fadeIn(Constants.TRANSITION_TIME)));
+        engine.getSystem(PuzzleSystem.class).stableTimer = -Constants.TRANSITION_TIME;
     }
 
     @Override

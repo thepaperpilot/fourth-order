@@ -12,6 +12,7 @@ import thepaperpilot.order.Components.DialogueComponent;
 import thepaperpilot.order.Listeners.DialogueListener;
 import thepaperpilot.order.Listeners.UIListener;
 import thepaperpilot.order.Systems.DialogueSystem;
+import thepaperpilot.order.Systems.HUDSystem;
 import thepaperpilot.order.Systems.RenderStageSystem;
 import thepaperpilot.order.Util.Constants;
 
@@ -29,6 +30,7 @@ public class Location implements Screen {
         engine.addEntityListener(Family.all(ActorComponent.class).get(), 11, new UIListener(stage));
 
         /* Add Systems to Engine */
+        engine.addSystem(new HUDSystem()); //priority 12
         engine.addSystem(new DialogueSystem()); //priority 5
         engine.addSystem(new RenderStageSystem(stage)); //priority 10
     }
@@ -37,7 +39,7 @@ public class Location implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         stage.getRoot().getColor().a = 0;
-        stage.addAction(Actions.fadeIn(1));
+        stage.addAction(Actions.fadeIn(Constants.TRANSITION_TIME));
     }
 
     @Override

@@ -28,7 +28,7 @@ public abstract class GlyphSystem<T extends GlyphComponent> extends SpellSystem 
     protected void destroyRune(Entity entity) {
         FighterComponent fc = Mappers.glyph.get(entity).caster;
 
-        if (fc == PuzzleSystem.NULL_FIGHTER) return;
+        if (fc == null) return;
 
         runEffect(entity);
 
