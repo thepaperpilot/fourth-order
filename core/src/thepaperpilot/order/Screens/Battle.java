@@ -66,12 +66,13 @@ public class Battle implements Screen {
                             break;
                         case Input.Keys.I:
                             Constants.UNDYING = !Constants.UNDYING;
+                            break;
                         case Input.Keys.LEFT:
-                            Constants.DELTA_MOD -= .1f;
+                            Constants.DELTA_MOD -= .5f;
                             if (Constants.DELTA_MOD < 0) Constants.DELTA_MOD = 0;
                             break;
                         case Input.Keys.RIGHT:
-                            Constants.DELTA_MOD += .1f;
+                            Constants.DELTA_MOD += .5f;
                             break;
                     }
                     return false;

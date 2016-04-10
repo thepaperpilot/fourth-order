@@ -17,11 +17,8 @@ import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
 import thepaperpilot.order.Rune;
 import thepaperpilot.order.Screens.Location;
-import thepaperpilot.order.Screens.MapScreen;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
-
-import java.util.Collections;
 
 public class PuzzleSystem extends EntitySystem {
     public static final FighterComponent NULL_FIGHTER = FighterComponent.getEnemy(Class.PALADIN, 0);
@@ -112,16 +109,11 @@ public class PuzzleSystem extends EntitySystem {
             if (stableTimer > Constants.STABLE_TIME) {
                 if (checkForPossibleMoves()) {
                     //noinspection PointlessBooleanExpression
-                    if (turn == enemy || Constants.PLAYERLESS) {
-                        boolean cast = false;
-                        for (Entity entity : enemy.spells) {
-                            if (enemy.canCast(entity, this) && MathUtils.randomBoolean(.3f)) {
-                                enemy.cast(entity, this);
-                                cast = true;
-                            }
-                        }
-                        if (!cast) makeRandomMove();
-                        takeTurn(enemy);
+                    if (turn == enemy) {
+                        makeMove(enemy);
+                        return;
+                    } else if (turn == player && Constants.PLAYERLESS) {
+                        makeMove(player);
                         return;
                     }
                 } else {
@@ -410,8 +402,19 @@ public class PuzzleSystem extends EntitySystem {
         return false;
     }
 
-    // check out this hard core AI. It's 100% guaranteed to be smarter than the player
-    private void makeRandomMove() {
+    private void makeMove(FighterComponent fc) {
+        boolean cast = false;
+        for (Entity entity : fc.spells) {
+            if (fc.canCast(entity, this) && MathUtils.randomBoolean(.3f)) {
+                fc.cast(entity, this);
+                cast = true;
+            }
+        }
+        if (!cast) makeRandomSwitch();
+        takeTurn(fc);
+    }
+
+    private void makeRandomSwitch() {
         int startX = MathUtils.random(size);
         int startY = MathUtils.random(size);
         for (int i = startX; i < size; i++) {
