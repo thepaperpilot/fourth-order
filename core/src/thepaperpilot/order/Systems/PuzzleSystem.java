@@ -287,7 +287,7 @@ public class PuzzleSystem extends EntitySystem {
         RuneComponent rc = Mappers.rune.get(entity);
         ActorComponent ac = Mappers.actor.get(entity);
 
-        Vector2 dest = new Vector2(Constants.UI_WIDTH + (rc.x + .375f) * getRuneSize(), Constants.WORLD_HEIGHT - (rc.y + .625f) * getRuneSize());
+        Vector2 dest = new Vector2(Constants.UI_WIDTH + (rc.x + .5f) * getRuneSize(), Constants.WORLD_HEIGHT - (Constants.WORLD_HEIGHT - size * getRuneSize()) / 2f - (rc.y + .5f) * getRuneSize());
         float dist = dest.dst(ac.actor.getX(), ac.actor.getY());
         return Actions.sequence(Actions.moveTo(dest.x, dest.y, dist / Constants.TILE_SPEED, Interpolation.pow2In), Actions.delay(Constants.RUNE_DELAY));
     }
