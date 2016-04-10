@@ -41,6 +41,8 @@ public class PuzzleSystem extends EntitySystem {
     public FighterComponent turn;
     public boolean stable;
     public float stableTimer;
+    public Entity playerEntity;
+    public Entity enemyEntity;
 
     public PuzzleSystem(FighterComponent fighter, Location returnScreen) {
         this(9, fighter, returnScreen);
@@ -57,7 +59,7 @@ public class PuzzleSystem extends EntitySystem {
 
     public void addedToEngine (Engine engine) {
         // Player Side
-        Entity playerEntity = new Entity();
+        playerEntity = new Entity();
         player = Player.getPlayer();
         player.reset(this);
         playerEntity.add(this.player);
@@ -66,7 +68,7 @@ public class PuzzleSystem extends EntitySystem {
         engine.addEntity(playerEntity);
 
         // Enemy Side
-        Entity enemyEntity = new Entity();
+        enemyEntity = new Entity();
         enemy.reset(this);
         enemyEntity.add(enemy);
         enemyEntity.add(new ActorComponent());

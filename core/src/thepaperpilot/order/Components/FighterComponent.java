@@ -43,6 +43,7 @@ public class FighterComponent implements Component {
         for (Rune rune : Rune.values()) {
             switch (rune) {
                 case DAMAGE:
+                    // default values (shouldn't ever actually be used)
                     runes.put(rune, 20f);
                     maxRunes.put(rune, 20f);
                     break;
@@ -51,6 +52,7 @@ public class FighterComponent implements Component {
                     maxRunes.put(rune, (float) (Constants.BASE_EXP * Math.pow(Constants.EXP_CURVE, level)));
                     break;
                 default:
+                    // once again, these values should be reset before the battle starts
                     runes.put(rune, 0f);
                     maxRunes.put(rune, 40f);
                     break;
@@ -69,7 +71,8 @@ public class FighterComponent implements Component {
                     // don't reset experience
                     break;
                 default:
-                    runes.put(rune, 0f);
+                    runes.put(rune, skills.get(rune) * Constants.BASE_RUNES);
+                    maxRunes.put(rune, (1 + skills.get(rune) * Constants.BASE_RUNES_MAX_CURVE) * Constants.BASE_RUNES_MAX);
                     break;
             }
         }
@@ -79,14 +82,17 @@ public class FighterComponent implements Component {
     }
 
     public void add(RuneComponent rc, PuzzleSystem puzzle) {
+        float addition = 1;
+        addition += skills.get(rc.rune) * Constants.BASE_SKILL_EFFECT;
+
         if (rc.rune == Rune.EXP)
-            runes.put(Rune.EXP, runes.get(Rune.EXP) + 1);
+            runes.put(Rune.EXP, runes.get(Rune.EXP) + addition);
         else
-            runes.put(rc.rune, Math.min(runes.get(rc.rune) + 1, maxRunes.get(rc.rune)));
+            runes.put(rc.rune, Math.min(runes.get(rc.rune) + addition, maxRunes.get(rc.rune)));
 
         updateProgressBars();
 
-        while (runes.get(Rune.EXP).equals(maxRunes.get(Rune.EXP))) {
+        while (runes.get(Rune.EXP) >= (maxRunes.get(Rune.EXP))) {
             levelUp(puzzle);
         }
     }
@@ -189,8 +195,16 @@ public class FighterComponent implements Component {
             if (knownSpells.contains(spell)) continue;
             if (fighterClass.spells.get(spell) > level) break; // I can do this because the spell list maintains order (its a LinkedHashMap)
             knownSpells.add(spell);
-            if (spells.size() < Constants.MAX_SPELLS)
-                spells.add(spell); // won't take place until next battle, since I'm not updating the spell list UI
+            if (spells.size() < Constants.MAX_SPELLS) {
+                spells.add(spell);
+                if (puzzle.player == this) {
+                    puzzle.getEngine().removeEntity(puzzle.playerEntity);
+                    puzzle.getEngine().addEntity(puzzle.playerEntity);
+                } else if (puzzle.enemy == this) {
+                    puzzle.getEngine().removeEntity(puzzle.enemyEntity);
+                    puzzle.getEngine().addEntity(puzzle.enemyEntity);
+                }
+            }
             break;
         }
 
@@ -199,7 +213,7 @@ public class FighterComponent implements Component {
                 skills.put(rune, skills.get(rune) + 1);
 
         float oldMax = maxRunes.get(Rune.DAMAGE);
-        maxRunes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, skills.get(Rune.DAMAGE))));
+        maxRunes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, skills.get(Rune.EXP))));
         runes.put(Rune.DAMAGE, runes.get(Rune.DAMAGE) + maxRunes.get(Rune.DAMAGE) - oldMax);
 
         bars.get(Rune.DAMAGE).setValue(runes.get(Rune.DAMAGE));
@@ -252,7 +266,7 @@ public class FighterComponent implements Component {
             }
         }
 
-        fc.runes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, fc.skills.get(Rune.DAMAGE))));
+        fc.runes.put(Rune.DAMAGE, (float) (Constants.BASE_HEALTH * Math.pow(Constants.HEALTH_CURVE, fc.skills.get(Rune.EXP))));
         fc.maxRunes.put(Rune.DAMAGE, fc.runes.get(Rune.DAMAGE));
         return fc;
     }

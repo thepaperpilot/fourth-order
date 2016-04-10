@@ -68,21 +68,37 @@ public class DestroyRuneSystem extends IteratingSystem {
 
             if (dc.collector == pc.puzzle.player) {
                 if (rc.rune == Rune.DAMAGE) {
-                    pc.puzzle.enemy.hit(1, pc.puzzle);
+                    pc.puzzle.enemy.hit(1 + pc.puzzle.player.skills.get(Rune.DAMAGE) * Constants.BASE_SKILL_EFFECT, pc.puzzle);
                     ac.actor.addAction(Actions.parallel(right, zoom));
                     entity.add(new ElectrifiedComponent());
                 } else {
                     ac.actor.addAction(Actions.parallel(left, zoom));
                     pc.puzzle.player.add(rc, pc.puzzle);
                 }
+                if (MathUtils.randomBoolean(pc.puzzle.player.skills.get(rc.rune) * Constants.BASE_SKILL_EFFECT / 10f)) {
+                    pc.puzzle.turn = pc.puzzle.collector;
+                    Entity message = new Entity();
+                    MessageComponent mc = new MessageComponent("extra turn");
+                    mc.color = rc.rune.color;
+                    message.add(mc);
+                    getEngine().addEntity(message);
+                }
             } else if (dc.collector == pc.puzzle.enemy){
                 if (rc.rune == Rune.DAMAGE) {
-                    pc.puzzle.player.hit(1, pc.puzzle);
+                    pc.puzzle.player.hit(1 + pc.puzzle.enemy.skills.get(Rune.DAMAGE) * Constants.BASE_SKILL_EFFECT, pc.puzzle);
                     ac.actor.addAction(Actions.parallel(left, zoom));
                     entity.add(new ElectrifiedComponent());
                 } else {
                     ac.actor.addAction(Actions.parallel(right, zoom));
                     pc.puzzle.enemy.add(rc, pc.puzzle);
+                }
+                if (MathUtils.randomBoolean(pc.puzzle.enemy.skills.get(rc.rune) * Constants.BASE_SKILL_EFFECT / 10f)) {
+                    pc.puzzle.turn = pc.puzzle.collector;
+                    Entity message = new Entity();
+                    MessageComponent mc = new MessageComponent("extra turn");
+                    mc.color = rc.rune.color;
+                    message.add(mc);
+                    getEngine().addEntity(message);
                 }
             }
         }

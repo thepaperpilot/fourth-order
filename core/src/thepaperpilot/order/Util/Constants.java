@@ -30,9 +30,13 @@ public class Constants {
     public static final int BASE_EXP = 27;
     public static final float EXP_CURVE = 2.1f;
     public static final int MAX_SPELLS = 6;
-    public static final Integer PROFICIENCY_BONUS_FREQUENCY = 8;
+    public static final int PROFICIENCY_BONUS_FREQUENCY = 8;
     public static final int BASE_HEALTH = 20;
     public static final float HEALTH_CURVE = 1.1f;
+    public static final float BASE_SKILL_EFFECT = .01f; // .01f == 1% chance
+    public static final float BASE_RUNES = .5f;
+    public static final int BASE_RUNES_MAX = 40;
+    public static final float BASE_RUNES_MAX_CURVE = .05f;
 
     /* Debug */
     public static final boolean DEBUG = true;
