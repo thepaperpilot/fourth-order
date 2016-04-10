@@ -61,7 +61,7 @@ public class FighterComponent implements Component {
         }
     }
 
-    public void reset(PuzzleSystem puzzle) {
+    public void reset() {
         for (Rune rune : Rune.values()) {
             switch (rune) {
                 case DAMAGE:
@@ -76,9 +76,6 @@ public class FighterComponent implements Component {
                     maxRunes.put(rune, (1 + skills.get(rune) * Constants.BASE_RUNES_MAX_CURVE) * Constants.BASE_RUNES_MAX);
                     break;
             }
-        }
-        while (runes.get(Rune.EXP) >= maxRunes.get(Rune.EXP)) {
-            levelUp(puzzle);
         }
     }
 
@@ -193,7 +190,12 @@ public class FighterComponent implements Component {
             bars.get(Rune.EXP).setRange(0, maxRunes.get(Rune.EXP));
         }
         for (Entity spell : fighterClass.spells.keySet()) {
-            if (knownSpells.contains(spell)) continue;
+            boolean knowsSpell = false;
+            for (Entity entity : knownSpells) {
+                if (Mappers.spell.get(entity).name.equals(Mappers.spell.get(spell).name))
+                    knowsSpell = true;
+            }
+            if (knowsSpell) continue;
             if (fighterClass.spells.get(spell) > level) break; // I can do this because the spell list maintains order (its a LinkedHashMap)
             knownSpells.add(spell);
             if (spells.size() < Constants.MAX_SPELLS) {
