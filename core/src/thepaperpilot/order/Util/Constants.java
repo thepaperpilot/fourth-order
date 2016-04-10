@@ -4,7 +4,7 @@ public class Constants {
     /* Sizes */
     public static final int WORLD_WIDTH = 1280;
     public static final int WORLD_HEIGHT = 720;
-    public static final int UI_WIDTH = 280;
+    public static final int UI_WIDTH = 300;
     public static final int DIALOGUE_SIZE = 340;
     public static final float RUNE_ZOOM = 3;
     public static final float FACE_SIZE = 90;

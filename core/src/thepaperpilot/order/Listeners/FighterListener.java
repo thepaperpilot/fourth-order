@@ -84,7 +84,7 @@ public class FighterListener implements EntityListener {
         }
         fc.updateProgressBars();
         for (Rune rune : Rune.elementRunes) {
-            right.add(fc.bars.get(rune)).minWidth(1).height(180).pad(2);
+            right.add(fc.bars.get(rune)).height(180).pad(2).width(16);
         }
         right.row();
         for (Rune rune : Rune.elementRunes) {

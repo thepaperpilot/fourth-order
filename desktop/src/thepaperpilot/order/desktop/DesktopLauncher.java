@@ -9,6 +9,8 @@ class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.title = "The Fourth Order";
 		config.vSyncEnabled = false;
+		config.width = 1280;
+		config.height = 720;
 		new LwjglApplication(new Main(), config);
 	}
 }
