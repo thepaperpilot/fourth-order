@@ -186,8 +186,8 @@ public class FighterComponent implements Component {
     }
 
     public void levelUp(final PuzzleSystem puzzle) {
-        maxRunes.put(Rune.EXP, (float) (Constants.BASE_EXP * Math.pow(Constants.EXP_CURVE, level)));
         level++;
+        maxRunes.put(Rune.EXP, (float) (Constants.BASE_EXP * Math.pow(Constants.EXP_CURVE, level)));
         skillPoints += Constants.POINTS_PER_LEVEL;
         if (bars.get(Rune.EXP) != null) {
             bars.get(Rune.EXP).setRange(0, maxRunes.get(Rune.EXP));
