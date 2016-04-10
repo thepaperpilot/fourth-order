@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import thepaperpilot.order.Class;
 import thepaperpilot.order.Components.Effects.DamageMultiplierComponent;
+import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Rune;
 import thepaperpilot.order.Systems.PuzzleSystem;
@@ -198,11 +199,9 @@ public class FighterComponent implements Component {
             if (spells.size() < Constants.MAX_SPELLS) {
                 spells.add(spell);
                 if (puzzle.player == this) {
-                    puzzle.getEngine().removeEntity(puzzle.playerEntity);
-                    puzzle.getEngine().addEntity(puzzle.playerEntity);
+                    FighterListener.createSpell(puzzle.getEngine(), puzzle.playerEntity, spell);
                 } else if (puzzle.enemy == this) {
-                    puzzle.getEngine().removeEntity(puzzle.enemyEntity);
-                    puzzle.getEngine().addEntity(puzzle.enemyEntity);
+                    FighterListener.createSpell(puzzle.getEngine(), puzzle.enemyEntity, spell);
                 }
             }
             break;

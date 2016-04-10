@@ -20,7 +20,7 @@ import thepaperpilot.order.Util.Mappers;
 
 public class FighterListener implements EntityListener {
     private Engine engine;
-    private Drawable circle = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
+    private static Drawable circle = new Image(Main.getTexture("UICircleEmpty")).getDrawable();
 
     public FighterListener(Engine engine) {
         this.engine = engine;
@@ -31,13 +31,12 @@ public class FighterListener implements EntityListener {
         final FighterComponent fc = Mappers.fighter.get(entity);
         ActorComponent ac = Mappers.actor.get(entity);
 
-        Table ui = new Table(Main.skin);
-        ui.setFillParent(true);
-        if (Mappers.playerControlled.has(entity)) ui.left().top();
-        else ui.right().bottom();
-
         Table table = new Table(Main.skin);
+        ac.actor = table;
         table.top().pad(20);
+        table.setSize(Constants.UI_WIDTH, Constants.WORLD_HEIGHT);
+        if (Mappers.playerControlled.has(entity)) table.setPosition(0, 0);
+        else table.setPosition(Constants.WORLD_WIDTH - Constants.UI_WIDTH, 0);
         Table left = new Table(Main.skin);
         Table portrait = new Table(Main.skin);
         portrait.add(new Image(Main.getTexture(fc.portrait))).expand().fill().pad(2);
@@ -94,31 +93,35 @@ public class FighterListener implements EntityListener {
         table.add(left).padRight(4);
         table.add(right).expandX().fill().padBottom(2).row();
         for (final Entity spell : fc.spells) {
-            final SpellComponent sc = Mappers.spell.get(spell);
-
-            Table button = new Button(Main.skin);
-            button.setBackground(Main.skin.getDrawable("default-round"));
-            button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
-            for (Rune rune : Rune.elementRunes) {
-                if (sc.cost.get(rune) != 0) button.add(createDisplay(sc.cost.get(rune).intValue(), sc.displays.get(rune), rune.color)).expandX();
-            }
-            if (engine.getSystem(PuzzleSystem.class).player == fc) {
-                button.addListener(new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        if (fc.canCast(spell, engine.getSystem(PuzzleSystem.class))) {
-                            fc.cast(spell, engine.getSystem(PuzzleSystem.class));
-                        }
-                    }
-                });
-            }
-            table.add(button).expandX().fill().height(60).colspan(2).pad(2).row();
+            createSpell(engine, entity, spell);
         }
-        ui.add(table).expandY().fill().width(Constants.UI_WIDTH);
-        ac.actor = ui;
     }
 
-    private Actor createDisplay(int element, Image display, Color color) {
+    public static void createSpell(final Engine engine, Entity fighter, final Entity spell) {
+        final FighterComponent fc = Mappers.fighter.get(fighter);
+        ActorComponent ac = Mappers.actor.get(fighter);
+        final SpellComponent sc = Mappers.spell.get(spell);
+
+        Table button = new Button(Main.skin);
+        button.setBackground(Main.skin.getDrawable("default-round"));
+        button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
+        for (Rune rune : Rune.elementRunes) {
+            if (sc.cost.get(rune) != 0) button.add(createDisplay(sc.cost.get(rune).intValue(), sc.displays.get(rune), rune.color)).expandX();
+        }
+        if (engine.getSystem(PuzzleSystem.class).player == fc) {
+            button.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (fc.canCast(spell, engine.getSystem(PuzzleSystem.class))) {
+                        fc.cast(spell, engine.getSystem(PuzzleSystem.class));
+                    }
+                }
+            });
+        }
+        ((Table) ac.actor).add(button).expandX().fill().height(60).colspan(2).pad(2).row();
+    }
+
+    private static Actor createDisplay(int element, Image display, Color color) {
         Table table = new Table(Main.skin);
         display.setDrawable(circle);
         display.setColor(color);
