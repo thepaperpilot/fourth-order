@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class SpellComponent implements Component {
 
-    private static Map<String, Entity> spells = new HashMap<String, Entity>();
+    public static Map<String, Entity> spells = new HashMap<String, Entity>();
 
     static {
         Entity spell = new Entity();

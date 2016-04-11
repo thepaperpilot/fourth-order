@@ -149,16 +149,7 @@ public class HUDSystem extends EntitySystem {
         final Table left = new Table(Main.skin);
         left.add("Spell List").padBottom(8).row();
         for (final Entity spell : Player.getPlayer().spells) {
-            final Table spellTable = FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name));
-            left.add(spellTable).expandX().fill().padBottom(4).row();
-            spellTable.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Player.getPlayer().spells.remove(spell);
-                    spellTable.remove();
-                    Player.save();
-                }
-            });
+            addSpell(left, spell);
         }
         Table right = new Table(Main.skin);
         right.add("Known Spells").padBottom(8).row();
@@ -168,8 +159,12 @@ public class HUDSystem extends EntitySystem {
             spellTable.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    if (Player.getPlayer().spells.size() >= Constants.MAX_SPELLS) return;
+                    for (Entity aSpell : Player.getPlayer().spells) {
+                        if (Mappers.spell.get(aSpell).name.equals(Mappers.spell.get(spell).name)) return;
+                    }
                     Player.getPlayer().spells.add(spell);
-                    left.add(FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name))).expandX().fill().padBottom(4).row();
+                    addSpell(left, spell);
                     Player.save();
                 }
             });
@@ -183,6 +178,20 @@ public class HUDSystem extends EntitySystem {
         skillsAC.actor = table;
         skillsEntity.add(skillsAC);
         return skillsEntity;
+    }
+
+    private void addSpell(final Table table, final Entity spell) {
+        final Table spellTable = FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name));
+        table.add(spellTable).expandX().fill().padBottom(4).row();
+        spellTable.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Player.getPlayer().spells.remove(spell);
+                table.getCell(spellTable).padBottom(0);
+                table.removeActor(spellTable);
+                Player.save();
+            }
+        });
     }
 
     public Table getTable(Button button) {

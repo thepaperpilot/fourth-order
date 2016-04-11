@@ -73,6 +73,7 @@ public class Player {
 
         String[] spells = save.getString("spells", "Strike").split(",");
         for (String spell : spells) {
+            if (spell == null || !SpellComponent.spells.containsKey(spell)) continue;
             player.spells.add(SpellComponent.getSpell(spell));
         }
 
