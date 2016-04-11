@@ -155,7 +155,7 @@ public class HUDSystem extends EntitySystem {
         Table right = new Table(Main.skin);
         right.add("Known Spells").padBottom(8).row();
         for (final Entity spell : Player.getPlayer().knownSpells) {
-            final Table spellTable = FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name));
+            final Table spellTable = FighterListener.createSpellTable(getEngine(), SpellComponent.getSpell(Mappers.spell.get(spell).name));
             right.add(spellTable).expandX().fill().padBottom(4).row();
             spellTable.addListener(new ClickListener() {
                 @Override
@@ -182,7 +182,7 @@ public class HUDSystem extends EntitySystem {
     }
 
     private void addSpell(final Table table, final Entity spell) {
-        final Table spellTable = FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name));
+        final Table spellTable = FighterListener.createSpellTable(getEngine(), SpellComponent.getSpell(Mappers.spell.get(spell).name));
         table.add(spellTable).expandX().fill().padBottom(4).row();
         spellTable.addListener(new ClickListener() {
             @Override

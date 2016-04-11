@@ -77,6 +77,12 @@ public class Battle implements Screen {
                     }
                     return false;
                 }
+
+                @Override
+                public boolean mouseMoved(InputEvent event, float x, float y) {
+                    System.out.println("---(" + x + "," + y + ")");
+                    return false;
+                }
             });
         }
     }

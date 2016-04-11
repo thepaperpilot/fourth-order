@@ -4,8 +4,12 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntityListener;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -101,7 +105,7 @@ public class FighterListener implements EntityListener {
         final FighterComponent fc = Mappers.fighter.get(fighter);
         ActorComponent ac = Mappers.actor.get(fighter);
 
-        Table button = createSpellTable(spell);
+        Table button = createSpellTable(engine, spell);
         if (engine.getSystem(PuzzleSystem.class).player == fc) {
             button.addListener(new ClickListener() {
                 @Override
@@ -115,14 +119,51 @@ public class FighterListener implements EntityListener {
         ((Table) ac.actor).add(button).expandX().fill().height(60).colspan(2).pad(2).row();
     }
 
-    public static Table createSpellTable(final Entity spell) {
+    public static Table createSpellTable(Engine engine, final Entity spell) {
         final SpellComponent sc = Mappers.spell.get(spell);
 
-        Table table = new Button(Main.skin);
+        final Table table = new Button(Main.skin);
         table.setBackground(Main.skin.getDrawable("default-round"));
+        table.setTouchable(Touchable.enabled);
         table.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
         for (Rune rune : Rune.elementRunes) {
             if (sc.cost.get(rune) != 0) table.add(createDisplay(sc.cost.get(rune).intValue(), sc.displays.get(rune), rune.color)).expandX();
+        }
+
+        final Table hover = new Table(Main.skin);
+        hover.getColor().a = 0;
+        hover.setBackground(Main.skin.getDrawable("default-round"));
+        table.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (table.getParent().getColor().a < 1) return;
+                Vector2 coords = table.localToStageCoordinates(new Vector2(table.getX(), table.getY()));
+                hover.clearActions();
+                hover.setPosition(coords.x, coords.y);
+                hover.setSize(200, 50);
+                hover.toFront();
+                if (coords.x < Constants.WORLD_WIDTH / 2f) {
+                    hover.addAction(Actions.parallel(Actions.fadeIn(.25f), Actions.moveBy(table.getWidth(), 0, .25f)));
+                } else {
+                    hover.addAction(Actions.parallel(Actions.fadeIn(.25f), Actions.moveBy(-table.getWidth(), 0, .25f)));
+                }
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                hover.clearActions();
+                hover.addAction(Actions.fadeOut(.25f));
+            }
+        });
+
+        Entity hoverEntity = new Entity();
+        ActorComponent ac = new ActorComponent();
+        ac.actor = hover;
+        hoverEntity.add(ac);
+        engine.addEntity(hoverEntity);
+
+        for (Actor actor : table.getChildren()) {
+            actor.setTouchable(Touchable.disabled);
         }
         return table;
     }
