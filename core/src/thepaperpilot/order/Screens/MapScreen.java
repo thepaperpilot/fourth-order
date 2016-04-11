@@ -157,6 +157,9 @@ public class MapScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         stage.getRoot().getColor().a = 0;
         stage.addAction(Actions.fadeIn(Constants.TRANSITION_TIME));
+
+        // is this the right way to do this?
+        engine.getSystem(HUDSystem.class).update();
     }
 
     @Override
