@@ -100,14 +100,8 @@ public class FighterListener implements EntityListener {
     public static void createSpell(final Engine engine, Entity fighter, final Entity spell) {
         final FighterComponent fc = Mappers.fighter.get(fighter);
         ActorComponent ac = Mappers.actor.get(fighter);
-        final SpellComponent sc = Mappers.spell.get(spell);
 
-        Table button = new Button(Main.skin);
-        button.setBackground(Main.skin.getDrawable("default-round"));
-        button.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
-        for (Rune rune : Rune.elementRunes) {
-            if (sc.cost.get(rune) != 0) button.add(createDisplay(sc.cost.get(rune).intValue(), sc.displays.get(rune), rune.color)).expandX();
-        }
+        Table button = createSpellTable(spell);
         if (engine.getSystem(PuzzleSystem.class).player == fc) {
             button.addListener(new ClickListener() {
                 @Override
@@ -119,6 +113,18 @@ public class FighterListener implements EntityListener {
             });
         }
         ((Table) ac.actor).add(button).expandX().fill().height(60).colspan(2).pad(2).row();
+    }
+
+    public static Table createSpellTable(final Entity spell) {
+        final SpellComponent sc = Mappers.spell.get(spell);
+
+        Table table = new Button(Main.skin);
+        table.setBackground(Main.skin.getDrawable("default-round"));
+        table.left().add(new Label(" " + sc.name, Main.skin)).expandY().top().pad(2).colspan(5).row();
+        for (Rune rune : Rune.elementRunes) {
+            if (sc.cost.get(rune) != 0) table.add(createDisplay(sc.cost.get(rune).intValue(), sc.displays.get(rune), rune.color)).expandX();
+        }
+        return table;
     }
 
     private static Actor createDisplay(int element, Image display, Color color) {

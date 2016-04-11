@@ -9,17 +9,17 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import thepaperpilot.order.Components.ActorComponent;
 import thepaperpilot.order.Components.FighterComponent;
+import thepaperpilot.order.Components.SpellComponent;
+import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
 import thepaperpilot.order.Util.Constants;
+import thepaperpilot.order.Util.Mappers;
 
 public class HUDSystem extends EntitySystem {
 
@@ -104,7 +104,37 @@ public class HUDSystem extends EntitySystem {
     public Entity getSpellsEntity(TextButton spellsButton) {
         Table table = spellsTable = getTable(spellsButton);
 
-        table.add("Not Yet Implemented");
+        final Table left = new Table(Main.skin);
+        left.add("Spell List").padBottom(8).row();
+        for (final Entity spell : Player.getPlayer().spells) {
+            final Table spellTable = FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name));
+            left.add(spellTable).expandX().fill().padBottom(4).row();
+            spellTable.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Player.getPlayer().spells.remove(spell);
+                    spellTable.remove();
+                    Player.save();
+                }
+            });
+        }
+        Table right = new Table(Main.skin);
+        right.add("Known Spells").padBottom(8).row();
+        for (final Entity spell : Player.getPlayer().knownSpells) {
+            final Table spellTable = FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name));
+            right.add(spellTable).expandX().fill().padBottom(4).row();
+            spellTable.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Player.getPlayer().spells.add(spell);
+                    left.add(FighterListener.createSpellTable(SpellComponent.getSpell(Mappers.spell.get(spell).name))).expandX().fill().padBottom(4).row();
+                    Player.save();
+                }
+            });
+        }
+        ScrollPane scroll = new ScrollPane(right);
+        table.top().pad(20).add(left).width(200).padRight(20).top();
+        table.add(scroll).width(200).top();
 
         Entity skillsEntity = new Entity();
         ActorComponent skillsAC = new ActorComponent();
