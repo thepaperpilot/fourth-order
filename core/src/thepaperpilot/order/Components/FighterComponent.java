@@ -236,10 +236,9 @@ public class FighterComponent implements Component {
 
     public static FighterComponent getEnemy(Class fighterClass, int level) {
         FighterComponent fc = new FighterComponent(fighterClass, level);
-        LinkedList<Entity> spells = new LinkedList<Entity>(fighterClass.spells.keySet());
-        Iterator<Entity> iterator = spells.descendingIterator();
-        while (iterator.hasNext()) {
-            Entity spell = iterator.next();
+        Entity[] spells = fighterClass.spells.keySet().toArray(new Entity[fighterClass.spells.size() - 1]);
+        for (int i = spells.length - 1; i >= 0; i--) {
+            Entity spell = spells[i];
             if (fighterClass.spells.get(spell) > level) continue;
             fc.knownSpells.add(spell);
             if (fc.spells.size() < Constants.MAX_SPELLS)
