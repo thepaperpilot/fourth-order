@@ -3,6 +3,7 @@ package thepaperpilot.order.Systems;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.PolygonSprite;
 import com.badlogic.gdx.math.Interpolation;
@@ -18,6 +19,7 @@ import thepaperpilot.order.Components.SpellComponent;
 import thepaperpilot.order.Listeners.FighterListener;
 import thepaperpilot.order.Main;
 import thepaperpilot.order.Player;
+import thepaperpilot.order.Rune;
 import thepaperpilot.order.Util.Constants;
 import thepaperpilot.order.Util.Mappers;
 
@@ -34,19 +36,6 @@ public class HUDSystem extends EntitySystem {
     private Table skillsTable;
     private Table itemsTable;
     private Table spellsTable;
-
-    private Action in = Actions.sequence(Actions.parallel(Actions.moveTo(Constants.MAP_MARGIN * 2, Constants.MAP_MARGIN * 2, .25f, Interpolation.pow2Out), Actions.fadeIn(.25f, Interpolation.pow2Out)), Actions.run(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("in?");
-        }
-    }));
-    private Action out = Actions.sequence(Actions.parallel(Actions.moveTo(Constants.MAP_MARGIN * 2, Constants.MAP_MARGIN * -2, .25f, Interpolation.pow2), Actions.fadeOut(.25f, Interpolation.pow2)), Actions.run(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println("out?");
-        }
-    }));
 
     public HUDSystem() {
         super(12);
@@ -76,11 +65,64 @@ public class HUDSystem extends EntitySystem {
     public Entity getSkillsEntity(TextButton skillsButton) {
         Table table = skillsTable = getTable(skillsButton);
 
-        FighterComponent fc = Player.getPlayer();
-        table.add(new Image(Main.getTexture(fc.portrait))).left().top().expand().pad(8);
-        // TODO this is in the middle of implementation
+        final FighterComponent fc = Player.getPlayer();
+        table.add(new Image(Main.getTexture(fc.portrait))).width(Constants.FACE_SIZE).pad(8);
+        Table right = new Table(Main.skin);
+        Label fighterClass = new Label(fc.fighterClass.name(), Main.skin);
+        fighterClass.setAlignment(Align.center);
+        right.add(fighterClass).padBottom(4).row();
+        ProgressBar healthBar = new ProgressBar(0, fc.maxRunes.get(Rune.DAMAGE), 1, false, Main.skin);
+        healthBar.setValue(fc.maxRunes.get(Rune.DAMAGE));
+        healthBar.setColor(Color.RED);
+        healthBar.setAnimateDuration(1f);
+        Label hp = new Label("hp:", Main.skin);
+        hp.setColor(1, 0, 0, .75f);
+        right.add(hp).left().padBottom(2).colspan(5).row();
+        right.add(healthBar).padBottom(2).expandX().fill().row();
+        Label healthLabel = new Label(fc.maxRunes.get(Rune.DAMAGE).intValue() + "/" + fc.maxRunes.get(Rune.DAMAGE).intValue(), Main.skin);
+        healthLabel.setColor(1, 0, 0, 1);
+        right.add(healthLabel).padBottom(2).colspan(5).row();
+        ProgressBar experience = new ProgressBar(0, fc.maxRunes.get(Rune.EXP), 1, false, Main.skin);
+        experience.setValue(fc.runes.get(Rune.EXP));
+        experience.setColor(Color.GREEN);
+        experience.setAnimateDuration(1f);
+        Label exp = new Label("Exp:", Main.skin);
+        exp.setColor(0, 1, 0, .75f);
+        right.add(exp).left().padBottom(2).row();
+        right.add(experience).expandX().fill().row();
+        Label experienceLabel = new Label(fc.runes.get(Rune.EXP).intValue() + "/" + fc.maxRunes.get(Rune.EXP).intValue(), Main.skin);
+        experienceLabel.setColor(0, 1, 0, 1);
+        right.add(experienceLabel).padTop(2);
+        table.add(right).padBottom(16).row();
+
+        Table skillPoints = new Table(Main.skin);
+        skillPoints.add("Skill points remaining: ");
+        final Label skillLabel = new Label("" + fc.skillPoints, Main.skin);
+        skillPoints.add(skillLabel);
+        table.add(skillPoints).padBottom(4).colspan(2).row();
+        Table skillTable = new Table(Main.skin);
+        for (final Rune rune : Rune.values()) {
+            TextButton button = new TextButton("+", Main.skin);
+            final Label skill = new Label("" + fc.skills.get(rune).intValue(), Main.skin);
+            button.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (fc.skillPoints >= 5 - fc.fighterClass.proficiency.get(rune)) {
+                        fc.skillPoints -= 5 - fc.fighterClass.proficiency.get(rune);
+                        fc.skills.put(rune, fc.skills.get(rune) + 1);
+                        skill.setText("" + fc.skills.get(rune).intValue());
+                        skillLabel.setText("" + fc.skillPoints);
+                        Player.save();
+                    }
+                }
+            });
+            skillTable.add(button).padRight(8);
+            skillTable.add(rune.skill).left().padRight(8);
+            skillTable.add(skill).padRight(8);
+            skillTable.add("(cost: " + (5 - fc.fighterClass.proficiency.get(rune)) + ")").row();
+        }
+        table.add(skillTable).colspan(2).padBottom(4).row();
         // I really want a radar graph, but I have no idea how best to render it
-        // also I need to decide when to update this information. show()?
 
         Entity skillsEntity = new Entity();
         ActorComponent skillsAC = new ActorComponent();
