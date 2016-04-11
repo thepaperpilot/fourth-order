@@ -71,6 +71,7 @@ public class HUDSystem extends EntitySystem {
         Label fighterClass = new Label(fc.fighterClass.name(), Main.skin);
         fighterClass.setAlignment(Align.center);
         right.add(fighterClass).padBottom(4).row();
+        Player.getPlayer().reset();
         ProgressBar healthBar = new ProgressBar(0, fc.maxRunes.get(Rune.DAMAGE), 1, false, Main.skin);
         healthBar.setValue(fc.maxRunes.get(Rune.DAMAGE));
         healthBar.setColor(Color.RED);
